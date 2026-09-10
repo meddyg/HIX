@@ -29,7 +29,7 @@ publisher:
 # Page order drives the automatic section numbering shown in the rendered site.
 pages:
   index.md:
-    title: Home
+    title: Descripción general
   # volume-1.md:
   #   title: Volume 1 — Architecture
   #   volume-1-overview.md:
@@ -116,7 +116,7 @@ pages:
   #   title: Downloads
 
 menu:
-  Home: index.html
+  Descripción general: index.html
   # Volume 1:
   #   Volume 1 — Architecture: volume-1.html
   #   Overview: volume-1-overview.html

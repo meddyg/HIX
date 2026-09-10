@@ -36,3 +36,8 @@ template-local/      the site's look        theme/   the PDF and Word look
 _scripts/            what the Makefile calls
 dist/                what you publish       .work/   everything generated
 ```
+
+## Authors
+
+- Juan Esteban Sanchez
+- Alejandro Benavides
