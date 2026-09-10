@@ -2,7 +2,7 @@ HIX define una arquitectura de referencia para comunidades que comparten documen
 
 ### Propósito y alcance
 
-Esta guía describe los roles de la comunidad, sus límites de confianza y la relación entre sus componentes. Explica, entre otras decisiones, por qué la localización y la recuperación se median de forma centralizada; por qué la custodia documental se mantiene distribuida por defecto; y cómo se componen [IUA](https://profiles.ihe.net/ITI/IUA/index.html), [SMART on FHIR](https://build.fhir.org/ig/HL7/smart-app-launch/) y [OAuth 2.0](https://www.rfc-editor.org/info/rfc6749/) para establecer las reglas de autorización y delegación entre los participantes.
+Esta guía describe los roles de la comunidad, sus límites de confianza y la relación entre sus componentes. Explica, entre otras decisiones, por qué la localización y la recuperación se median de forma centralizada; por qué la custodia documental se mantiene distribuida por defecto; y cómo **[IUA](https://profiles.ihe.net/ITI/IUA/index.html)** y **[OAuth 2.0](https://www.rfc-editor.org/info/rfc6749/)** establecen la base de autorización y delegación entre los participantes, incorporando **[SMART on FHIR](https://build.fhir.org/ig/HL7/smart-app-launch/)** en los flujos interactivos en los que la autorización requiere la participación de un usuario, a través de un **User Agent** y el *front-channel* de autorización.
 
 Esta arquitectura abarca las siguientes capacidades dentro de la comunidad:
 - publicación, indexación, localización y recuperación de documentos clínicos;
@@ -34,6 +34,39 @@ Estas palabras expresan requisitos normativos de **HIX**. El resto del lenguaje 
 
 Cuando HIX incorpora o referencia requisitos definidos por un perfil IHE, una especificación HL7 FHIR o un RFC, dichos requisitos conservan la fuerza normativa establecida por su especificación de origen.
 
-### Como leer esta guía
+#### Terminología y abreviaturas
+
+HIX utiliza terminología definida por IHE, HL7 FHIR y OAuth 2.0. Salvo que se
+indique lo contrario, los nombres de perfiles y actores conservan el significado
+establecido por su especificación de origen.
+
+En esta guía, un **perfil IHE** define un conjunto de capacidades y
+transacciones, mientras que un **actor IHE** representa el rol que un sistema
+desempeña dentro de dicho perfil.
+
+| Término | Significado |
+| --- | --- |
+| **[MHDS](https://profiles.ihe.net/ITI/MHDS/volume-1.html)** — *Mobile Health Document Sharing* | Perfil IHE que define una comunidad de intercambio de documentos clínicos basada en FHIR y la composición de perfiles necesaria para operarla. |
+| **[MHD](https://profiles.ihe.net/ITI/MHD/index.html)** — *Mobile access to Health Documents* | Perfil IHE para publicar, localizar y recuperar documentos clínicos mediante FHIR. HIX utiliza principalmente los actores **Document Recipient** y **Document Responder**. |
+| **[PMIR](https://profiles.ihe.net/ITI/PMIR/index.html)** — *Patient Master Identity Registry* | Perfil IHE para gestionar y sincronizar identidades maestras de pacientes. |
+| **[mCSD](https://profiles.ihe.net/ITI/mCSD/index.html)** — *Mobile Care Services Discovery* | Perfil IHE utilizado para consultar organizaciones participantes, servicios y endpoints. |
+| **[IUA](https://profiles.ihe.net/ITI/IUA/index.html)** — *Internet User Authorization* | Perfil IHE utilizado por HIX como base de autorización para las interacciones protegidas entre sus participantes. Sus requisitos aplican a todos los flujos de autorización de HIX. |
+| **[SMART on FHIR](https://build.fhir.org/ig/HL7/smart-app-launch/app-launch.html)** | Especificación de HL7 utilizada adicionalmente en los flujos interactivos en los que la autorización requiere la participación de un usuario a través de un `User Agent`. |
+| **RLS** — *Record Locator Service* | Componente central de HIX responsable de localizar los documentos clínicos disponibles para un paciente y mediar su recuperación desde los custodios correspondientes. |
+{: .table .table-bordered}
+
+Los siguientes términos relacionados con OAuth 2.0 y la arquitectura de autorización de HIX se utilizan a lo largo de la guía:
+
+| Término | Significado |
+| --- | --- |
+| **Client** | Aplicación que solicita acceso a un recurso protegido. |
+| **AS / STS** — *Authorization Server / Security Token Service* | Función responsable de la autorización y de la emisión o intercambio de tokens utilizados entre los participantes de HIX. |
+| **RS** — *Resource Server* | Servicio que protege recursos y evalúa los tokens presentados para autorizar el acceso. |
+| **Access token** | Credencial presentada por un `Client` ante un `Resource Server` para solicitar acceso. |
+| **Audience** | Identificador del `Resource Server` al que está destinado un token. |
+| **Scope** | Alcance del acceso solicitado o concedido al `Client`. |
+{: .table .table-bordered}
+
+### Cómo leer esta guía
 
 HIX organiza sus requisitos en diferentes niveles de abstracción. Los volúmenes de esta guía deben leerse de forma complementaria y no como especificaciones independientes.
