@@ -1,0 +1,13 @@
+{
+    "name": "hix.fhir.template",
+    "version": "0.0.1",
+    "type": "fhir.template",
+    "license": "CC0-1.0",
+    "description": "IG template for the hix health information exchange specification.",
+    "author": "https://meddyg.com",
+    "canonical": "https://hl7.meddyg.com/fhir/hix",
+    "base": "fhir.base.template",
+    "dependencies": {
+        "fhir.base.template": "current"
+    }
+}

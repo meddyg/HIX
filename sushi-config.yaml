@@ -1,0 +1,181 @@
+# Configuration of the hix specification IG.
+#
+# SUSHI turns this file into the ImplementationGuide resource that the IG
+# Publisher consumes. With no FSH under input/fsh/, that resource is all SUSHI
+# produces -- which is exactly what a narrative-only specification needs.
+#
+# Reference: https://fshschool.org/docs/sushi/configuration/
+
+id: meddyg.hix
+packageId: meddyg.hix
+canonical: https://hl7.meddyg.com/fhir/hix
+name: HixHealthInformationExchange
+title: Health Information Exchange
+description: >-
+  Specification of the hix health information exchange: a Document Sharing
+  community built on the IHE MHDS profile, together with the authorization,
+  identity, directory and audit mechanisms that surround it.
+status: draft
+version: 0.1.0
+fhirVersion: 5.0.0
+copyrightYear: 2026+
+releaseLabel: ci-build
+license: CC0-1.0
+jurisdiction: urn:iso:std:iso:3166#CR "Costa Rica"
+publisher:
+  name: Meddyg
+  url: https://meddyg.com
+
+# Page order drives the automatic section numbering shown in the rendered site.
+pages:
+  index.md:
+    title: Home
+  # volume-1.md:
+  #   title: Volume 1 — Architecture
+  #   volume-1-overview.md:
+  #     title: Overview
+  #   volume-1-actors.md:
+  #     title: Actors and Systems
+  #   volume-1-transactions.md:
+  #     title: Transactions and Workflows
+  #   volume-1-options.md:
+  #     title: Actor Options
+  #   volume-1-groupings.md:
+  #     title: Required Actor Groupings
+  #   volume-1-information.md:
+  #     title: Information Architecture
+  #   volume-1-usecases.md:
+  #     title: Use Cases
+  #   volume-1-security.md:
+  #     title: Security and Trust Model
+  #   volume-1-deployment.md:
+  #     title: Deployment and Runtime Views
+  #   volume-1-cross-profile.md:
+  #     title: Cross-profile Integration
+  # volume-2.md:
+  #   title: Volume 2 — Transactions
+  #   volume-2-index.md:
+  #     title: Transaction Index
+  #   volume-2-iti-65.md:
+  #     title: Provide Document Bundle [ITI-65]
+  #   volume-2-iti-67.md:
+  #     title: Find Document References [ITI-67]
+  #   volume-2-iti-68.md:
+  #     title: Retrieve Document [ITI-68]
+  #   volume-2-iti-83.md:
+  #     title: Mobile Patient Identifier Cross-reference Query [ITI-83]
+  #   volume-2-iti-104.md:
+  #     title: Patient Identity Feed FHIR [ITI-104]
+  #   volume-2-iti-90.md:
+  #     title: Care Services Discovery [ITI-90]
+  #   volume-2-hix-1.md:
+  #     title: Custodian Token Exchange [HIX-1]
+  #   volume-2-hix-2.md:
+  #     title: Patient Application Launch [HIX-2]
+  #   volume-2-hix-3.md:
+  #     title: Member Onboarding [HIX-3]
+  # volume-3.md:
+  #   title: Volume 3 — Content and Semantics
+  #   volume-3-metadata.md:
+  #     title: Document Metadata
+  #   volume-3-identity.md:
+  #     title: Patient Identity
+  #   volume-3-directory.md:
+  #     title: Directory Resources
+  #   volume-3-claims.md:
+  #     title: Authorization Claims
+  #   volume-3-consent.md:
+  #     title: Consent and Security Labels
+  #   volume-3-audit.md:
+  #     title: Audit Records
+  #   volume-3-terminology.md:
+  #     title: Terminology
+  # conformance.md:
+  #   title: Conformance
+  #   conformance-editions.md:
+  #     title: Supported Profile Editions
+  #   conformance-requirements.md:
+  #     title: Requirements Matrix
+  #   conformance-departures.md:
+  #     title: IHE Departures
+  #   conformance-extensions.md:
+  #     title: hix Extensions
+  #   conformance-artifacts.md:
+  #     title: Conformance Artifacts
+  # appendix.md:
+  #   title: Appendices
+  #   appendix-glossary.md:
+  #     title: Glossary
+  #   appendix-rationale.md:
+  #     title: Design Rationale
+  #   appendix-references.md:
+  #     title: References
+  #   appendix-changes.md:
+  #     title: Change History
+  # downloads.md:
+  #   title: Downloads
+
+menu:
+  Home: index.html
+  # Volume 1:
+  #   Volume 1 — Architecture: volume-1.html
+  #   Overview: volume-1-overview.html
+  #   Actors and Systems: volume-1-actors.html
+  #   Transactions and Workflows: volume-1-transactions.html
+  #   Actor Options: volume-1-options.html
+  #   Required Actor Groupings: volume-1-groupings.html
+  #   Information Architecture: volume-1-information.html
+  #   Use Cases: volume-1-usecases.html
+  #   Security and Trust Model: volume-1-security.html
+  #   Deployment and Runtime Views: volume-1-deployment.html
+  #   Cross-profile Integration: volume-1-cross-profile.html
+  # Volume 2:
+  #   Volume 2 — Transactions: volume-2.html
+  #   Transaction Index: volume-2-index.html
+  #   Provide Document Bundle [ITI-65]: volume-2-iti-65.html
+  #   Find Document References [ITI-67]: volume-2-iti-67.html
+  #   Retrieve Document [ITI-68]: volume-2-iti-68.html
+  #   Mobile Patient Identifier Cross-reference Query [ITI-83]: volume-2-iti-83.html
+  #   Patient Identity Feed FHIR [ITI-104]: volume-2-iti-104.html
+  #   Care Services Discovery [ITI-90]: volume-2-iti-90.html
+  #   Custodian Token Exchange [HIX-1]: volume-2-hix-1.html
+  #   Patient Application Launch [HIX-2]: volume-2-hix-2.html
+  #   Member Onboarding [HIX-3]: volume-2-hix-3.html
+  # Volume 3:
+  #   Volume 3 — Content and Semantics: volume-3.html
+  #   Document Metadata: volume-3-metadata.html
+  #   Patient Identity: volume-3-identity.html
+  #   Directory Resources: volume-3-directory.html
+  #   Authorization Claims: volume-3-claims.html
+  #   Consent and Security Labels: volume-3-consent.html
+  #   Audit Records: volume-3-audit.html
+  #   Terminology: volume-3-terminology.html
+  # Conformance:
+  #   Conformance: conformance.html
+  #   Supported Profile Editions: conformance-editions.html
+  #   Requirements Matrix: conformance-requirements.html
+  #   IHE Departures: conformance-departures.html
+  #   hix Extensions: conformance-extensions.html
+  #   Conformance Artifacts: conformance-artifacts.html
+  # Appendices:
+  #   Appendices: appendix.html
+  #   Glossary: appendix-glossary.html
+  #   Design Rationale: appendix-rationale.html
+  #   References: appendix-references.html
+  #   Change History: appendix-changes.html
+  # Downloads: downloads.html
+
+parameters:
+  path-output: dist/site
+  path-temp: .work/temp
+  path-qa: .work/qa
+  path-tx-cache: .work/txcache
+  path-resource:
+    - input/resources
+    - fsh-generated/resources
+  shownav: "true"
+  apply-contact: "true"
+  apply-jurisdiction: "true"
+  apply-publisher: "true"
+  apply-version: "true"
+  usage-stats-opt-out: "true"

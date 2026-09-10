@@ -1,0 +1,15 @@
+/*
+ * hix family colors.
+ *
+ * project.css (from fhir.base.template) declares 25 CSS variables that are the
+ * whole branding surface of an IG. This file overrides only the ones that carry
+ * identity, exactly as fhir-ig.css and hl7.css do upstream. Everything else --
+ * typography, tables, the publish box, the TOC box -- stays as the FHIR base
+ * template defines it, which is the point: the page must read as a FHIR IG.
+ */
+:root {
+  --navbar-bg-color: #0e3a4f;           /*  2. Header container color */
+  --footer-container-bg-color: #0e3a4f; /*  4. Footer container color */
+  --btn-hover-color: #34799a;           /*  6. Menu button hover color */
+  --ig-status-text-color: #0e3a4f;      /*  1. IG title and status text color */
+}

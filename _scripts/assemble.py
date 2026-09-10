@@ -1,0 +1,34 @@
+"""Copies the pages into a work directory in the shape pandoc needs."""
+import re
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import pageorder
+
+ROOT = Path(__file__).resolve().parent.parent
+work = Path(sys.argv[1])
+cfg = pageorder.config()
+
+names = []
+for name, title, depth in pageorder.pages(cfg):
+    body = (ROOT / "input" / "pagecontent" / name).read_text()
+    body = re.sub(r"^\{:.*\}$", "", body, flags=re.M)
+
+    # A page's content starts at ### because the site renders the title as the
+    # h2. A top-level page becomes an h1 here, so its content moves up one level
+    # too -- otherwise pandoc numbers it 1.0.1 instead of 1.1.
+    level = "#" if depth == 1 else "##"
+    if depth == 1:
+        body = re.sub(r"^#(#{2,})", r"\1", body, flags=re.M)
+
+    (work / name).write_text(f"{level} {title}\n\n{body}")
+    names.append(str(work / name))
+
+(work / "order.txt").write_text("\n".join(names))
+(work / "meta.txt").write_text("\n".join([
+    pageorder.scalar("title", cfg),
+    pageorder.scalar("version", cfg),
+    pageorder.scalar("status", cfg),
+    pageorder.scalar("canonical", cfg),
+]))

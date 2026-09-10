@@ -1,0 +1,10 @@
+== Suppressed Messages ==
+
+# These fragments are produced by the template for guides that declare package
+# dependencies and IP statements. This guide is narrative-only and includes
+# neither, and the pages stay portable Markdown so pandoc can render the same
+# sources to PDF and Word -- which rules out Jekyll {% include %} tags.
+The HTML fragment 'ip-statements.xhtml' is not included anywhere in the produced implementation guide
+An HTML fragment from the set [dependency-table.xhtml, dependency-table-short.xhtml, dependency-table-nontech.xhtml] is not included anywhere in the produced implementation guide
+The HTML fragment 'globals-table.xhtml' is not included anywhere in the produced implementation guide
+An HTML fragment from the set [cross-version-analysis.xhtml, cross-version-analysis-inline.xhtml] is not included anywhere in the produced implementation guide

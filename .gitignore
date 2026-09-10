@@ -1,0 +1,8 @@
+dist/
+.work/
+
+# the publisher recreates these mid-build; build-site.sh sweeps them into .work
+fsh-generated/
+template/
+input-cache/
+output/
