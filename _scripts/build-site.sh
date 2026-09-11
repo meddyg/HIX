@@ -20,6 +20,10 @@ if [ ! -f .work/tools/publisher.jar ]; then
   exit 1
 fi
 
+# SUSHI creates subdirectories under this output directory but does not create
+# the directory itself. It is moved to .work after every successful build.
+mkdir -p fsh-generated
+
 java -Xmx4g -jar .work/tools/publisher.jar publisher -ig .
 
 # The publisher honours path-output and path-tx-cache, but two things have no
