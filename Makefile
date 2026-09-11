@@ -5,13 +5,14 @@
 # anywhere else.
 
 .DEFAULT_GOAL := help
-.PHONY: help preview site docs all tools clean
+.PHONY: help preview site docs all format tools clean
 
 help:
 	@echo "make preview   write, with live reload      http://localhost:4000"
 	@echo "make site      build the site               dist/site/index.html"
 	@echo "make docs      build PDF, DOCX, llms.txt    dist/"
 	@echo "make all       site + docs"
+	@echo "make format    format the pages             input/pagecontent/"
 	@echo "make tools     download the IG Publisher    .work/tools/"
 	@echo "make clean     remove everything generated"
 
@@ -25,6 +26,11 @@ docs:
 	@_scripts/build-docs.sh
 
 all: site docs
+
+# Fixes blank lines, list markers, heading and emphasis style, trailing spaces;
+# reports what it cannot fix. The rules are in .markdownlint.jsonc.
+format:
+	@pnpm dlx markdownlint-cli2@0.23.2 --fix "input/pagecontent/**/*.md"
 
 tools:
 	@_scripts/update-publisher.sh
