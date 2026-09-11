@@ -24,7 +24,10 @@ fi
 # the directory itself. It is moved to .work after every successful build.
 mkdir -p fsh-generated
 
-java -Xmx4g -jar .work/tools/publisher.jar publisher -ig .
+# -tx n/a: no terminology server. The IG has no ValueSets, CodeSystems or
+# bindings, and tx.fhir.org timeouts were failing builds. Remove it once the IG
+# binds codes that need validating.
+java -Xmx4g -jar .work/tools/publisher.jar publisher -ig . -tx n/a
 
 # The publisher honours path-output and path-tx-cache, but two things have no
 # parameter: it drops its terminology QA report into ./output and its schema

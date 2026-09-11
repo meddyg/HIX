@@ -8,8 +8,10 @@ name: Pages
 #   tag vX.Y.Z    -> https://hl7.meddyg.com/fhir/hix/                   production
 #                    https://vX-Y-Z.hix-ig-versions.pages.dev/fhir/hix/  frozen copy
 #
-# Needs the CLOUDFLARE_API_TOKEN secret (permission: Cloudflare Pages, Edit), the
-# CLOUDFLARE_ACCOUNT_ID variable, and two Pages projects, hix-ig and
+# Closing a pull request deletes its preview deployments.
+#
+# Needs the CLOUDFLARE_API_TOKEN (permission: Cloudflare Pages, Edit) and
+# CLOUDFLARE_ACCOUNT_ID secrets, and two Pages projects, hix-ig and
 # hix-ig-versions, whose production branch is `production`.
 
 on:
@@ -18,16 +20,20 @@ on:
     tags: ["v*"]
   pull_request:
     branches: [main, dev]
+    types: [opened, synchronize, reopened, closed]
 
 permissions:
   contents: read
 
+# Pull requests are grouped by number: a merged PR's `closed` event runs with
+# main's ref, and would otherwise cancel main's deploy.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
   deploy:
+    if: github.event.action != 'closed'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -72,7 +78,7 @@ jobs:
       - name: Deploy to Cloudflare Pages
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           EVENT: ${{ github.event_name }}
           PR: ${{ github.event.pull_request.number }}
           REF_TYPE: ${{ github.ref_type }}
@@ -102,3 +108,29 @@ jobs:
             🔎 Vista previa desplegada: https://pr-${{ github.event.pull_request.number }}.hix-ig.pages.dev/fhir/hix/
 
             Commit: `${{ github.event.pull_request.head.sha }}`
+
+  cleanup:
+    if: github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete the PR's preview deployments
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          BRANCH: pr-${{ github.event.pull_request.number }}
+        run: |
+          api="https://api.cloudflare.com/client/v4/accounts/$ACCOUNT/pages/projects/hix-ig/deployments"
+          auth="Authorization: Bearer $CLOUDFLARE_API_TOKEN"
+          # Collect every page first: deleting while paging would shift the pages.
+          page=1 total=1 ids=""
+          while [ "$page" -le "$total" ]; do
+            res=$(curl -fsS -H "$auth" "$api?env=preview&per_page=25&page=$page")
+            total=$(jq '.result_info.total_pages // 1' <<<"$res")
+            ids+=" $(jq -r --arg b "$BRANCH" '.result[] | select(.deployment_trigger.metadata.branch == $b) | .id' <<<"$res")"
+            page=$((page + 1))
+          done
+          # force=true also deletes the deployment the pr-N alias points to.
+          for id in $ids; do
+            curl -fsS -X DELETE -H "$auth" "$api/$id?force=true" > /dev/null
+            echo "Deleted $BRANCH deployment $id"
+          done
