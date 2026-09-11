@@ -4,6 +4,7 @@ name: Pages
 #
 #   pull request  -> https://pr-N.hix-ig.pages.dev/fhir/hix/            preview
 #   push to main  -> https://main.hix-ig.pages.dev/fhir/hix/            ci-build
+#   push to dev   -> https://dev.hix-ig.pages.dev/fhir/hix/             dev
 #   tag vX.Y.Z    -> https://hl7.meddyg.com/fhir/hix/                   production
 #                    https://vX-Y-Z.hix-ig-versions.pages.dev/fhir/hix/  frozen copy
 #
@@ -13,10 +14,10 @@ name: Pages
 
 on:
   push:
-    branches: [main]
+    branches: [main, dev]
     tags: ["v*"]
   pull_request:
-    branches: [main]
+    branches: [main, dev]
 
 permissions:
   contents: read
@@ -75,7 +76,7 @@ jobs:
           EVENT: ${{ github.event_name }}
           PR: ${{ github.event.pull_request.number }}
           REF_TYPE: ${{ github.ref_type }}
-          TAG: ${{ github.ref_name }}
+          REF: ${{ github.ref_name }}
         run: |
           # pnpm blocks install scripts unless allowed; wrangler's dependencies need these two.
           deploy() {
@@ -86,9 +87,9 @@ jobs:
             deploy hix-ig "pr-$PR"
           elif [ "$REF_TYPE" = tag ]; then
             deploy hix-ig production
-            deploy hix-ig-versions "$TAG"
+            deploy hix-ig-versions "$REF"
           else
-            deploy hix-ig main
+            deploy hix-ig "$REF" # main or dev
           fi
 
       # One comment per PR, updated on every push.
