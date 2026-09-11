@@ -5,6 +5,7 @@ HIX define una arquitectura de referencia para comunidades que comparten documen
 Esta guía describe los roles de la comunidad, sus límites de confianza y la relación entre sus componentes. Explica, entre otras decisiones, por qué la localización y la recuperación se median de forma centralizada; por qué la custodia documental se mantiene distribuida por defecto; y cómo **[IUA](https://profiles.ihe.net/ITI/IUA/index.html)** y **[OAuth 2.0](https://www.rfc-editor.org/info/rfc6749/)** establecen la base de autorización y delegación entre los participantes, incorporando **[SMART on FHIR](https://build.fhir.org/ig/HL7/smart-app-launch/)** en los flujos interactivos en los que la autorización requiere la participación de un usuario, a través de un **User Agent** y el *front-channel* de autorización.
 
 Esta arquitectura abarca las siguientes capacidades dentro de la comunidad:
+
 - publicación, indexación, localización y recuperación de documentos clínicos;
 - custodia distribuida de documentos y colocación central cuando corresponda;
 - transporte seguro entre la infraestructura central y los custodios, mediante

@@ -1,3 +1,11 @@
+// Style of the specification's pages. `make format` fixes what can be fixed.
 {
-    "MD041": false
+    // Each page starts below the title the site renders from sushi-config.yaml.
+    "MD041": false,
+    // Prose is one paragraph per line; line length means nothing there.
+    "MD013": false,
+    // kramdown attaches `{: .table ...}` to the table above it; a GFM parser
+    // reads that line as one more (malformed) row.
+    "MD055": false,
+    "MD056": false
 }
