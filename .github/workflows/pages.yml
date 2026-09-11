@@ -10,8 +10,8 @@ name: Pages
 #
 # Closing a pull request deletes its preview deployments.
 #
-# Needs the CLOUDFLARE_API_TOKEN secret (permission: Cloudflare Pages, Edit), the
-# CLOUDFLARE_ACCOUNT_ID variable, and two Pages projects, hix-ig and
+# Needs the CLOUDFLARE_API_TOKEN (permission: Cloudflare Pages, Edit) and
+# CLOUDFLARE_ACCOUNT_ID secrets, and two Pages projects, hix-ig and
 # hix-ig-versions, whose production branch is `production`.
 
 on:
@@ -25,8 +25,10 @@ on:
 permissions:
   contents: read
 
+# Pull requests are grouped by number: a merged PR's `closed` event runs with
+# main's ref, and would otherwise cancel main's deploy.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -76,7 +78,7 @@ jobs:
       - name: Deploy to Cloudflare Pages
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           EVENT: ${{ github.event_name }}
           PR: ${{ github.event.pull_request.number }}
           REF_TYPE: ${{ github.ref_type }}
@@ -114,7 +116,7 @@ jobs:
       - name: Delete the PR's preview deployments
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          ACCOUNT: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           BRANCH: pr-${{ github.event.pull_request.number }}
         run: |
           api="https://api.cloudflare.com/client/v4/accounts/$ACCOUNT/pages/projects/hix-ig/deployments"
