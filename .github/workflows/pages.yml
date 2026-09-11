@@ -77,7 +77,11 @@ jobs:
           REF_TYPE: ${{ github.ref_type }}
           TAG: ${{ github.ref_name }}
         run: |
-          deploy() { pnpm dlx wrangler@4 pages deploy dist/pages --project-name "$1" --branch "$2"; }
+          # pnpm blocks install scripts unless allowed; wrangler's dependencies need these two.
+          deploy() {
+            pnpm dlx --allow-build=esbuild --allow-build=workerd wrangler@4 \
+              pages deploy dist/pages --project-name "$1" --branch "$2"
+          }
           if [ "$EVENT" = pull_request ]; then
             deploy hix-ig "pr-$PR"
           elif [ "$REF_TYPE" = tag ]; then
