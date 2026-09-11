@@ -1,10 +1,23 @@
 name: Pages
 
+# Builds the IG and deploys it to Cloudflare Pages:
+#
+#   pull request  -> https://pr-N.hix-ig.pages.dev/fhir/hix/            preview
+#   push to main  -> https://main.hix-ig.pages.dev/fhir/hix/            ci-build
+#   push to dev   -> https://dev.hix-ig.pages.dev/fhir/hix/             dev
+#   tag vX.Y.Z    -> https://hl7.meddyg.com/fhir/hix/                   production
+#                    https://vX-Y-Z.hix-ig-versions.pages.dev/fhir/hix/  frozen copy
+#
+# Needs the CLOUDFLARE_API_TOKEN secret (permission: Cloudflare Pages, Edit), the
+# CLOUDFLARE_ACCOUNT_ID variable, and two Pages projects, hix-ig and
+# hix-ig-versions, whose production branch is `production`.
+
 on:
   push:
-    branches: [main]
+    branches: [main, dev]
+    tags: ["v*"]
   pull_request:
-    branches: [main]
+    branches: [main, dev]
 
 permissions:
   contents: read
@@ -14,8 +27,11 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
     steps:
       - uses: actions/checkout@v6
 
@@ -45,27 +61,44 @@ jobs:
       - name: Build the site
         run: make site
 
-      - name: Configure GitHub Pages
-        if: github.event_name == 'push'
-        uses: actions/configure-pages@v5
+      # The site lives under the canonical's path, so the canonical URL resolves;
+      # the root redirects to it.
+      - name: Bundle
+        run: |
+          mkdir -p dist/pages/fhir
+          cp -R dist/site dist/pages/fhir/hix
+          echo "/ /fhir/hix/ 302" > dist/pages/_redirects
 
-      - name: Upload GitHub Pages artifact
-        if: github.event_name == 'push'
-        uses: actions/upload-pages-artifact@v4
+      - name: Deploy to Cloudflare Pages
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          EVENT: ${{ github.event_name }}
+          PR: ${{ github.event.pull_request.number }}
+          REF_TYPE: ${{ github.ref_type }}
+          REF: ${{ github.ref_name }}
+        run: |
+          # pnpm blocks install scripts unless allowed; wrangler's dependencies need these two.
+          deploy() {
+            pnpm dlx --allow-build=esbuild --allow-build=workerd wrangler@4 \
+              pages deploy dist/pages --project-name "$1" --branch "$2"
+          }
+          if [ "$EVENT" = pull_request ]; then
+            deploy hix-ig "pr-$PR"
+          elif [ "$REF_TYPE" = tag ]; then
+            deploy hix-ig production
+            deploy hix-ig-versions "$REF"
+          else
+            deploy hix-ig "$REF" # main or dev
+          fi
+
+      # One comment per PR, updated on every push.
+      - name: Comment the preview on the PR
+        if: github.event_name == 'pull_request'
+        uses: marocchino/sticky-pull-request-comment@v3
         with:
-          path: dist/site
+          header: preview
+          message: |
+            🔎 Vista previa desplegada: https://pr-${{ github.event.pull_request.number }}.hix-ig.pages.dev/fhir/hix/
 
-  deploy:
-    if: github.event_name == 'push'
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+            Commit: `${{ github.event.pull_request.head.sha }}`
