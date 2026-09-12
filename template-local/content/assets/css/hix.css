@@ -13,3 +13,12 @@
   --btn-hover-color: #34799a;           /*  6. Menu button hover color */
   --ig-status-text-color: #0e3a4f;      /*  1. IG title and status text color */
 }
+
+/*
+ * The one layout override. project.css floats `p > img` left, and Markdown
+ * renders a figure as exactly that, so the caption and the next paragraph wrap
+ * in the sliver of space beside the diagram.
+ */
+p > img {
+  float: none;
+}
