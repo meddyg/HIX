@@ -30,28 +30,22 @@ publisher:
 pages:
   index.md:
     title: Descripción general
-  # volume-1.md:
-  #   title: Volume 1 — Architecture
-  #   volume-1-overview.md:
-  #     title: Overview
-  #   volume-1-actors.md:
-  #     title: Actors and Systems
-  #   volume-1-transactions.md:
-  #     title: Transactions and Workflows
-  #   volume-1-options.md:
-  #     title: Actor Options
-  #   volume-1-groupings.md:
-  #     title: Required Actor Groupings
-  #   volume-1-information.md:
-  #     title: Information Architecture
-  #   volume-1-usecases.md:
-  #     title: Use Cases
-  #   volume-1-security.md:
-  #     title: Security and Trust Model
-  #   volume-1-deployment.md:
-  #     title: Deployment and Runtime Views
-  #   volume-1-cross-profile.md:
-  #     title: Cross-profile Integration
+  volume-1.md:
+    title: Volumen 1 — Arquitectura
+    # volume-1-concepts.md:
+    #   title: Conceptos y decisiones de arquitectura
+    # volume-1-actors.md:
+    #   title: Actores y transacciones
+    # volume-1-options.md:
+    #   title: Opciones de actores
+    # volume-1-groupings.md:
+    #   title: Agrupaciones de actores requeridas
+    # volume-1-usecases.md:
+    #   title: Casos de uso y flujos
+    # volume-1-security.md:
+    #   title: Consideraciones de seguridad
+    # volume-1-cross-profile.md:
+    #   title: Consideraciones entre perfiles y despliegue
   # volume-2.md:
   #   title: Volume 2 — Transactions
   #   volume-2-index.md:
@@ -117,18 +111,15 @@ pages:
 
 menu:
   Descripción general: index.html
-  # Volume 1:
-  #   Volume 1 — Architecture: volume-1.html
-  #   Overview: volume-1-overview.html
-  #   Actors and Systems: volume-1-actors.html
-  #   Transactions and Workflows: volume-1-transactions.html
-  #   Actor Options: volume-1-options.html
-  #   Required Actor Groupings: volume-1-groupings.html
-  #   Information Architecture: volume-1-information.html
-  #   Use Cases: volume-1-usecases.html
-  #   Security and Trust Model: volume-1-security.html
-  #   Deployment and Runtime Views: volume-1-deployment.html
-  #   Cross-profile Integration: volume-1-cross-profile.html
+  Volumen 1:
+    Arquitectura: volume-1.html
+    # Conceptos y decisiones: volume-1-concepts.html
+    # Actores y transacciones: volume-1-actors.html
+    # Opciones de actores: volume-1-options.html
+    # Agrupaciones requeridas: volume-1-groupings.html
+    # Casos de uso y flujos: volume-1-usecases.html
+    # Consideraciones de seguridad: volume-1-security.html
+    # Entre perfiles y despliegue: volume-1-cross-profile.html
   # Volume 2:
   #   Volume 2 — Transactions: volume-2.html
   #   Transaction Index: volume-2-index.html
