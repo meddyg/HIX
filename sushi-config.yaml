@@ -32,8 +32,8 @@ pages:
     title: Descripción general
   volume-1.md:
     title: Volumen 1 — Arquitectura
-    # volume-1-concepts.md:
-    #   title: Conceptos y decisiones de arquitectura
+    volume-1-concepts.md:
+      title: Conceptos y decisiones de arquitectura
     # volume-1-actors.md:
     #   title: Actores y transacciones
     # volume-1-options.md:
@@ -113,7 +113,7 @@ menu:
   Descripción general: index.html
   Volumen 1:
     Arquitectura: volume-1.html
-    # Conceptos y decisiones: volume-1-concepts.html
+    Conceptos y decisiones: volume-1-concepts.html
     # Actores y transacciones: volume-1-actors.html
     # Opciones de actores: volume-1-options.html
     # Agrupaciones requeridas: volume-1-groupings.html

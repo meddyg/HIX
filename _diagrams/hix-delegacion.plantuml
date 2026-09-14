@@ -1,0 +1,48 @@
+@startuml hix-delegacion
+!pragma layout smetana
+skinparam shadowing false
+skinparam defaultFontName Verdana
+skinparam defaultFontSize 11
+skinparam rectangle {
+  BackgroundColor white
+  BorderColor #555555
+  RoundCorner 8
+}
+skinparam arrow {
+  Color #333333
+  FontSize 9
+}
+skinparam note {
+  BackgroundColor #FFFDF0
+  BorderColor #999999
+  FontSize 9
+}
+left to right direction
+
+rectangle "Miembros" as MIEMBROS #F4F4F4 {
+  rectangle "Miembro\nsolicitante" as M
+}
+
+rectangle "Infraestructura central" as CENTRO #EEF5EE {
+  rectangle "Authorization\nServer" as AS
+  rectangle "Record Locator\nService (PEP)" as RLS
+  rectangle "Document\nRegistry" as REG
+}
+
+rectangle "Custodios" as CUSTODIOS #F4F4F4 {
+  rectangle "Custodio A" as A
+  rectangle "Custodio B" as B
+}
+
+M --> RLS : token del miembro\naud = RLS
+RLS --> AS : intercambio [HIX-1]\nresource = custodio X
+AS --> RLS : token derivado\naud = custodio X\nsub = miembro\nact = RLS
+RLS --> REG : token\naud = Document Registry
+RLS --> A : token\naud = Custodio A
+RLS --> B : token\naud = Custodio B
+note bottom of B
+  Cada destino valida el token por sí mismo,
+  con las claves públicas del Authorization Server,
+  sin llamar a nadie.
+end note
+@enduml
