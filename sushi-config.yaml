@@ -36,8 +36,8 @@ pages:
       title: Conceptos y decisiones de arquitectura
     volume-1-actors.md:
       title: Actores y transacciones
-    # volume-1-options.md:
-    #   title: Opciones de actores
+    volume-1-options.md:
+      title: Capacidades opcionales de los actores
     # volume-1-groupings.md:
     #   title: Agrupaciones de actores requeridas
     # volume-1-usecases.md:
@@ -115,7 +115,7 @@ menu:
     Arquitectura: volume-1.html
     Conceptos y decisiones: volume-1-concepts.html
     Actores y transacciones: volume-1-actors.html
-    # Opciones de actores: volume-1-options.html
+    Capacidades opcionales: volume-1-options.html
     # Agrupaciones requeridas: volume-1-groupings.html
     # Casos de uso y flujos: volume-1-usecases.html
     # Consideraciones de seguridad: volume-1-security.html

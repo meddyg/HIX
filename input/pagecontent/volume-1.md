@@ -31,7 +31,7 @@ Dicho en seis afirmaciones:
 
 - **Conceptos y decisiones de arquitectura** explica el porqué de cada decisión, la alternativa que descarta y lo que cuesta.
 - **Actores y transacciones** define los actores de HIX, las transacciones que los vinculan y los requisitos normativos de cada uno.
-- **Opciones de actores** describe las capacidades que un actor puede declarar sin dejar de ser conforme.
+- **Capacidades opcionales de los actores** describe lo que un actor puede declarar además de lo requerido, sin dejar de ser conforme.
 - **Agrupaciones de actores requeridas** enumera los actores de otros perfiles que cada actor de HIX agrupa.
 - **Casos de uso y flujos** recorre los escenarios que la arquitectura soporta, con el flujo de cada uno.
 - **Consideraciones de seguridad** especifica el modelo de confianza, los tres regímenes de token, lo que la arquitectura garantiza y lo que no.
