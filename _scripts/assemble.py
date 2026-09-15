@@ -15,6 +15,11 @@ for name, title, depth in pageorder.pages(cfg):
     body = (ROOT / "input" / "pagecontent" / name).read_text()
     body = re.sub(r"^\{:.*\}$", "", body, flags=re.M)
 
+    # The publisher copies input/images/ to the root of the site, so a page
+    # refers to a figure by its bare name. Pandoc runs from the repository and
+    # needs the real path.
+    body = re.sub(r"\]\((?!\w+:)([^)/]+\.svg)\)", r"](input/images/\1)", body)
+
     # A page's content starts at ### because the site renders the title as the
     # h2. A top-level page becomes an h1 here, so its content moves up one level
     # too -- otherwise pandoc numbers it 1.0.1 instead of 1.1.

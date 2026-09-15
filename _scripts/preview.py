@@ -26,7 +26,8 @@ import pageorder
 ROOT = Path(__file__).resolve().parent.parent
 PAGES = ROOT / "input" / "pagecontent"
 CONFIG = ROOT / "sushi-config.yaml"
-# The publisher writes the real stylesheets here; the preview borrows them.
+IMAGES = ROOT / "input" / "images"
+# The publisher writes the real stylesheets and scripts here; the preview borrows them.
 ASSETS = ROOT / "dist" / "site"
 PORT = 4000
 
@@ -86,13 +87,15 @@ def render(name, title, prefix, pages, numbers):
     <h1>{prefix} {title}</h1>
     {body}
   </div>
-</div>{RELOAD_JS}</body></html>"""
+</div>
+<script src="/assets/js/jquery.js"></script>
+<script src="/assets/js/bootstrap.min.js"></script>{RELOAD_JS}</body></html>"""
 
 
 def fingerprint():
-    return json.dumps(sorted(
-        (str(p), p.stat().st_mtime_ns)
-        for p in list(PAGES.glob("*.md")) + [CONFIG]))
+    # a re-rendered diagram (make diagrams) reloads the page too
+    watched = list(PAGES.glob("*.md")) + list(IMAGES.glob("*.svg")) + [CONFIG]
+    return json.dumps(sorted((str(p), p.stat().st_mtime_ns) for p in watched))
 
 
 class Handler(http.server.SimpleHTTPRequestHandler):
@@ -102,9 +105,22 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         if self.path.startswith("/assets/") or self.path == "/fhir.css":
             target = ASSETS / self.path.lstrip("/")
             if not target.exists():
-                return self.send_error(404, "Run 'make site' once to produce the stylesheets")
+                return self.send_error(404, "Run 'make site' once to produce the stylesheets and scripts")
             self.send_response(200)
-            self.send_header("Content-Type", "text/css")
+            ctype = {".js": "text/javascript", ".map": "application/json"}.get(target.suffix, "text/css")
+            self.send_header("Content-Type", ctype)
+            # `make site` and `make diagrams` rewrite these under the same URL
+            self.send_header("Cache-Control", "no-store")
+            self.end_headers()
+            return self.wfile.write(target.read_bytes())
+
+        if self.path.endswith(".svg"):
+            target = IMAGES / self.path.lstrip("/")
+            if not target.exists():
+                return self.send_error(404, f"{target.name} is not in input/images")
+            self.send_response(200)
+            self.send_header("Content-Type", "image/svg+xml")
+            self.send_header("Cache-Control", "no-store")
             self.end_headers()
             return self.wfile.write(target.read_bytes())
 

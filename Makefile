@@ -5,12 +5,13 @@
 # anywhere else.
 
 .DEFAULT_GOAL := help
-.PHONY: help preview site docs all format tools clean
+.PHONY: help preview site docs diagrams all format tools clean
 
 help:
 	@echo "make preview   write, with live reload      http://localhost:4000"
 	@echo "make site      build the site               dist/site/index.html"
 	@echo "make docs      build PDF, DOCX, llms.txt    dist/"
+	@echo "make diagrams  render _diagrams/ to SVG      input/images/"
 	@echo "make all       site + docs"
 	@echo "make format    format the pages             input/pagecontent/"
 	@echo "make tools     download the IG Publisher    .work/tools/"
@@ -24,6 +25,10 @@ site:
 
 docs:
 	@_scripts/build-docs.sh
+
+# Needs the publisher jar (make tools): PlantUML ships inside it.
+diagrams:
+	@_scripts/build-diagrams.sh
 
 all: site docs
 
