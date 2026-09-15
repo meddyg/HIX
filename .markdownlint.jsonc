@@ -7,5 +7,7 @@
     // kramdown attaches `{: .table ...}` to the table above it; a GFM parser
     // reads that line as one more (malformed) row.
     "MD055": false,
-    "MD056": false
+    "MD056": false,
+    // Bootstrap tabs (the template ships the plugin) are the only raw HTML.
+    "MD033": { "allowed_elements": ["ul", "li", "a", "div"] }
 }
