@@ -7,7 +7,7 @@ Esta guía describe los roles de la comunidad, sus límites de confianza y la re
 Esta arquitectura abarca las siguientes capacidades dentro de la comunidad:
 
 - publicación, indexación, localización y recuperación de documentos clínicos;
-- custodia distribuida de documentos y colocación central cuando corresponda;
+- custodia distribuida de documentos y almacenamiento central cuando corresponda;
 - transporte seguro hacia los custodios, HTTPS directo o **[X-Road](https://x-road.global/)**
   según declare el directorio, sin alterar la topología de la comunidad;
 - identidad maestra de pacientes y vinculación con las identidades locales;
@@ -24,8 +24,8 @@ Las siguientes capacidades forman parte de la arquitectura HIX, pero su especifi
   de los perfiles IHE aplicables.
 - **Auditoría de operaciones y divulgaciones.** HIX define la necesidad de
   registrar las operaciones en ambos extremos de la interacción; el
-  repositorio central, el modelo de consulta y el comportamiento ante fallos
-  se especificarán posteriormente.
+  modelo de consulta y el comportamiento ante fallos se especificarán
+  posteriormente.
 
 ### Convenciones de la especificación
 
@@ -48,12 +48,13 @@ desempeña dentro de dicho perfil.
 | Término | Significado |
 | --- | --- |
 | **[MHDS](https://profiles.ihe.net/ITI/MHDS/volume-1.html)** — *Mobile Health Document Sharing* | Perfil IHE que define una comunidad de intercambio de documentos clínicos basada en FHIR y la composición de perfiles necesaria para operarla. |
-| **[MHD](https://profiles.ihe.net/ITI/MHD/index.html)** — *Mobile access to Health Documents* | Perfil IHE para publicar, localizar y recuperar documentos clínicos mediante FHIR. HIX utiliza principalmente los actores **Document Recipient** y **Document Responder**. |
+| **[MHD](https://profiles.ihe.net/ITI/MHD/index.html)** — *Mobile access to Health Documents* | Perfil IHE para publicar, localizar y recuperar documentos clínicos mediante FHIR. HIX usa sus actores **Document Source**, **Document Consumer**, **Document Recipient** y **Document Responder**. |
 | **[PMIR](https://profiles.ihe.net/ITI/PMIR/index.html)** — *Patient Master Identity Registry* | Perfil IHE para gestionar y sincronizar identidades maestras de pacientes. |
-| **[PIXm](https://profiles.ihe.net/ITI/PIXm/index.html)** — *Patient Identifier Cross-referencing for Mobile* | Perfil IHE con el que cada miembro declara sus identidades locales de paciente y consulta la correspondencia con las de los demás dominios. |
+| **[PIXm](https://profiles.ihe.net/ITI/PIXm/index.html)** — *Patient Identifier Cross-referencing for mobile* | Perfil IHE con el que cada miembro declara sus identidades locales de paciente y resuelve un identificador a la identidad maestra. |
 | **[PDQm](https://profiles.ihe.net/ITI/PDQm/index.html)** — *Patient Demographics Query for Mobile* | Perfil IHE para localizar a un paciente por sus datos demográficos cuando no se dispone de un identificador conocido por la comunidad. |
 | **[mCSD](https://profiles.ihe.net/ITI/mCSD/index.html)** — *Mobile Care Services Discovery* | Perfil IHE utilizado para consultar organizaciones participantes, servicios y endpoints. En HIX, el endpoint de cada custodio declara además el canal de transporte por el que se lo alcanza. |
 | **[ATNA](https://profiles.ihe.net/ITI/TF/Volume1/ch-9.html)** — *Audit Trail and Node Authentication* | Perfil IHE que aporta la autenticación de nodos, la confidencialidad en tránsito y el registro de eventos de auditoría. |
+| **[CT](https://profiles.ihe.net/ITI/TF/Volume1/ch-7.html)** — *Consistent Time* | Perfil IHE que mantiene sincronizados los relojes de todos los sistemas de la comunidad, para que los eventos de auditoría y la vigencia de los tokens signifiquen lo mismo en cada extremo. |
 | **[BALP](https://profiles.ihe.net/ITI/BALP/index.html)** — *Basic Audit Log Patterns* | Perfil IHE que define el contenido de los eventos de auditoría FHIR por transacción. |
 | **[IUA](https://profiles.ihe.net/ITI/IUA/index.html)** — *Internet User Authorization* | Perfil IHE utilizado por HIX como base de autorización para las interacciones protegidas entre sus participantes. Sus requisitos aplican a todos los flujos de autorización de HIX. |
 | **[SMART on FHIR](https://build.fhir.org/ig/HL7/smart-app-launch/app-launch.html)** | Especificación de HL7 utilizada adicionalmente en los flujos interactivos en los que la autorización requiere la participación de un usuario a través de un `User Agent`. |

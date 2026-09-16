@@ -14,6 +14,8 @@ names = []
 for name, title, depth in pageorder.pages(cfg):
     body = (ROOT / "input" / "pagecontent" / name).read_text()
     body = re.sub(r"^\{:.*\}$", "", body, flags=re.M)
+    # kramdown abbreviations (`*[PMIR]: ...`) become tooltips on the site; pandoc has no equivalent
+    body = re.sub(r"^\*\[[^\]]+\]: .*$", "", body, flags=re.M)
 
     # The publisher copies input/images/ to the root of the site, so a page
     # refers to a figure by its bare name. Pandoc runs from the repository and

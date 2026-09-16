@@ -8,3 +8,10 @@ The HTML fragment 'ip-statements.xhtml' is not included anywhere in the produced
 An HTML fragment from the set [dependency-table.xhtml, dependency-table-short.xhtml, dependency-table-nontech.xhtml] is not included anywhere in the produced implementation guide
 The HTML fragment 'globals-table.xhtml' is not included anywhere in the produced implementation guide
 An HTML fragment from the set [cross-version-analysis.xhtml, cross-version-analysis-inline.xhtml] is not included anywhere in the produced implementation guide
+
+# Kramdown abbreviations (`*[PMIR]: ...` at the foot of a page) render as <abbr title="...">,
+# which the publisher's HTML whitelist does not include. Browsers render it as a plain tooltip.
+# The publisher reports only the first occurrence per page, naming that abbreviation.
+Illegal HTML: illegal html element: abbr (MHDS)
+Illegal HTML: illegal html element: abbr (PDQm)
+Illegal HTML: illegal html element: abbr (PMIR)

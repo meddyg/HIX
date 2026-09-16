@@ -40,7 +40,7 @@ El propósito de uso no depende del actor sino del caso de uso. Es un código de
 
 </div>
 
-Las dos tablas siguientes listan las transacciones que definen a cada actor. R significa que la transacción es requerida para declararse conforme con el actor, y O que es opcional. La columna Referencia indica el perfil IHE que define la transacción, o el Volumen 2 de esta guía para las propias de HIX. Todos los actores de HIX se agrupan además con IUA y con ATNA. Esas agrupaciones, y las transacciones que traen consigo, se listan en la sección 2.4.
+Las dos tablas siguientes listan las transacciones que definen a cada actor. R significa que la transacción es requerida para declararse conforme con el actor, y O que es opcional. La columna Referencia indica el perfil IHE que define la transacción, o el Volumen 2 de esta guía para las propias de HIX. Todos los actores de HIX se agrupan además con IUA, y todos salvo la aplicación del paciente con ATNA y CT. Esas agrupaciones, y las transacciones que traen consigo, se describen en la sección 2.4.
 
 **Tabla 2.2-1:** Actores de miembro
 
@@ -74,6 +74,7 @@ Las dos tablas siguientes listan las transacciones que definen a cada actor. R s
 | | Find Document References [ITI-67] | R | MHD |
 | | Retrieve Document [ITI-68] | R (nota 3) | MHD |
 | | Find Matching Care Services [ITI-90] | R | mCSD |
+| | Mobile Patient Identity Feed [ITI-93] | R | PMIR |
 | Authorization Server | Get Access Token [ITI-71] | R | IUA |
 | | Introspect Token [ITI-102] | R | IUA |
 | | Get Authorization Server Metadata [ITI-103] | R | IUA |
@@ -91,9 +92,9 @@ Las dos tablas siguientes listan las transacciones que definen a cada actor. R s
 
 Notas:
 
-1. No requerido si el custodio declara la Opción de Colocación Central.
+1. No requerido si el custodio declara la Opción de Almacenamiento Central.
 2. Requerido si el actor declara la Opción de Demografía.
-3. El Document Registry responde [ITI-68] solo para el contenido colocado centralmente.
+3. El Document Registry responde [ITI-68] solo para el contenido almacenado centralmente.
 
 **Tabla 2.2-3:** Propósitos de uso más frecuentes en HIX
 
@@ -114,19 +115,19 @@ Notas:
 
 ### Descripción de actores y requisitos
 
-Las descripciones siguen el orden de las tablas. Dos reglas valen para todos los actores y no se repiten en cada uno. Todo actor que recibe un token **SHALL** comprobar que está destinado a él y **SHALL** rechazar la solicitud si no lo está, como recomienda RFC 9700 para todo Resource Server ([RFC 9700, §4.10.2](https://www.rfc-editor.org/rfc/rfc9700.html#section-4.10.2))[^rfc9700-aud]. Que el Authorization Server de la comunidad haya emitido un token no lo hace válido ante cualquier actor. Cada token nombra en su audiencia, el claim `aud`, al único actor ante el que vale. Un token válido ante un miembro o ante un componente central no sirve ante ningún otro, aunque lo haya emitido el mismo Authorization Server. Y todo actor registra sus propios eventos de auditoría, como exige la agrupación con ATNA de la sección 2.4.
+Las descripciones siguen el orden de las tablas. Dos reglas valen para todos los actores y no se repiten en cada uno. Todo actor que recibe un token **SHALL** comprobar que está destinado a él y **SHALL** rechazar la solicitud si no lo está, como recomienda RFC 9700 para todo [Resource Server](appendix-glossary.html#resource-server) ([RFC 9700, §4.10.2](https://www.rfc-editor.org/rfc/rfc9700.html#section-4.10.2))[^rfc9700-aud]. Que el Authorization Server de la comunidad haya emitido un token no lo hace válido ante cualquier actor. Cada token nombra en su audiencia, el claim `aud`, al único actor ante el que vale. Un token válido ante un miembro o ante un componente central no sirve ante ningún otro, aunque lo haya emitido el mismo Authorization Server. Y todo sistema de un miembro y todo actor central registra sus propios eventos de auditoría, como exige la agrupación con ATNA de la sección 2.4.
 
 #### Sistema que publica y custodia documentos
 
-El custodio es el miembro que produce documentos. Los conserva, declara las identidades locales de sus pacientes y publica los punteros a sus documentos con el propósito de uso del caso, normalmente `TREAT`. Agrupa a un Document Source y un Document Responder de MHD, y a un Patient Identity Source de PIXm. Responde las recuperaciones que le llegan desde la infraestructura central, y solo desde ella.
+El custodio es el miembro que produce documentos. Los conserva, declara las identidades locales de sus pacientes y publica los punteros a sus documentos con el propósito de uso del caso, normalmente `TREAT`. Agrupa a un [Document Source](appendix-glossary.html#document-source) y un [Document Responder](appendix-glossary.html#document-responder) de MHD, y a un [Patient Identity Source](appendix-glossary.html#patient-identity-source) de PIXm. Responde las recuperaciones que le llegan desde la infraestructura central, y solo desde ella.
 
 El custodio **SHALL** declarar mediante [ITI-104](https://profiles.ihe.net/ITI/PIXm/ITI-104.html) la identidad local de todo paciente sobre el que publique, en su propio dominio de identificadores y con el identificador nacional de la persona. **SHALL** publicar mediante [ITI-65](https://profiles.ihe.net/ITI/MHD/ITI-65.html) punteros que lo nombren a él como custodio, con URL de contenido relativa y etiqueta de confidencialidad.
 
-El custodio **SHALL** conservar el contenido y responder [ITI-68](https://profiles.ihe.net/ITI/MHD/ITI-68.html), salvo que declare la Opción de Colocación Central. **SHALL** validar el token de cada solicitud sin depender del Authorization Server en ese momento, conforme a la sección 2.6. **SHALL** rechazar toda solicitud cuyo token no haya sido intercambiado por el Record Locator Service y **SHALL NOT** atender recuperaciones originadas directamente en otro miembro.
+El custodio **SHALL** conservar el contenido y responder [ITI-68](https://profiles.ihe.net/ITI/MHD/ITI-68.html), salvo que declare la Opción de Almacenamiento Central. **SHALL** validar el token de cada solicitud sin depender del Authorization Server en ese momento, conforme a la sección 2.6. **SHALL** rechazar toda solicitud cuyo token no haya sido intercambiado por el Record Locator Service y **SHALL NOT** atender recuperaciones originadas directamente en otro miembro.
 
 #### Sistema que consume documentos
 
-El consumidor es el miembro que consulta el expediente de un paciente. Localiza y recupera documentos a través del Record Locator Service y agrupa a un Document Consumer de MHD. Desde su punto de vista la comunidad es un único servidor FHIR. Actúa con el propósito de uso `TREAT` en la atención habitual y con `ETREAT` cuando atiende una urgencia.
+El consumidor es el miembro que consulta el expediente de un paciente. Localiza y recupera documentos a través del Record Locator Service y agrupa a un [Document Consumer](appendix-glossary.html#document-consumer) de MHD. Desde su punto de vista la comunidad es un único servidor FHIR. Actúa con el propósito de uso `TREAT` en la atención habitual y con `ETREAT` cuando atiende una urgencia.
 
 El consumidor **SHALL** obtener un token del Authorization Server destinado al Record Locator Service y **SHALL** presentarlo en toda solicitud. **SHALL** recuperar los documentos únicamente a través de las URL que el Record Locator Service le entrega. Puede resolver la identidad de un paciente con [ITI-83](https://profiles.ihe.net/ITI/PIXm/ITI-83.html) y, si declara la Opción de Demografía, buscarlo por sus datos demográficos con [ITI-78](https://profiles.ihe.net/ITI/PDQm/ITI-78.html), por ejemplo en una urgencia en la que no tiene un identificador fiable, como en la Figura 2.2-2.
 
@@ -152,7 +153,7 @@ Cuando un custodio no responde, el Record Locator Service **SHALL** degradar la 
 
 #### Document Registry
 
-El Document Registry es el MHDS Document Registry de la comunidad. Conserva los punteros a los documentos publicados y, bajo la Opción de Colocación Central, el contenido que los custodios le entregan.
+El Document Registry es el [MHDS Document Registry](appendix-glossary.html#document-registry) de la comunidad. Conserva los punteros a los documentos publicados y, bajo la Opción de Almacenamiento Central, el contenido que los custodios le entregan. Recibe por [ITI-93](https://profiles.ihe.net/ITI/PMIR/ITI-93.html) los cambios de las identidades maestras y aplica sus fusiones a los punteros que conserva.
 
 El Document Registry **SHALL** registrar cada puntero a nombre de la organización que declara el token, **SHALL** rechazar la publicación cuyo custodio no coincida con ella y **SHALL** validar mediante [ITI-90](https://profiles.ihe.net/ITI/mCSD/ITI-90.html) que esa organización es un miembro activo de la comunidad, conforme a la UnContained References Option de MHDS.
 
@@ -164,17 +165,17 @@ El Authorization Server emite, comprueba e intercambia los tokens que circulan p
 
 El Authorization Server **SHALL** emitir tokens destinados a un único destinatario, identificado explícitamente, como recomienda RFC 9700 ([RFC 9700, §2.3](https://www.rfc-editor.org/rfc/rfc9700.html#section-2.3))[^rfc9700-aud]. **SHALL** atender [HIX-1] únicamente para el Record Locator Service. El token intercambiado **SHALL** llevar como audiencia el único destino indicado en la petición de intercambio, como sujeto al solicitante original y como actor al Record Locator Service, en el claim `act` con el que OAuth 2.0 Token Exchange expresa la delegación ([RFC 8693, §4.1](https://www.rfc-editor.org/rfc/rfc8693.html#section-4.1))[^rfc8693-act]. Su alcance **SHALL NOT** exceder el del token del solicitante ni el de la delegación registrada, y su vida **SHALL NOT** superar los dos minutos ni la vida restante del token del solicitante. El Authorization Server **SHALL NOT** emitir por ningún otro camino un token cuya audiencia sea un custodio.
 
-El Authorization Server **SHALL** fijar la organización y el propósito de uso del solicitante desde su propio registro y **SHALL NOT** aceptarlos de la solicitud. Cuando una persona se autentica, **SHALL** resolver su identidad verificada a la identidad maestra mediante [ITI-83](https://profiles.ihe.net/ITI/PIXm/ITI-83.html) y **SHALL** fijar ese resultado como contexto de paciente del token, conforme a [HIX-2].
+El Authorization Server **SHALL** fijar la organización y el propósito de uso del solicitante desde su propio registro y **SHALL NOT** aceptarlos de la solicitud. Cuando una persona se autentica, **SHALL** resolver su identidad verificada a la identidad maestra mediante [ITI-83](https://profiles.ihe.net/ITI/PIXm/ITI-83.html) y **SHALL** fijar ese resultado como contexto de paciente del token, conforme a [HIX-2]. **SHALL NOT** emitir un token con contexto de paciente cuando esa identidad no resuelva a una identidad maestra.
 
 #### Directorio de la comunidad
 
-El directorio publica las organizaciones participantes, su pertenencia a la comunidad y los endpoints en los que responden. Es el Care Services Selective Supplier de mCSD de la comunidad y la única fuente de la que la infraestructura central aprende a quién dirigir una recuperación.
+El directorio publica las organizaciones participantes, su pertenencia a la comunidad y los endpoints en los que responden. Es el [Care Services Selective Supplier](appendix-glossary.html#care-services-selective-supplier) de mCSD de la comunidad y la única fuente de la que la infraestructura central aprende a quién dirigir una recuperación.
 
 El directorio **SHALL** responder [ITI-90](https://profiles.ihe.net/ITI/mCSD/ITI-90.html) y **SHALL** ser el único origen de los endpoints que usa la infraestructura central. **SHALL** identificar a cada organización con el mismo identificador que el Authorization Server incluye en sus tokens. Los miembros no consultan el directorio. Su contenido se mantiene administrativamente, al incorporar un miembro, como describe la sección 2.7.
 
 #### Registro de identidad maestra
 
-El registro de identidad maestra agrupa al Patient Identity Registry de PMIR, al Patient Identifier Cross-reference Manager de PIXm y al Patient Demographics Supplier de PDQm. Conserva una identidad maestra por persona, creada por la fuente autoritativa de identidad, y los enlaces con las identidades locales que los miembros declaran.
+El registro de identidad maestra agrupa al [Patient Identity Registry](appendix-glossary.html#patient-identity-registry) de PMIR, al [Patient Identifier Cross-reference Manager](appendix-glossary.html#patient-identifier-cross-reference-manager) de PIXm y al [Patient Demographics Supplier](appendix-glossary.html#patient-demographics-supplier) de PDQm. Conserva una identidad maestra por persona, creada por la fuente autoritativa de identidad, y los enlaces con las identidades locales que los miembros declaran.
 
 El registro de identidad maestra **SHALL** crear identidades maestras únicamente a partir de [ITI-93](https://profiles.ihe.net/ITI/PMIR/ITI-93.html) recibido de la fuente autoritativa de identidad. **SHALL** aceptar [ITI-104](https://profiles.ihe.net/ITI/PIXm/ITI-104.html) únicamente en el dominio de identificadores del miembro que lo origina y **SHALL** rechazar la declaración que no pueda vincularse a una identidad maestra existente, que use `link` entre pacientes o que pretenda fusionar o eliminar identidades. **SHALL NOT** modificar la demografía de la identidad maestra a partir de lo que un miembro declara.
 
@@ -204,3 +205,15 @@ Las citas reproducen el texto publicado por su fuente. Los recortes se marcan co
 [^pou]: [v3-ActReason, TREAT](https://terminology.hl7.org/CodeSystem-v3-ActReason.html#v3-ActReason-TREAT): "treatment. **To perform one or more operations on information for provision of health care.**" [ETREAT](https://terminology.hl7.org/CodeSystem-v3-ActReason.html#v3-ActReason-ETREAT): "Emergency Treatment. To perform one or more operations on information for provision of **immediately needed health care for an emergent condition**." [PATRQT](https://terminology.hl7.org/CodeSystem-v3-ActReason.html#v3-ActReason-PATRQT): "patient requested. To perform one or more operations on information **in response to a patient's request**." [FAMRQT](https://terminology.hl7.org/CodeSystem-v3-ActReason.html#v3-ActReason-FAMRQT): "family requested. To perform one or more operations on information in response to a request by **a family member authorized by the patient**." [PWATRNY](https://terminology.hl7.org/CodeSystem-v3-ActReason.html#v3-ActReason-PWATRNY): "power of attorney. To perform one or more operations on information in response to a request by **a person appointed as the patient's legal representative**."
 [^rfc8693-act]: [RFC 8693, §1.1 Delegation vs. Impersonation Semantics](https://www.rfc-editor.org/rfc/rfc8693.html#section-1.1): "With delegation semantics, principal A still has its own identity separate from B, and it is explicitly understood that while B may have delegated some of its rights to A, **any actions taken are being taken by A representing B**." [§2.1 Request](https://www.rfc-editor.org/rfc/rfc8693.html#section-2.1): "resource. OPTIONAL. **A URI that indicates the target service or resource where the client intends to use the requested security token.**" [§4.1 "act" (Actor) Claim](https://www.rfc-editor.org/rfc/rfc8693.html#section-4.1): "The act (actor) claim provides a means within a JWT to express that **delegation has occurred and identify the acting party to whom authority has been delegated**."
 [^iua-grants]: [IUA, §34.1.1.1 Authorization Client](https://profiles.ihe.net/ITI/IUA/index.html#34111-authorization-client): "The Get Access Token [ITI-71] transaction **is scoped to the Authorization Code and Client Credential grant types** (see ITI TF-1: 34.4.1.1 Authorization Grant Types)." [§3.71.4.1.2.1 Client Credential grant type](https://profiles.ihe.net/ITI/IUA/index.html#3714121-client-credential-grant-type): "requested_token_type (optional): The requested token format shall be urn:ietf:params:oauth:token-type:jwt, urn:ietf:params:oauth:token-type:saml2 or urn:ietf:params:oauth:token-type:access-token [**RFC 8693 OAuth 2.0 Token Exchange**, Section 3]."
+
+*[PMIR]: Patient Master Identity Registry, perfil IHE que gestiona la identidad maestra del paciente
+*[PIXm]: Patient Identifier Cross-referencing for mobile, perfil IHE que enlaza los identificadores locales de un paciente con su identidad maestra
+*[PDQm]: Patient Demographics Query for Mobile, perfil IHE de búsqueda de pacientes por datos demográficos
+*[MHD]: Mobile access to Health Documents, perfil IHE para publicar, localizar y recuperar documentos sobre FHIR
+*[MHDS]: Mobile Health Document Sharing, perfil IHE que compone MHD, PMIR, mCSD, IUA y ATNA en una comunidad de intercambio de documentos
+*[mCSD]: Mobile Care Services Discovery, perfil IHE de directorio de organizaciones, servicios y endpoints
+*[IUA]: Internet User Authorization, perfil IHE que aplica OAuth 2.0 a las transacciones sobre FHIR
+*[ATNA]: Audit Trail and Node Authentication, perfil IHE de auditoría y seguridad de los nodos
+*[BALP]: Basic Audit Log Patterns, perfil IHE con los patrones de AuditEvent de FHIR
+*[CT]: Consistent Time, perfil IHE que sincroniza los relojes de los sistemas
+*[PCF]: Privacy Consent on FHIR, perfil IHE de consentimiento del paciente

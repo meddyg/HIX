@@ -1,4 +1,4 @@
-Esta sección explica las decisiones que dan forma a esta comunidad. Cada una se presenta con lo que decide, por qué lo decide y lo que cuesta. Son decisiones de arquitectura, no de implementación. Una comunidad puede desplegarlas de muchas maneras (véase la sección 2.7) sin que cambie nada de lo que aquí se describe. La tabla del final resume los compromisos asumidos.
+Esta sección explica las decisiones que dan forma a esta comunidad. Cada una se presenta con lo que decide, por qué lo decide y lo que cuesta. Son decisiones de arquitectura, no de implementación. Una comunidad puede desplegarlas de muchas maneras, como describe la sección 2.7, sin que cambie nada de lo que aquí se describe. La tabla del final resume los compromisos asumidos.
 
 ### Comunidad y límite de confianza
 
@@ -10,7 +10,7 @@ Por esta razón, la relación de confianza no se establece de forma directa entr
 
 ### Mediación central de la localización y la recuperación
 
-Toda localización y toda recuperación pasan por el Record Locator Service, el mediador de la comunidad. Un solicitante obtiene del mediador los punteros que la política le permite ver, y las URL de contenido que recibe apuntan al propio mediador, nunca al custodio. Al recuperar, el mediador alcanza al custodio en nombre del solicitante y le entrega el documento.
+Toda localización y toda recuperación pasan por el [Record Locator Service](appendix-glossary.html#record-locator-service), el mediador de la comunidad. Un solicitante obtiene del mediador los punteros que la política le permite ver, y las URL de contenido que recibe apuntan al propio mediador, nunca al custodio. Al recuperar, el mediador alcanza al custodio en nombre del solicitante y le entrega el documento.
 
 MHDS admite que un consumidor alcance directamente al servicio que aloja un documento fuera del Document Registry ([MHDS Vol. 1, §1:50.1.1.2](https://profiles.ihe.net/ITI/MHDS/volume-1.html#150112-storage-of-binary))[^mhds-storage]. HIX no lo admite, y la razón está en el propio perfil. MHDS reconoce, al definir su Consent Manager Option, que esa opción **no protege el contenido almacenado fuera del registro** y que, cuando los documentos se almacenan en otro lugar, cada Document Source carga solo con la protección de sus documentos ([MHDS Vol. 1, §1:50.2.2](https://profiles.ihe.net/ITI/MHDS/volume-1.html#15022-consent-manager-option))[^mhds-consent]. Con custodia distribuida y acceso directo, cada custodio tendría que evaluar la política de la comunidad frente a cada consumidor. La mediación cierra ese hueco. Existe un único punto donde se aplica la política de divulgación, una única superficie auditable que ve la interacción completa y un único contrato de integración.
 
@@ -20,13 +20,13 @@ Mediar no es lo mismo que enrutar. El mediador es imprescindible donde hay que d
 
 > **Nota.** El mediador es desacoplable. No añade nada al modelo de MHDS. Solo concentra el PEP y las transacciones que MHDS reparte entre los miembros. Sin él, la comunidad operaría como MHDS estándar, con el mismo flujo, pero cada miembro tendría que aplicar la política, resolver endpoints, obtener credenciales y auditar por su cuenta. Quitar el mediador no cambia la arquitectura, solo mueve el PEP a cada miembro.
 
-### Custodia distribuida y colocación central
+### Custodia distribuida y almacenamiento central
 
 El documento permanece donde se produjo. El miembro que lo creó lo conserva, responde por su contenido y participa en cada recuperación que lo alcanza. La infraestructura central mantiene el índice, no una copia del expediente.
 
-MHDS admite dos ubicaciones válidas para el contenido, dentro del Document Registry o en cualquier otro lugar de la comunidad, incluido el sistema del propio Document Source ([MHDS Vol. 1, §1:50.1.1.2](https://profiles.ihe.net/ITI/MHDS/volume-1.html#150112-storage-of-binary))[^mhds-storage]. HIX adopta la segunda como **política por defecto** y ofrece la primera como opción. Un custodio que no puede alojar un endpoint ejerce la Opción de Colocación Central y entrega el contenido a la infraestructura central sin dejar de figurar como custodio.
+MHDS admite dos ubicaciones válidas para el contenido, dentro del Document Registry o en cualquier otro lugar de la comunidad, incluido el sistema del propio Document Source ([MHDS Vol. 1, §1:50.1.1.2](https://profiles.ihe.net/ITI/MHDS/volume-1.html#150112-storage-of-binary))[^mhds-storage]. HIX adopta la segunda como **política por defecto** y ofrece la primera como opción. Un custodio que no puede alojar un endpoint ejerce la Opción de Almacenamiento Central y entrega el contenido a la infraestructura central sin dejar de figurar como custodio.
 
-Como la API que ve el solicitante es idéntica bajo ambas colocaciones, un custodio puede pasar de una a otra sin que ningún miembro lo note. Por eso "el contenido nunca sale del custodio" es una política por defecto y no un principio absoluto. La arquitectura admite las dos y la comunidad decide por custodio.
+Las dos ubicaciones tienen ejemplos nacionales. Estonia recupera cada documento del proveedor que lo produjo, como se ve en la sección de transporte. Suiza hace lo contrario. Cada comunidad de su expediente electrónico almacena los binarios en su propio Document Repository y las instituciones le entregan el documento al publicarlo ([eHealth Suisse, EPR architecture, §3.3.4](https://www.e-health-suisse.ch/payload/api/documents/file/EPD-Architektur_EN.pdf))[^ch-epr-arch]. Como la API que ve el solicitante es idéntica bajo ambas ubicaciones, un custodio puede pasar de una a otra sin que ningún miembro lo note. Por eso "el contenido nunca sale del custodio" es una política por defecto y no un principio absoluto. La arquitectura admite las dos y la comunidad decide por custodio.
 
 ### Identidad del paciente (PMIR)
 
@@ -104,13 +104,13 @@ El punto de partida es un entorno de consentimiento implícito, con una polític
 
 ### Auditoría en ambos extremos
 
-Cada participante registra lo que hace. Es lo que [ATNA](https://profiles.ihe.net/ITI/TF/Volume1/ch-9.html) exige a cada sistema que participa en una transacción, lo que el perfil llama Secure Node o Secure Application ([ITI TF-1, §9.1.1.1](https://profiles.ihe.net/ITI/TF/Volume1/ch-9.html#9.1.1.1))[^atna-node] y lo que MHDS exige a su Document Registry ([MHDS Vol. 1, §1:50.1.1.1](https://profiles.ihe.net/ITI/MHDS/volume-1.html#150111-document-registry))[^mhds-audit]. Los registros siguen los patrones de [BALP](https://profiles.ihe.net/ITI/BALP/index.html), que definen cómo se escribe un `AuditEvent` de FHIR para cada tipo de evento. La infraestructura central registra la solicitud que recibe del miembro y la recuperación que ella misma inicia hacia el custodio. El custodio registra la entrega.
+Cada participante registra lo que hace. Es lo que [ATNA](https://profiles.ihe.net/ITI/TF/Volume1/ch-9.html) exige a cada sistema que participa en una transacción, lo que el perfil llama [Secure Node o Secure Application](appendix-glossary.html#secure-node) ([ITI TF-1, §9.1.1.1](https://profiles.ihe.net/ITI/TF/Volume1/ch-9.html#9.1.1.1))[^atna-node] y lo que MHDS exige a su Document Registry ([MHDS Vol. 1, §1:50.1.1.1](https://profiles.ihe.net/ITI/MHDS/volume-1.html#150111-document-registry))[^mhds-audit]. Los registros siguen los patrones de [BALP](https://profiles.ihe.net/ITI/BALP/index.html), que definen cómo se escribe un `AuditEvent` de FHIR para cada tipo de evento. La infraestructura central registra la solicitud que recibe del miembro y la recuperación que ella misma inicia hacia el custodio. El custodio registra la entrega.
 
 Los registros de una misma divulgación comparten un identificador de correlación. El mediador lo genera al recibir la solicitud y lo transmite al custodio en cada llamada. BALP prevé este uso y reserva un elemento del `AuditEvent` para guardar el identificador de la petición y correlacionar los registros de cliente y servidor ([BALP, §3:5.7.3.1](https://profiles.ihe.net/ITI/BALP/content.html#35731-x-request-id-header))[^balp-corr]. Así una divulgación se puede reconstruir completa desde sus dos lados.
 
 El token intercambiado nombra al solicitante original y al mediador como actor. Por eso el custodio registra quién pidió el documento y en nombre de quién actuó la comunidad, y no solo que lo pidió la comunidad.
 
-Ningún registro contiene tokens ni contenido clínico. Todos los componentes centrales registran en el mismo Audit Record Repository de ATNA, el repositorio de auditoría de la comunidad. Como además toda divulgación pasa por el mediador, la pregunta "quién accedió al expediente de esta persona" se responde con una sola consulta a ese repositorio. Eso no exime a ningún custodio de registrar su lado.
+Ningún registro contiene tokens ni contenido clínico. Todos los componentes centrales registran en el mismo [Audit Record Repository](appendix-glossary.html#audit-record-repository) de ATNA, el repositorio de auditoría de la comunidad. Como además toda divulgación pasa por el mediador, la pregunta "quién accedió al expediente de esta persona" se responde con una sola consulta a ese repositorio. Eso no exime a ningún custodio de registrar su lado.
 
 ### Transporte y redes de intercambio
 
@@ -126,7 +126,7 @@ IHE deja la gobernanza fuera de su alcance. Declara que no define políticas de 
 
 | Compromiso | Qué se acepta | Cómo se mitiga |
 | --- | --- | --- |
-| Acoplamiento de disponibilidad | Una recuperación mediada necesita al mediador, al Authorization Server y al custodio a la vez | Un custodio caído degrada la respuesta, no la hace fallar. Cualquier custodio puede pasar a colocación central sin que nadie lo note |
+| Acoplamiento de disponibilidad | Una recuperación mediada necesita al mediador, al Authorization Server y al custodio a la vez | Un custodio caído degrada la respuesta, no la hace fallar. Cualquier custodio puede pasar a almacenamiento central sin que nadie lo note |
 | Contenido en tránsito por el centro | Todo byte clínico atraviesa el mediador, que lo ve en claro | El mediador no guarda ni registra contenido. El canal entre organizaciones va cifrado. El índice se gobierna como dato sensible |
 | Authorization Server en el camino crítico | Cada localización exige una introspección y cada recuperación, además, un intercambio de tokens | Se dimensiona con la misma disponibilidad que el mediador. Un token derivado vale para un solo destino y dura como mucho dos minutos, así que un token filtrado tiene una ventana de uso corta y conocida |
 | Apuesta por la operación del centro | La garantía de la comunidad vale lo que valga la operación de su infraestructura central. Un centro bien operado supera a una federación operada a medias, y un centro mal operado es peor que esa federación | Quién certifica miembros, quién responde al paciente y quién financia el centro se fija en la gobernanza de la comunidad, antes de construirla. Es su riesgo principal a largo plazo |
@@ -145,4 +145,16 @@ Las citas reproducen el texto publicado por su fuente. Los recortes se marcan co
 [^mhds-audit]: [MHDS Vol. 1, §1:50.1.1.1 Document Registry](https://profiles.ihe.net/ITI/MHDS/volume-1.html#150111-document-registry): "The Document Registry **SHALL record all security relevant events** to ATNA Audit Record Repository with the “ATX: FHIR Feed” Option."
 [^mhds-policy]: [MHDS Vol. 1, §1:50.5 MHDS Security Considerations](https://profiles.ihe.net/ITI/MHDS/volume-1.html#1505-mhds-security-considerations): "**The policy landscape that the community is built on needs to be defined well before the community is built.**" [§1:50.5.1 Policies and Risk Management](https://profiles.ihe.net/ITI/MHDS/volume-1.html#15051-policies-and-risk-management): "IHE solves interoperability problems via the implementation of technology standards. **It does not define Privacy or Security Policies**, Risk Management, Healthcare Application Functionality, Operating System Functionality, Physical Controls, or even general Network Controls."
 [^balp-corr]: [BALP, §3:5.7.3.1 X-Request-Id header](https://profiles.ihe.net/ITI/BALP/content.html#35731-x-request-id-header): "Where it is known that an http RESTful transaction included an X-Request-Id, that value should be recorded in an .entity dedicated to X-Request-Id. **This ID can be used to correlated AuditEvents from client and server**, and may aid with correlation on further activities recorded caused by the transaction."
+[^ch-epr-arch]: [eHealth Suisse, EPR architecture. A detailed description, §3.3.4 XDS Document Repositories](https://www.e-health-suisse.ch/payload/api/documents/file/EPD-Architektur_EN.pdf): "The Document Repository Service implements interfaces to **store and query the binary objects** of the XDS documents. **The data are captured by the connected systems of the (core) communities when documents are saved** and are registered via interfaces."
 [^estonia]: [e-Estonia, e-Health Record](https://e-estonia.com/solutions/healthcare/e-health-records/): "the e-Health Record actually **retrieves data as necessary from various providers**, who may be using different systems" and "presents it in a standard format".
+
+*[PMIR]: Patient Master Identity Registry, perfil IHE que gestiona la identidad maestra del paciente
+*[PIXm]: Patient Identifier Cross-referencing for mobile, perfil IHE que enlaza los identificadores locales de un paciente con su identidad maestra
+*[PDQm]: Patient Demographics Query for Mobile, perfil IHE de búsqueda de pacientes por datos demográficos
+*[MHD]: Mobile access to Health Documents, perfil IHE para publicar, localizar y recuperar documentos sobre FHIR
+*[MHDS]: Mobile Health Document Sharing, perfil IHE que compone MHD, PMIR, mCSD, IUA y ATNA en una comunidad de intercambio de documentos
+*[mCSD]: Mobile Care Services Discovery, perfil IHE de directorio de organizaciones, servicios y endpoints
+*[IUA]: Internet User Authorization, perfil IHE que aplica OAuth 2.0 a las transacciones sobre FHIR
+*[ATNA]: Audit Trail and Node Authentication, perfil IHE de auditoría y seguridad de los nodos
+*[BALP]: Basic Audit Log Patterns, perfil IHE con los patrones de AuditEvent de FHIR
+*[PCF]: Privacy Consent on FHIR, perfil IHE de consentimiento del paciente

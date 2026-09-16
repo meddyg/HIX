@@ -49,6 +49,8 @@ setInterval(async () => {
 def render(name, title, prefix, pages, numbers):
     src = (PAGES / name).read_text()
     src = re.sub(r"^\{:.*\}$", "", src, flags=re.M)
+    # kramdown abbreviations (`*[PMIR]: ...`) become tooltips on the site; pandoc has no equivalent
+    src = re.sub(r"^\*\[[^\]]+\]: .*$", "", src, flags=re.M)
     offset = ",".join(prefix.split("."))
     body = subprocess.run(
         ["pandoc", "--from=gfm", "--to=html", "--no-highlight",

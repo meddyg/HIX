@@ -31,15 +31,15 @@ pages:
   index.md:
     title: Descripción general
   volume-1.md:
-    title: Volumen 1 — Arquitectura
+    title: Volumen 1. Arquitectura
     volume-1-concepts.md:
       title: Conceptos y decisiones de arquitectura
     volume-1-actors.md:
       title: Actores y transacciones
     volume-1-options.md:
       title: Capacidades opcionales de los actores
-    # volume-1-groupings.md:
-    #   title: Agrupaciones de actores requeridas
+    volume-1-groupings.md:
+      title: Agrupaciones de actores requeridas
     # volume-1-usecases.md:
     #   title: Casos de uso y flujos
     # volume-1-security.md:
@@ -96,10 +96,10 @@ pages:
   #     title: hix Extensions
   #   conformance-artifacts.md:
   #     title: Conformance Artifacts
-  # appendix.md:
-  #   title: Appendices
-  #   appendix-glossary.md:
-  #     title: Glossary
+  appendix.md:
+    title: Apéndices
+    appendix-glossary.md:
+      title: Glosario
   #   appendix-rationale.md:
   #     title: Design Rationale
   #   appendix-references.md:
@@ -116,7 +116,7 @@ menu:
     Conceptos y decisiones: volume-1-concepts.html
     Actores y transacciones: volume-1-actors.html
     Capacidades opcionales: volume-1-options.html
-    # Agrupaciones requeridas: volume-1-groupings.html
+    Agrupaciones requeridas: volume-1-groupings.html
     # Casos de uso y flujos: volume-1-usecases.html
     # Consideraciones de seguridad: volume-1-security.html
     # Entre perfiles y despliegue: volume-1-cross-profile.html
@@ -148,9 +148,9 @@ menu:
   #   IHE Departures: conformance-departures.html
   #   hix Extensions: conformance-extensions.html
   #   Conformance Artifacts: conformance-artifacts.html
-  # Appendices:
-  #   Appendices: appendix.html
-  #   Glossary: appendix-glossary.html
+  Apéndices:
+    Apéndices: appendix.html
+    Glosario: appendix-glossary.html
   #   Design Rationale: appendix-rationale.html
   #   References: appendix-references.html
   #   Change History: appendix-changes.html

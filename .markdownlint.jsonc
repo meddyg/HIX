@@ -8,6 +8,9 @@
     // reads that line as one more (malformed) row.
     "MD055": false,
     "MD056": false,
+    // IHE use cases repeat "Descripción del caso de uso" / "Flujo del proceso"
+    // under each case; only siblings must be unique.
+    "MD024": { "siblings_only": true },
     // Bootstrap tabs (the template ships the plugin) are the only raw HTML.
     "MD033": { "allowed_elements": ["ul", "li", "a", "div"] }
 }
