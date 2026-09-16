@@ -1,0 +1,39 @@
+@startuml hix-flujo-identidad
+skinparam shadowing false
+skinparam defaultFontName Verdana
+skinparam defaultFontSize 11
+skinparam sequenceMessageAlign center
+skinparam ParticipantPadding 10
+skinparam sequence {
+  ArrowColor #333333
+  LifeLineBorderColor #999999
+  ParticipantBorderColor #555555
+  ParticipantBackgroundColor white
+  GroupBorderColor #999999
+}
+
+participant "Fuente autoritativa\n(p. ej. EDUS)" as SRC
+participant "Registro de\nidentidad maestra" as PMIR
+participant "Record Locator\nService" as RLS
+participant "Custodio" as K
+participant "Consumidor" as C
+
+== Identidad maestra ==
+SRC -> PMIR : [ITI-93] Mobile Patient Identity Feed\n(identidad verificada)
+PMIR -> PMIR : crea o actualiza\nla identidad maestra
+PMIR --> SRC : 200
+
+== Identidad local de un miembro ==
+K -> RLS : [ITI-104] Patient Identity Feed\n(Patient local + identificador comunitario)
+RLS -> RLS : dominio = organización del token
+RLS -> PMIR : [ITI-104] (delegado)
+PMIR -> PMIR : vincula la identidad local\ncon la identidad maestra
+PMIR --> RLS : 200, o 422 si la persona\nno existe en la comunidad
+RLS --> K : resultado
+
+== Resolución ==
+C -> RLS : [ITI-83] Cross-reference Query\n(identificador local o comunitario)
+RLS -> PMIR : [ITI-83] (delegado)
+PMIR --> RLS : identificadores de la persona
+RLS --> C : identificadores permitidos\npor la política
+@enduml

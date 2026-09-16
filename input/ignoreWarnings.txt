@@ -15,3 +15,4 @@ An HTML fragment from the set [cross-version-analysis.xhtml, cross-version-analy
 Illegal HTML: illegal html element: abbr (MHDS)
 Illegal HTML: illegal html element: abbr (PDQm)
 Illegal HTML: illegal html element: abbr (PMIR)
+Illegal HTML: illegal html element: abbr (IUA)

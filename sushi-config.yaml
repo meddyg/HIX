@@ -40,8 +40,8 @@ pages:
       title: Capacidades opcionales de los actores
     volume-1-groupings.md:
       title: Agrupaciones de actores requeridas
-    # volume-1-usecases.md:
-    #   title: Casos de uso y flujos
+    volume-1-usecases.md:
+      title: Casos de uso y flujos
     # volume-1-security.md:
     #   title: Consideraciones de seguridad
     # volume-1-cross-profile.md:
@@ -117,7 +117,7 @@ menu:
     Actores y transacciones: volume-1-actors.html
     Capacidades opcionales: volume-1-options.html
     Agrupaciones requeridas: volume-1-groupings.html
-    # Casos de uso y flujos: volume-1-usecases.html
+    Casos de uso y flujos: volume-1-usecases.html
     # Consideraciones de seguridad: volume-1-security.html
     # Entre perfiles y despliegue: volume-1-cross-profile.html
   # Volume 2:
