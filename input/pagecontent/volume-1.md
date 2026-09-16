@@ -8,7 +8,7 @@ Cada perfil que HIX compone aporta una pieza de esa arquitectura. [MHD](https://
 
 **Figura 2-1:** Infraestructura central de HIX
 
-La Figura 2-1 muestra la infraestructura central de la comunidad, es decir, los servicios que HIX opera y las transacciones que los conectan. Es una vista de arquitectura, no de despliegue, y por eso omite las agrupaciones transversales que casi todo actor lleva, como el Time Client de CT. Tampoco dibuja los sistemas de los miembros. Un miembro solo trata con la infraestructura central, nunca con otro miembro. Obtiene sus tokens del Authorization Server y localiza y recupera a través del Record Locator Service. Los demás componentes de la figura no le exigen ninguna integración adicional.
+La Figura 2-1 muestra la infraestructura central de la comunidad, es decir, los servicios que HIX opera y las transacciones que los conectan. Es una vista de arquitectura, no de despliegue, y por eso omite las agrupaciones transversales que casi todo actor lleva, como el Time Client de CT. Tampoco dibuja los sistemas de los miembros. Un miembro solo trata con la infraestructura central, nunca con otro miembro. Obtiene sus tokens del Authorization Server, localiza y recupera a través del Record Locator Service, y publica y declara identidades ante la infraestructura central. Los demás componentes de la figura no le exigen ninguna integración adicional.
 
 - El **Record Locator Service** es el mediador de la comunidad. Localiza y recupera documentos en nombre de los miembros y aplica la decisión de divulgación. Ante los miembros actúa como Resource Server; ante los componentes centrales y los custodios, como cliente delegado que opera en nombre del solicitante original.
 - El **Authorization Server** es el único emisor de tokens de la comunidad. Emite el token que permite a un miembro acceder al mediador, lo valida mediante introspección cuando el mediador lo presenta y, cada vez que el mediador necesita alcanzar a un custodio o a un componente central, lo intercambia por un token acotado a ese destino, a nombre del miembro.
@@ -20,12 +20,12 @@ Dicho en seis afirmaciones:
 
 1. La comunidad es **la única contraparte** de sus miembros. El Authorization Server emite todo token, el Record Locator Service media toda localización y recuperación, y la infraestructura central valida lo que cada miembro publica y declara. **Ningún miembro interactúa con otro.**
 2. El **índice es central y el contenido es del custodio**. Un documento se queda donde se produjo; la comunidad sabe que existe, de quién es y quién lo conserva.
-3. La **divulgación se decide una sola vez**, en el mediador, sobre los metadatos del índice y antes de que se mueva contenido alguno.
+3. La **divulgación se decide una vez por cada consulta**, en la infraestructura central, sobre los metadatos del índice y antes de que se mueva contenido alguno. Localizar y recuperar son dos consultas, y cada una se decide por sí misma.
 4. Cada recuperación alcanza al custodio con una **credencial derivada de la petición viva del solicitante**, atada a ese único custodio, con una vida de dos minutos como máximo y verificable sin llamar a nadie. Ningún participante tiene credenciales permanentes hacia otro.
 5. La **identidad maestra del paciente está anclada en la identidad nacional verificada**; los miembros declaran sus identidades locales y la comunidad las vincula. Ningún miembro crea una persona.
 6. El **transporte hacia cada custodio se declara en el directorio**, no en los punteros ni en la API. Cuando la comunidad opera sobre una red de intercambio como [X-Road](https://x-road.global/), el endpoint del custodio indica ese canal y el Record Locator Service lo recorre automáticamente, sin que cambie un puntero, un token ni una transacción. X-Road es transporte y confianza entre organizaciones; la semántica del intercambio sigue siendo la de los perfiles FHIR.
 
-> **Nota.** El Record Locator Service no tiene acceso arbitrario a nada, ni siquiera al Document Registry. Solo actúa cuando un miembro se lo pide, con una credencial derivada de esa petición y a nombre de ese miembro. Es el primer punto de aplicación de la política de la comunidad (PEP), y por eso cada interacción queda auditable de extremo a extremo.
+> **Nota.** El Record Locator Service no tiene acceso arbitrario a nada, ni siquiera al Document Registry. Solo actúa cuando un miembro se lo pide, con una credencial derivada de esa petición y a nombre de ese miembro. Es el primer PEP de la comunidad, el punto en el que se aplica su política, y por eso cada interacción queda auditable de extremo a extremo.
 
 ### Cómo leer este volumen
 

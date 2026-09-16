@@ -40,7 +40,7 @@ El propósito de uso no depende del actor sino del caso de uso. Es un código de
 
 </div>
 
-Las dos tablas siguientes listan las transacciones que definen a cada actor. R significa que la transacción es requerida para declararse conforme con el actor, y O que es opcional. La columna Referencia indica el perfil IHE que define la transacción, o el Volumen 2 de esta guía para las propias de HIX. Todos los actores de HIX se agrupan además con IUA, y todos salvo la aplicación del paciente con ATNA y CT. Esas agrupaciones, y las transacciones que traen consigo, se describen en la sección 2.4.
+Las dos tablas siguientes listan las transacciones que definen a cada actor. R significa que la transacción es requerida para declararse conforme con el actor, y O que es opcional. La columna Referencia indica el perfil IHE que define la transacción, o el Volumen 2 de esta guía para las propias de HIX. Los miembros, y los actores centrales ante los que presentan tokens, se agrupan además con IUA, y todos los actores salvo la aplicación del paciente con ATNA y CT. Esas agrupaciones, y las transacciones que traen consigo, se describen en la sección 2.4.
 
 **Tabla 2.2-1:** Actores de miembro
 
@@ -49,22 +49,23 @@ Las dos tablas siguientes listan las transacciones que definen a cada actor. R s
 | Sistema que publica y custodia documentos | Patient Identity Feed FHIR [ITI-104] | R | PIXm |
 | | Provide Document Bundle [ITI-65] | R | MHD |
 | | Retrieve Document [ITI-68] | R (nota 1) | MHD |
-| Sistema que consume documentos | Find Document References [ITI-67] | R | MHD |
+| Sistema que consume documentos | Find Document Lists [ITI-66] | R | MHD |
+| | Find Document References [ITI-67] | R | MHD |
 | | Retrieve Document [ITI-68] | R | MHD |
-| | Find Document Lists [ITI-66] | O | MHD |
 | | Patient Identifier Cross-reference Query [ITI-83] | O | PIXm |
 | | Patient Demographics Query for Mobile [ITI-78] | O (nota 2) | PDQm |
 | Aplicación del paciente | Patient Application Launch [HIX-2] | R | Vol. 2 |
+| | Find Document Lists [ITI-66] | R | MHD |
 | | Find Document References [ITI-67] | R | MHD |
 | | Retrieve Document [ITI-68] | R | MHD |
-| | Find Document Lists [ITI-66] | O | MHD |
 {: .table .table-bordered}
 
 **Tabla 2.2-2:** Actores centrales y fuente de identidad
 
 | Actor | Transacción | Opcionalidad | Referencia |
 | --- | --- | --- | --- |
-| Record Locator Service | Find Document References [ITI-67] | R | MHD |
+| Record Locator Service | Find Document Lists [ITI-66] | R | MHD |
+| | Find Document References [ITI-67] | R | MHD |
 | | Retrieve Document [ITI-68] | R | MHD |
 | | Patient Identifier Cross-reference Query [ITI-83] | R | PIXm |
 | | Find Matching Care Services [ITI-90] | R | mCSD |
@@ -73,6 +74,7 @@ Las dos tablas siguientes listan las transacciones que definen a cada actor. R s
 | | Find Document Lists [ITI-66] | R | MHD |
 | | Find Document References [ITI-67] | R | MHD |
 | | Retrieve Document [ITI-68] | R (nota 3) | MHD |
+| | Patient Identifier Cross-reference Query [ITI-83] | R | PIXm |
 | | Find Matching Care Services [ITI-90] | R | mCSD |
 | | Mobile Patient Identity Feed [ITI-93] | R | PMIR |
 | Authorization Server | Get Access Token [ITI-71] | R | IUA |
@@ -143,7 +145,7 @@ El Record Locator Service es el mediador de la comunidad. Localiza y recupera do
 
 El Record Locator Service **SHALL** aceptar únicamente tokens emitidos por el Authorization Server de la comunidad. **SHALL** comprobarlos mediante [ITI-102](https://profiles.ihe.net/ITI/IUA/index.html#3102-introspect-token-iti-102) una vez por operación y **SHALL** tomar de esa respuesta, y no de la solicitud, la organización, el propósito de uso y el contexto de paciente del solicitante.
 
-El Record Locator Service **SHALL** evaluar la decisión de divulgación sobre los punteros antes de originar cualquier recuperación, **SHALL** omitir de la respuesta los punteros cuya divulgación no esté permitida y **SHALL** volver a evaluarla al atender un [ITI-68](https://profiles.ihe.net/ITI/MHD/ITI-68.html). Un puntero cuya divulgación se niega **SHALL NOT** originar consulta al directorio, intercambio de token ni llamada al custodio.
+El Record Locator Service **SHALL** evaluar la decisión de divulgación sobre los punteros antes de originar cualquier recuperación, **SHALL** omitir de la respuesta los punteros cuya divulgación no esté permitida y **SHALL** volver a evaluarla al atender un [ITI-68](https://profiles.ihe.net/ITI/MHD/ITI-68.html). **SHALL** aplicar la misma decisión a las listas que devuelve por [ITI-66](https://profiles.ihe.net/ITI/MHD/ITI-66.html), porque una lista revela qué documentos existen. Un puntero cuya divulgación se niega **SHALL NOT** originar consulta al directorio, intercambio de token ni llamada al custodio.
 
 El Record Locator Service **SHALL** entregar a los solicitantes URL de contenido que apunten a sí mismo. **SHALL** resolver el endpoint del custodio en el directorio de la comunidad en cada recuperación y **SHALL NOT** revelar ese endpoint al solicitante. **SHALL** obtener mediante [HIX-1] un token distinto para cada destino que alcance, sea un custodio o un actor central, y **SHALL NOT** reenviar a ninguno el token del solicitante. No tiene acceso propio al Document Registry ni al registro de identidad maestra.
 
@@ -155,9 +157,9 @@ Cuando un custodio no responde, el Record Locator Service **SHALL** degradar la 
 
 El Document Registry es el [MHDS Document Registry](appendix-glossary.html#document-registry) de la comunidad. Conserva los punteros a los documentos publicados y, bajo la Opción de Almacenamiento Central, el contenido que los custodios le entregan. Recibe por [ITI-93](https://profiles.ihe.net/ITI/PMIR/ITI-93.html) los cambios de las identidades maestras y aplica sus fusiones a los punteros que conserva.
 
-El Document Registry **SHALL** registrar cada puntero a nombre de la organización que declara el token, **SHALL** rechazar la publicación cuyo custodio no coincida con ella y **SHALL** validar mediante [ITI-90](https://profiles.ihe.net/ITI/mCSD/ITI-90.html) que esa organización es un miembro activo de la comunidad, conforme a la UnContained References Option de MHDS.
+El Document Registry **SHALL** registrar cada puntero a nombre de la organización que declara el token, **SHALL** rechazar la publicación cuyo custodio no coincida con ella y **SHALL** validar mediante [ITI-90](https://profiles.ihe.net/ITI/mCSD/ITI-90.html) que esa organización es un miembro activo de la comunidad, conforme a la UnContained Reference Option de MHDS.
 
-Al indexar, el Document Registry **SHALL** escribir en `subject` la identidad maestra del paciente, resuelta a partir de la identidad local declarada en `sourcepatient`. **SHALL** rechazar la publicación cuya URL de contenido no sea relativa, que carezca de etiqueta de confidencialidad o cuyo paciente no pueda resolverse a una identidad maestra.
+Al indexar, el Document Registry **SHALL** escribir en `subject` la identidad maestra del paciente, resuelta mediante [ITI-83](https://profiles.ihe.net/ITI/PIXm/ITI-83.html) a partir de la identidad local declarada en `sourcepatient`. Esa consulta comprueba a la vez que la persona existe y está activa en la comunidad, que es lo que MHDS exige al Document Registry antes de indexar y que admite resolver preguntando al registro de identidad ([MHDS Vol. 1, §1:50.1.1.1.1](https://profiles.ihe.net/ITI/MHDS/volume-1.html#1501111-when-the-grouped-mhd-document-recipient--is-triggered))[^mhds-subject]. Así el miembro publica con sus propios identificadores y la comunidad traduce y valida por él. **SHALL** rechazar la publicación cuya URL de contenido no sea relativa, que carezca de etiqueta de confidencialidad o cuyo paciente no pueda resolverse a una identidad maestra.
 
 #### Authorization Server
 
@@ -204,6 +206,7 @@ Las citas reproducen el texto publicado por su fuente. Los recortes se marcan co
 [^rfc9700-aud]: [RFC 9700, §2.3 Access Token Privilege Restriction](https://www.rfc-editor.org/rfc/rfc9700.html#section-2.3): "In particular, **access tokens SHOULD be audience-restricted to a specific resource server** or, if that is not feasible, to a small set of resource servers." [§4.10.2 Audience-Restricted Access Tokens](https://www.rfc-editor.org/rfc/rfc9700.html#section-4.10.2): "The authorization server associates the access token with the particular resource server, and **the resource server is then supposed to verify the intended audience**. If the access token fails the intended audience validation, **the resource server refuses to serve the respective request**."
 [^pou]: [v3-ActReason, TREAT](https://terminology.hl7.org/CodeSystem-v3-ActReason.html#v3-ActReason-TREAT): "treatment. **To perform one or more operations on information for provision of health care.**" [ETREAT](https://terminology.hl7.org/CodeSystem-v3-ActReason.html#v3-ActReason-ETREAT): "Emergency Treatment. To perform one or more operations on information for provision of **immediately needed health care for an emergent condition**." [PATRQT](https://terminology.hl7.org/CodeSystem-v3-ActReason.html#v3-ActReason-PATRQT): "patient requested. To perform one or more operations on information **in response to a patient's request**." [FAMRQT](https://terminology.hl7.org/CodeSystem-v3-ActReason.html#v3-ActReason-FAMRQT): "family requested. To perform one or more operations on information in response to a request by **a family member authorized by the patient**." [PWATRNY](https://terminology.hl7.org/CodeSystem-v3-ActReason.html#v3-ActReason-PWATRNY): "power of attorney. To perform one or more operations on information in response to a request by **a person appointed as the patient's legal representative**."
 [^rfc8693-act]: [RFC 8693, §1.1 Delegation vs. Impersonation Semantics](https://www.rfc-editor.org/rfc/rfc8693.html#section-1.1): "With delegation semantics, principal A still has its own identity separate from B, and it is explicitly understood that while B may have delegated some of its rights to A, **any actions taken are being taken by A representing B**." [§2.1 Request](https://www.rfc-editor.org/rfc/rfc8693.html#section-2.1): "resource. OPTIONAL. **A URI that indicates the target service or resource where the client intends to use the requested security token.**" [§4.1 "act" (Actor) Claim](https://www.rfc-editor.org/rfc/rfc8693.html#section-4.1): "The act (actor) claim provides a means within a JWT to express that **delegation has occurred and identify the acting party to whom authority has been delegated**."
+[^mhds-subject]: [MHDS Vol. 1, §1:50.1.1.1.1 When the grouped MHD Document Recipient is triggered](https://profiles.ihe.net/ITI/MHDS/volume-1.html#1501111-when-the-grouped-mhd-document-recipient--is-triggered): "The Document Registry SHALL validate that the subject of the DocumentReference, and List Resources is the same Patient, and that **Patient is a recognized and active Patient within the Community**. The Patient identity must be recognized and active by the PMIR Patient Identity Registry in the document sharing community. **This may be accomplished by a query of the PMIR Patient Identity Registry**, by way of a cached internal patient database, or other means."
 [^iua-grants]: [IUA, §34.1.1.1 Authorization Client](https://profiles.ihe.net/ITI/IUA/index.html#34111-authorization-client): "The Get Access Token [ITI-71] transaction **is scoped to the Authorization Code and Client Credential grant types** (see ITI TF-1: 34.4.1.1 Authorization Grant Types)." [§3.71.4.1.2.1 Client Credential grant type](https://profiles.ihe.net/ITI/IUA/index.html#3714121-client-credential-grant-type): "requested_token_type (optional): The requested token format shall be urn:ietf:params:oauth:token-type:jwt, urn:ietf:params:oauth:token-type:saml2 or urn:ietf:params:oauth:token-type:access-token [**RFC 8693 OAuth 2.0 Token Exchange**, Section 3]."
 
 *[PMIR]: Patient Master Identity Registry, perfil IHE que gestiona la identidad maestra del paciente

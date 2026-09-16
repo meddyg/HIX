@@ -37,7 +37,7 @@ Este glosario reúne, en una línea cada uno, los actores y términos que usa es
 **[Document Source](https://profiles.ihe.net/ITI/MHD/1331_actors_and_transactions.html).** Actor de MHD que publica documentos y sus punteros con ITI-65.
 {: #document-source}
 
-**[Document Consumer](https://profiles.ihe.net/ITI/MHD/1331_actors_and_transactions.html).** Actor de MHD que localiza documentos con ITI-67 y los recupera con ITI-68.
+**[Document Consumer](https://profiles.ihe.net/ITI/MHD/1331_actors_and_transactions.html).** Actor de MHD que localiza listas y documentos con ITI-66 e ITI-67 y recupera documentos con ITI-68.
 {: #document-consumer}
 
 **[Document Responder](https://profiles.ihe.net/ITI/MHD/1331_actors_and_transactions.html).** Actor de MHD que responde la localización y la recuperación de documentos.
@@ -96,7 +96,7 @@ Este glosario reúne, en una línea cada uno, los actores y términos que usa es
 **Puntero.** El `DocumentReference` que describe un documento sin contenerlo. Sobre él se toma toda decisión de la comunidad antes de mover contenido.
 {: #puntero}
 
-**Decisión de divulgación.** La evaluación que hace el mediador, puntero por puntero y antes de recuperar, de si un documento puede entregarse a quien lo pide.
+**Decisión de divulgación.** La evaluación que hace la infraestructura central, en el mediador o en el Document Registry, puntero por puntero y antes de recuperar, de si un documento puede entregarse a quien lo pide.
 {: #decision-de-divulgacion}
 
 **Propósito de uso.** Código del conjunto PurposeOfUse de HL7 que dice para qué se accede. Viaja en el token y lo evalúa la decisión de divulgación.
@@ -104,6 +104,9 @@ Este glosario reúne, en una línea cada uno, los actores y términos que usa es
 
 **Scope.** El alcance de un token en OAuth 2.0. Fija qué transacciones puede pedir su portador.
 {: #scope}
+
+**[OpenID Provider](https://openid.net/specs/openid-connect-core-1_0.html#Terminology).** Authorization Server de OAuth 2.0 que además autentica a la persona y acredita esa autenticación con un `id_token`, según OpenID Connect. En HIX lo es el Authorization Server de la comunidad.
+{: #openid-provider}
 
 **Token intercambiado.** El token que el mediador obtiene con HIX-1 para un único destino, con el solicitante original como sujeto y el mediador como actor.
 {: #token-intercambiado}

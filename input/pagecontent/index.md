@@ -2,7 +2,7 @@ HIX define una arquitectura de referencia para comunidades que comparten documen
 
 ### Propósito y alcance
 
-Esta guía describe los roles de la comunidad, sus límites de confianza y la relación entre sus componentes. Explica, entre otras decisiones, por qué la localización y la recuperación se median de forma centralizada; por qué la custodia documental se mantiene distribuida por defecto; y cómo **[IUA](https://profiles.ihe.net/ITI/IUA/index.html)** y **[OAuth 2.0](https://www.rfc-editor.org/info/rfc6749/)** establecen la base de autorización y delegación entre los participantes, incorporando **[SMART on FHIR](https://build.fhir.org/ig/HL7/smart-app-launch/)** en los flujos interactivos en los que la autorización requiere la participación de un usuario, a través de un **User Agent** y el *front-channel* de autorización.
+Esta guía describe los roles de la comunidad, sus límites de confianza y la relación entre sus componentes. Explica, entre otras decisiones, por qué la localización y la recuperación se median de forma centralizada, por qué la custodia documental se mantiene distribuida por defecto y cómo **[IUA](https://profiles.ihe.net/ITI/IUA/index.html)** y **[OAuth 2.0](https://www.rfc-editor.org/info/rfc6749/)** establecen la base de autorización y delegación entre los participantes. Cuando la autorización requiere la participación de una persona, incorpora **[SMART App Launch](https://build.fhir.org/ig/HL7/smart-app-launch/)** en el flujo interactivo que esa persona completa desde su navegador.
 
 Esta arquitectura abarca las siguientes capacidades dentro de la comunidad:
 
@@ -12,20 +12,16 @@ Esta arquitectura abarca las siguientes capacidades dentro de la comunidad:
   según declare el directorio, sin alterar la topología de la comunidad;
 - identidad maestra de pacientes y vinculación con las identidades locales;
 - directorio de organizaciones participantes, servicios y endpoints;
-- autorización y divulgación controlada de documentos;
+- autorización y divulgación controlada de documentos.
 
 #### Capacidades en desarrollo
 
 Las siguientes capacidades forman parte de la arquitectura HIX, pero su especificación detallada se definirá en una versión posterior de esta guía. La arquitectura ya establece los límites, los puntos de integración y los flujos que permiten incorporarlas sin alterar la topología mediada de la comunidad.
 
-- **Consentimiento anticipado del paciente.** HIX define dónde se aplica la
-  decisión de divulgación y qué información necesita; el modelo de
-  consentimiento, su ciclo de vida y sus políticas se especificarán a partir
-  de los perfiles IHE aplicables.
-- **Auditoría de operaciones y divulgaciones.** HIX define la necesidad de
-  registrar las operaciones en ambos extremos de la interacción; el
-  modelo de consulta y el comportamiento ante fallos se especificarán
-  posteriormente.
+- **Consentimiento anticipado del paciente.** HIX define dónde se aplica la decisión de divulgación y qué información necesita. El modelo de consentimiento, su ciclo de vida y sus políticas se especificarán a partir de los perfiles IHE aplicables.
+- **Auditoría de operaciones y divulgaciones.** HIX define la necesidad de registrar las operaciones en ambos extremos de la interacción. El modelo de consulta y el comportamiento ante fallos se especificarán posteriormente.
+
+Los casos de uso que dependen de estas capacidades se listan al final de la sección 2.5 del Volumen 1.
 
 ### Convenciones de la especificación
 
@@ -57,7 +53,7 @@ desempeña dentro de dicho perfil.
 | **[CT](https://profiles.ihe.net/ITI/TF/Volume1/ch-7.html)** — *Consistent Time* | Perfil IHE que mantiene sincronizados los relojes de todos los sistemas de la comunidad, para que los eventos de auditoría y la vigencia de los tokens signifiquen lo mismo en cada extremo. |
 | **[BALP](https://profiles.ihe.net/ITI/BALP/index.html)** — *Basic Audit Log Patterns* | Perfil IHE que define el contenido de los eventos de auditoría FHIR por transacción. |
 | **[IUA](https://profiles.ihe.net/ITI/IUA/index.html)** — *Internet User Authorization* | Perfil IHE utilizado por HIX como base de autorización para las interacciones protegidas entre sus participantes. Sus requisitos aplican a todos los flujos de autorización de HIX. |
-| **[SMART on FHIR](https://build.fhir.org/ig/HL7/smart-app-launch/app-launch.html)** | Especificación de HL7 utilizada adicionalmente en los flujos interactivos en los que la autorización requiere la participación de un usuario a través de un `User Agent`. |
+| **[SMART App Launch](https://build.fhir.org/ig/HL7/smart-app-launch/app-launch.html)** | Especificación de HL7 que HIX usa en los flujos interactivos en los que la autorización requiere la participación de una persona desde su navegador. |
 | **[X-Road](https://x-road.global/)** | Capa de intercambio de datos entre organizaciones sobre transporte mTLS entre servidores de seguridad. HIX la admite como canal hacia un custodio, declarado en el directorio; no aporta semántica documental. |
 | **RLS** — *Record Locator Service* | Componente central de HIX responsable de localizar los documentos clínicos disponibles para un paciente y mediar su recuperación desde los custodios correspondientes. |
 {: .table .table-bordered}
@@ -67,15 +63,20 @@ Los siguientes términos relacionados con OAuth 2.0 y la arquitectura de autoriz
 | Término | Significado |
 | --- | --- |
 | **Client** | Aplicación que solicita acceso a un recurso protegido. |
-| **AS / STS** — *Authorization Server / Security Token Service* | Función responsable de la autorización y de la emisión o intercambio de tokens utilizados entre los participantes de HIX. |
+| **AS** — *Authorization Server* | Actor responsable de la autorización y de la emisión, comprobación e intercambio de los tokens que circulan entre los participantes de HIX. |
 | **RS** — *Resource Server* | Servicio que protege recursos y evalúa los tokens presentados para autorizar el acceso. |
 | **Access token** | Credencial presentada por un `Client` ante un `Resource Server` para solicitar acceso. |
 | **Audience** | Identificador del `Resource Server` al que está destinado un token. |
 | **Scope** | Alcance del acceso solicitado o concedido al `Client`. |
-| **PEP** — *Policy Enforcement Point* | Punto donde se aplica una decisión de política sobre una solicitud: permitir, denegar o filtrar. En HIX el Record Locator Service es el primer PEP de la comunidad; cada custodio es además PEP de su propio endpoint. |
-| **PDP** — *Policy Decision Point* | Punto donde se toma la decisión que el PEP aplica. En HIX la decisión de divulgación se toma en el Record Locator Service; el Authorization Server decide sobre la autorización, nunca sobre la divulgación. |
+| **PEP** — *Policy Enforcement Point* | Punto donde se aplica una decisión de política sobre una solicitud, sea permitir, denegar o filtrar. En HIX el Record Locator Service es el primer PEP de la comunidad, y cada custodio es además PEP de su propio endpoint. |
+| **PDP** — *Policy Decision Point* | Punto donde se toma la decisión que el PEP aplica. En HIX la decisión de divulgación se toma en la infraestructura central, en el Record Locator Service o en el Document Registry. El Authorization Server decide sobre la autorización, nunca sobre la divulgación. |
 {: .table .table-bordered}
 
 ### Cómo leer esta guía
 
 HIX organiza sus requisitos en diferentes niveles de abstracción. Los volúmenes de esta guía deben leerse de forma complementaria y no como especificaciones independientes.
+
+- El **Volumen 1** describe la arquitectura, es decir, qué hace cada actor y por qué.
+- El **Volumen 2** especifica cada transacción, incluidas las propias de HIX.
+- El **Volumen 3** especifica el contenido que se intercambia, desde los metadatos de los punteros hasta los registros de auditoría.
+- Los **apéndices** reúnen el material de apoyo, por ahora el glosario.
