@@ -11,7 +11,7 @@ help:
 	@echo "make preview   write, with live reload      http://localhost:4000"
 	@echo "make site      build the site               dist/site/index.html"
 	@echo "make docs      build PDF, DOCX, llms.txt    dist/"
-	@echo "make diagrams  render _diagrams/ to SVG      input/images/"
+	@echo "make diagrams  render the PlantUML sources  input/images/"
 	@echo "make all       site + docs"
 	@echo "make format    format the pages             input/pagecontent/"
 	@echo "make tools     download the IG Publisher    .work/tools/"

@@ -10,3 +10,9 @@ output/
 *.bkp
 
 __pycache__
+
+# draw.io autosave files
+_diagrams/.$*
+
+# the publisher writes this to the root on every build
+Requirements-fromNarrative.json
