@@ -182,7 +182,7 @@ El Authorization Server **SHALL** fijar la organización y el propósito de uso 
 
 El directorio publica las organizaciones participantes, su pertenencia a la comunidad y los endpoints en los que responden. Es el [Care Services Selective Supplier](appendix-glossary.html#care-services-selective-supplier) de mCSD de la comunidad y la única fuente de la que la infraestructura central aprende a quién dirigir una recuperación.
 
-El directorio **SHALL** responder [ITI-90](https://profiles.ihe.net/ITI/mCSD/ITI-90.html) y **SHALL** ser el único origen de los endpoints que usa la infraestructura central. **SHALL** identificar a cada organización con el mismo identificador que el Authorization Server incluye en sus tokens. Los miembros no consultan el directorio. Su contenido se mantiene administrativamente, al incorporar un miembro, como describe la sección 2.7.
+El directorio **SHALL** responder [ITI-90](https://profiles.ihe.net/ITI/mCSD/ITI-90.html) y **SHALL** ser el único origen de los endpoints que usa la infraestructura central. **SHALL** identificar a cada organización con el mismo identificador que el Authorization Server incluye en sus tokens. Los miembros no consultan el directorio. Su contenido se mantiene administrativamente, al incorporar un miembro.
 
 #### Registro de identidad maestra
 
@@ -208,7 +208,7 @@ La fuente autoritativa **SHALL** alimentar el registro de identidad maestra medi
 **Patient Application Launch [HIX-2].** Una aplicación elegida por una persona obtiene del Authorization Server un token destinado al Record Locator Service cuyo contexto de paciente es la identidad maestra de esa persona. El Authorization Server resuelve esa identidad en el momento del consentimiento. El flujo se basa en [SMART App Launch](https://build.fhir.org/ig/HL7/smart-app-launch/) y se especifica en el Volumen 2.
 {: #hix-2}
 
-> **Nota.** La incorporación de un miembro, por la que una organización queda descrita en el directorio y reconocida por el Authorization Server, es un procedimiento administrativo y no una transacción. Se describe en la sección 2.7.
+> **Nota.** La incorporación de un miembro, por la que una organización queda descrita en el directorio y reconocida por el Authorization Server, es un procedimiento administrativo y no una transacción.
 
 ### Referencias
 

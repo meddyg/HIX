@@ -1,6 +1,6 @@
 Esta sección recorre los casos de uso que la arquitectura soporta. Cada uno se cuenta desde el punto de vista de quien lo vive y se acompaña del flujo entre actores, con las transacciones y el orden en que ocurren. El detalle de cada transacción está en el Volumen 2.
 
-Los casos siguen las tres historias de las figuras de la [sección 2.2](volume-1-actors.html), el laboratorio que publica, el hospital que consulta y la persona que accede a lo suyo, precedidas por la identidad del paciente, que es condición de todas. La publicación, la consulta y el acceso del paciente son independientes entre sí y ocurren en cualquier orden y con cualquier frecuencia. La incorporación de un miembro, que precede a todo, es un procedimiento administrativo y se describe en la sección 2.7.
+Los casos siguen las tres historias de las figuras de la [sección 2.2](volume-1-actors.html), el laboratorio que publica, el hospital que consulta y la persona que accede a lo suyo, precedidas por la identidad del paciente, que es condición de todas. La publicación, la consulta y el acceso del paciente son independientes entre sí y ocurren en cualquier orden y con cualquier frecuencia. La incorporación de un miembro, que precede a todo, es un procedimiento administrativo y no un caso de uso de esta guía.
 
 ### Identidad del paciente
 

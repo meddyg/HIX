@@ -1,4 +1,4 @@
-Esta sección explica las decisiones que dan forma a esta comunidad. Cada una se presenta con lo que decide, por qué lo decide y lo que cuesta. Son decisiones de arquitectura, no de implementación. Una comunidad puede desplegarlas de muchas maneras, como describe la sección 2.7, sin que cambie nada de lo que aquí se describe. La tabla del final resume los compromisos asumidos.
+Esta sección explica las decisiones que dan forma a esta comunidad. Cada una se presenta con lo que decide, por qué lo decide y lo que cuesta. Son decisiones de arquitectura, no de implementación. Una comunidad puede desplegarlas de muchas maneras sin que cambie nada de lo que aquí se describe. La tabla del final resume los compromisos asumidos.
 
 ### Comunidad y límite de confianza
 
@@ -124,6 +124,10 @@ La dirección física de un custodio vive únicamente en el directorio. El punte
 
 Una red de intercambio resuelve cómo se conectan las organizaciones y cómo se identifican entre sí. No dice nada de documentos, punteros ni consentimiento. Por eso HIX la usa solo por debajo del mediador. Si los miembros la usaran para hablar entre sí, volverían a la malla de pares que HIX descarta. Estonia sigue este mismo patrón. Su registro nacional de salud recupera los datos de cada proveedor cuando se necesitan y los presenta en un formato común ([e-Estonia](https://e-estonia.com/solutions/healthcare/e-health-records/))[^estonia], con X-Road como transporte. El token delegado sigue viajando por ese canal y el custodio sigue validándolo. La identidad que la red asigna a cada organización no lo sustituye.
 
+### Comunidades vecinas
+
+MHDS ofrece la misma función que XDS, sobre FHIR en lugar de SOAP ([MHDS Vol. 1, §1:50.4.1](https://profiles.ihe.net/ITI/MHDS/volume-1.html#15041-concepts))[^mhds-xds]. Una comunidad HIX puede por eso conectarse con comunidades que operen sobre [XDS](https://profiles.ihe.net/ITI/TF/Volume1/ch-10.html) o [XCA](https://profiles.ihe.net/ITI/TF/Volume1/ch-18.html) mediante una pasarela. Ante HIX, la pasarela es un miembro más, custodio de los documentos que trae de la otra comunidad o consumidor de los que le pide, y se incorpora como cualquier otro. Ante la otra comunidad, es un Initiating Gateway o un Responding Gateway de XCA. Así la mediación de HIX se conserva, porque el Record Locator Service alcanza a la pasarela como a cualquier custodio y ningún miembro habla con la otra comunidad. Esta guía no especifica la pasarela.
+
 ### Compromisos asumidos
 
 IHE deja la gobernanza fuera de su alcance. Declara que no define políticas de privacidad ni de seguridad, y que el marco de políticas de una comunidad debe definirse antes de construirla ([MHDS Vol. 1, §1:50.5.1](https://profiles.ihe.net/ITI/MHDS/volume-1.html#15051-policies-and-risk-management))[^mhds-policy]. Por eso, de los compromisos de la tabla, la apuesta por la operación del centro es el que más pesa.
@@ -153,6 +157,7 @@ Las citas reproducen el texto publicado por su fuente. Los recortes se marcan co
 [^mhds-policy]: [MHDS Vol. 1, §1:50.5 MHDS Security Considerations](https://profiles.ihe.net/ITI/MHDS/volume-1.html#1505-mhds-security-considerations): "**The policy landscape that the community is built on needs to be defined well before the community is built.**" [§1:50.5.1 Policies and Risk Management](https://profiles.ihe.net/ITI/MHDS/volume-1.html#15051-policies-and-risk-management): "IHE solves interoperability problems via the implementation of technology standards. **It does not define Privacy or Security Policies**, Risk Management, Healthcare Application Functionality, Operating System Functionality, Physical Controls, or even general Network Controls."
 [^balp-corr]: [BALP, §3:5.7.3.1 X-Request-Id header](https://profiles.ihe.net/ITI/BALP/content.html#35731-x-request-id-header): "Where it is known that an http RESTful transaction included an X-Request-Id, that value should be recorded in an .entity dedicated to X-Request-Id. **This ID can be used to correlated AuditEvents from client and server**, and may aid with correlation on further activities recorded caused by the transaction."
 [^ch-epr-arch]: [eHealth Suisse, EPR architecture. A detailed description, §3.3.4 XDS Document Repositories](https://www.e-health-suisse.ch/payload/api/documents/file/EPD-Architektur_EN.pdf): "The Document Repository Service implements interfaces to **store and query the binary objects** of the XDS documents. **The data are captured by the connected systems of the (core) communities when documents are saved** and are registered via interfaces."
+[^mhds-xds]: [MHDS Vol. 1, §1:50.4.1 Concepts](https://profiles.ihe.net/ITI/MHDS/volume-1.html#15041-concepts): "The MHDS Profile supports Document Sharing utilizing only FHIR infrastructures. **This is similar functionality to XDS but using the FHIR standard and not SOAP.**"
 [^estonia]: [e-Estonia, e-Health Record](https://e-estonia.com/solutions/healthcare/e-health-records/): "the e-Health Record actually **retrieves data as necessary from various providers**, who may be using different systems" and "presents it in a standard format".
 
 *[PMIR]: Patient Master Identity Registry, perfil IHE que gestiona la identidad maestra del paciente
@@ -165,3 +170,5 @@ Las citas reproducen el texto publicado por su fuente. Los recortes se marcan co
 *[ATNA]: Audit Trail and Node Authentication, perfil IHE de auditoría y seguridad de los nodos
 *[BALP]: Basic Audit Log Patterns, perfil IHE con los patrones de AuditEvent de FHIR
 *[PCF]: Privacy Consent on FHIR, perfil IHE de consentimiento del paciente
+*[XDS]: Cross-Enterprise Document Sharing, perfil IHE de intercambio de documentos sobre SOAP
+*[XCA]: Cross-Community Access, perfil IHE de acceso a documentos entre comunidades

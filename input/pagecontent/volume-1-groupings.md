@@ -74,7 +74,7 @@ La [Tabla 2.4-1](volume-1-groupings.html#tabla-2-4-1) reúne lo anterior en una 
 
 ### Sobre los despliegues
 
-Las agrupaciones anteriores son lógicas. Un despliegue puede repartir los actores agrupados entre varios sistemas o concentrarlos en uno solo, siempre que el comportamiento observable desde fuera sea el especificado. El Document Registry, el registro de identidad maestra y el directorio pueden vivir en un mismo servidor FHIR central sin que nada de esta sección cambie. La sección 2.7 describe los modelos de despliegue.
+Las agrupaciones anteriores son lógicas. Un despliegue puede repartir los actores agrupados entre varios sistemas o concentrarlos en uno solo, siempre que el comportamiento observable desde fuera sea el especificado. El Document Registry, el registro de identidad maestra y el directorio pueden vivir en un mismo servidor FHIR central sin que nada de esta sección cambie.
 
 ### Referencias
 

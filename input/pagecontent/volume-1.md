@@ -44,6 +44,5 @@ Dicho en seis afirmaciones:
 - **Agrupaciones de actores requeridas** enumera los actores de otros perfiles que cada actor de HIX agrupa.
 - **Casos de uso y flujos** recorre los escenarios que la arquitectura soporta, con el flujo de cada uno.
 - **Consideraciones de seguridad** especifica el modelo de confianza, los dos regímenes de token y los controles de seguridad y privacidad.
-- **Consideraciones entre perfiles y despliegue** muestra cómo se combinan los perfiles en sistemas concretos y qué modelos de despliegue admite la comunidad.
 
 El Volumen 2 especifica cada transacción y el Volumen 3 el contenido que se intercambia. Este volumen describe qué hace cada actor y por qué; los siguientes, cómo.
