@@ -1,6 +1,6 @@
 Un actor de HIX no se implementa desde cero. Se implementa agrupando actores de los perfiles IHE que HIX compone, y cada uno de ellos trae consigo sus transacciones, sus opciones y sus requisitos. La sección 2.2 dice qué transacciones ejecuta cada actor. Esta sección dice de qué está hecho, es decir, qué actores IHE agrupa y bajo qué opciones. Para quien implementa, es la lista de perfiles que debe leer y de agrupaciones que debe declarar al afirmar su conformidad. Para quien solo quiere entender la arquitectura, basta con la sección 2.2 y esta queda como referencia.
 
-Las agrupaciones se describen primero en prosa, actor por actor, y se resumen al final en la Tabla 2.4-1.
+Las agrupaciones se describen primero en prosa, actor por actor, y se resumen al final en la [Tabla 2.4-1](volume-1-groupings.html#tabla-2-4-1).
 
 ### Lo que casi todos agrupan
 
@@ -20,11 +20,11 @@ La aplicación del paciente queda fuera de ATNA y de CT porque corre en el dispo
 
 **Consumidor.** Es un [Document Consumer](appendix-glossary.html#document-consumer) de MHD, que localiza con ITI-66 e ITI-67 y recupera con ITI-68 a través del Record Locator Service, y un Authorization Client de IUA. Puede agrupar además un [Patient Identifier Cross-reference Consumer](appendix-glossary.html#patient-identifier-cross-reference-consumer) de PIXm, para resolver con ITI-83 un identificador que ya conoce, y, bajo la Opción de Demografía, un [Patient Demographics Consumer](appendix-glossary.html#patient-demographics-consumer) de PDQm, para buscar con ITI-78 a un paciente del que solo conoce sus datos. No es Resource Server, porque no responde transacciones de nadie.
 
-**Aplicación del paciente.** Es un Document Consumer de MHD y un Authorization Client de IUA, y nada más. Obtiene su token con [HIX-2] y desde ahí localiza y recupera como cualquier consumidor, confinada al paciente que la usa.
+**Aplicación del paciente.** Es un Document Consumer de MHD y un Authorization Client de IUA, y nada más. Obtiene su token con [HIX-2](volume-1-actors.html#hix-2) y desde ahí localiza y recupera como cualquier consumidor, confinada al paciente que la usa.
 
 ### Actores centrales
 
-**Record Locator Service.** Hacia los miembros es un [Document Responder](appendix-glossary.html#document-responder) de MHD, que recibe sus localizaciones y recuperaciones, y un Resource Server de IUA con la Token Introspection Option, porque comprueba cada token con ITI-102. Hacia el Document Registry y los custodios es un [Document Consumer](appendix-glossary.html#document-consumer) de MHD, que ejecuta esas mismas transacciones a nombre del solicitante, y un Authorization Client de IUA, que obtiene para cada destino el token intercambiado con [HIX-1]. Agrupa además un [Patient Identifier Cross-reference Consumer](appendix-glossary.html#patient-identifier-cross-reference-consumer) de PIXm, con el que resuelve la identidad del paciente con ITI-83, y un [Care Services Selective Consumer](appendix-glossary.html#care-services-selective-consumer) de mCSD, con el que obtiene el endpoint de cada custodio con ITI-90.
+**Record Locator Service.** Hacia los miembros es un [Document Responder](appendix-glossary.html#document-responder) de MHD, que recibe sus localizaciones y recuperaciones, y un Resource Server de IUA con la Token Introspection Option, porque comprueba cada token con ITI-102. Hacia el Document Registry y los custodios es un [Document Consumer](appendix-glossary.html#document-consumer) de MHD, que ejecuta esas mismas transacciones a nombre del solicitante, y un Authorization Client de IUA, que obtiene para cada destino el token intercambiado con [HIX-1](volume-1-actors.html#hix-1). Agrupa además un [Patient Identifier Cross-reference Consumer](appendix-glossary.html#patient-identifier-cross-reference-consumer) de PIXm, con el que resuelve la identidad del paciente con ITI-83, y un [Care Services Selective Consumer](appendix-glossary.html#care-services-selective-consumer) de mCSD, con el que obtiene el endpoint de cada custodio con ITI-90.
 
 **Document Registry.** Es el Document Registry de MHDS. MHDS fija sus agrupaciones[^mhds-groupings] y HIX le añade una, porque el miembro publica con su identidad local y el registro la traduce por él.
 
@@ -37,7 +37,7 @@ La aplicación del paciente queda fuera de ATNA y de CT porque corre en el dispo
 
 Las otras dos opciones de MHDS quedan a criterio de cada implementación. La [Consent Manager Option](https://profiles.ihe.net/ITI/MHDS/volume-1.html#15022-consent-manager-option), porque la decisión de divulgación puede aplicarla el Record Locator Service o el propio Document Registry cuando conoce las reglas de la comunidad, como explica la sección 2.1, y la [SVCM Validation Option](https://profiles.ihe.net/ITI/MHDS/volume-1.html#15023-svcm-validation-option), que HIX no exige.
 
-**Authorization Server.** Es el [Authorization Server de IUA](https://profiles.ihe.net/ITI/IUA/index.html#34112-authorization-server), con la Authorization Server Metadata Option, porque publica sus endpoints con ITI-103, y con la Token Introspection Option, porque responde ITI-102. Es también un [OpenID Provider](appendix-glossary.html#openid-provider), es decir, un servidor de autorización que además autentica a la persona y acredita esa autenticación con un `id_token`[^oidc-op]. Lo es porque [HIX-2] se apoya en SMART App Launch, y SMART entrega ese `id_token` junto con el token de acceso cuando la aplicación pide el scope `openid`[^smart-openid]. Y agrupa un [Patient Identifier Cross-reference Consumer](appendix-glossary.html#patient-identifier-cross-reference-consumer) de PIXm, con el que resuelve a la identidad maestra la identidad de la persona autenticada para fijar el contexto de paciente.
+**Authorization Server.** Es el [Authorization Server de IUA](https://profiles.ihe.net/ITI/IUA/index.html#34112-authorization-server), con la Authorization Server Metadata Option, porque publica sus endpoints con ITI-103, y con la Token Introspection Option, porque responde ITI-102. Es también un [OpenID Provider](appendix-glossary.html#openid-provider), es decir, un servidor de autorización que además autentica a la persona y acredita esa autenticación con un `id_token`[^oidc-op]. Lo es porque [HIX-2](volume-1-actors.html#hix-2) se apoya en SMART App Launch, y SMART entrega ese `id_token` junto con el token de acceso cuando la aplicación pide el scope `openid`[^smart-openid]. Y agrupa un [Patient Identifier Cross-reference Consumer](appendix-glossary.html#patient-identifier-cross-reference-consumer) de PIXm, con el que resuelve a la identidad maestra la identidad de la persona autenticada para fijar el contexto de paciente.
 
 **Directorio de la comunidad.** Es el [Care Services Selective Supplier](appendix-glossary.html#care-services-selective-supplier) de mCSD. Lo consultan el Record Locator Service, para dirigir cada recuperación, y el Document Registry, para validar a quien publica. No agrupa ningún otro actor.
 
@@ -53,9 +53,10 @@ Las otras dos opciones de MHDS quedan a criterio de cada implementación. La [Co
 
 ### Resumen
 
-La Tabla 2.4-1 reúne lo anterior en una sola vista. Las opciones van entre corchetes. ATNA Secure Node o Secure Application y CT Time Client acompañan a todos los actores salvo a la aplicación del paciente y no se repiten en cada fila.
+La [Tabla 2.4-1](volume-1-groupings.html#tabla-2-4-1) reúne lo anterior en una sola vista. Las opciones van entre corchetes. ATNA Secure Node o Secure Application y CT Time Client acompañan a todos los actores salvo a la aplicación del paciente y no se repiten en cada fila.
 
 **Tabla 2.4-1:** Actores IHE que agrupa cada actor de HIX
+{: #tabla-2-4-1}
 
 | Actor de HIX | Actores agrupados |
 | --- | --- |

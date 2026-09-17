@@ -62,8 +62,8 @@ En una urgencia la historia cambia en dos puntos. El profesional consulta con el
 1. El [consumidor](appendix-glossary.html#consumidor) obtiene del Authorization Server un token destinado al Record Locator Service y localiza mediante [ITI-67](https://profiles.ihe.net/ITI/MHD/ITI-67.html). En una urgencia sin identificador conocido, busca antes a la persona por datos demográficos mediante ITI-78 ante la infraestructura central.
 2. El Record Locator Service comprueba el token mediante [ITI-102](https://profiles.ihe.net/ITI/IUA/index.html#3102-introspect-token-iti-102), resuelve la identidad maestra mediante ITI-83, consulta el Document Registry mediante ITI-67, evalúa la decisión de divulgación sobre cada puntero y devuelve los divulgados, con URL de contenido que apuntan a sí mismo.
 3. El consumidor recupera mediante [ITI-68](https://profiles.ihe.net/ITI/MHD/ITI-68.html) sobre una de esas URL.
-4. El Record Locator Service relee el puntero, vuelve a evaluar la divulgación, resuelve el endpoint del custodio en el directorio mediante [ITI-90](https://profiles.ihe.net/ITI/mCSD/ITI-90.html) y obtiene mediante [HIX-1] un token para ese custodio.
-5. El Record Locator Service recupera el documento del custodio mediante ITI-68. El custodio valida el token sin llamar al Authorization Server y entrega el documento, que el Record Locator Service entrega al consumidor. Bajo la Opción de Almacenamiento Central, lo recupera del Document Registry en lugar del custodio, con un token intercambiado para él.
+4. El Record Locator Service relee el puntero, vuelve a evaluar la divulgación, resuelve el endpoint del custodio en el directorio mediante [ITI-90](https://profiles.ihe.net/ITI/mCSD/ITI-90.html) y obtiene mediante [HIX-1](volume-1-actors.html#hix-1) un token para ese custodio.
+5. El Record Locator Service recupera el documento del custodio mediante ITI-68. El custodio valida el token con las claves públicas del Authorization Server y entrega el documento, que el Record Locator Service entrega al consumidor. Bajo la Opción de Almacenamiento Central, lo recupera del Document Registry en lugar del custodio, con un token intercambiado para él.
 
 ### Acceso del paciente a su expediente
 
@@ -81,7 +81,7 @@ Este caso es el que permite a HIX servir a la persona lo que es suyo, y no solo 
 
 **Figura 2.5-4:** Acceso del paciente a su expediente
 
-1. La [aplicación del paciente](appendix-glossary.html#aplicacion-del-paciente) inicia [HIX-2]. El Authorization Server autentica a la persona, obtiene su autorización para la aplicación, resuelve su identidad verificada a la identidad maestra mediante ITI-83 y emite el token con ese contexto de paciente y el propósito de uso que corresponde a quien actúa.
+1. La [aplicación del paciente](appendix-glossary.html#aplicacion-del-paciente) inicia [HIX-2](volume-1-actors.html#hix-2). El Authorization Server autentica a la persona, obtiene su autorización para la aplicación, resuelve su identidad verificada a la identidad maestra mediante ITI-83 y emite el token con ese contexto de paciente y el propósito de uso que corresponde a quien actúa.
 2. La aplicación localiza y recupera mediante ITI-67 e ITI-68 a través del Record Locator Service, que confina cada operación al paciente del contexto.
 
 ### Casos previstos
@@ -91,7 +91,7 @@ Los siguientes casos forman parte de la arquitectura y se especificarán en vers
 - **Consentimiento anticipado del paciente.** La persona registra una directiva que permite o restringe la divulgación de sus documentos por clase de solicitante, propósito de uso, categoría de documento y ventana de validez. Se evalúa en cada operación bajo la Opción de Consentimiento.
 - **Administración del consentimiento desde una aplicación.** La persona concede a una aplicación de su elección permiso para leer y escribir sus directivas.
 - **Acceso solicitado por un miembro cuando no hay directiva.** Un miembro dirige a la persona al Authorization Server, que autoriza ese acceso específico. El token resultante lleva el contexto de paciente y la divulgación avanza bajo una autoridad que un momento antes no existía.
-- **Acceso con anulación de la política.** Un profesional accede a documentos que la política ordinaria no le permitiría, declarando el propósito de uso `BTG`. Cómo se admite y cómo se audita lo fija cada comunidad, como indica la Tabla 2.2-3.
+- **Acceso con anulación de la política.** Un profesional accede a documentos que la política ordinaria no le permitiría, declarando el propósito de uso `BTG`. Cómo se admite y cómo se audita lo fija cada comunidad, como indica la [Tabla 2.2-3](volume-1-actors.html#tabla-2-2-3).
 - **Identidad del personal sanitario.** El Authorization Server federa hacia el proveedor de identidad de cada institución en lugar de alojar cuentas de profesionales.
 
 ### Referencias

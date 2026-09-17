@@ -74,9 +74,9 @@ HIX usa OAuth 2.0 ([RFC 6749](https://www.rfc-editor.org/rfc/rfc6749)) según lo
 
 Un miembro obtiene un token para hablar con el Record Locator Service, y solo con él. Ese token no sirve ante ningún custodio, y el miembro nunca recibe uno que sirva. El mediador comprueba cada token que recibe preguntando al Authorization Server si sigue siendo válido. Esa consulta es la introspección de [RFC 7662](https://www.rfc-editor.org/rfc/rfc7662), que IUA recoge como la transacción Introspect Token ([ITI-102](https://profiles.ihe.net/ITI/IUA/index.html#3102-introspect-token-iti-102)).
 
-Cuando una operación exige llegar a un custodio, el mediador no reutiliza el token del miembro. Lo **intercambia** por otro, siguiendo OAuth 2.0 Token Exchange ([RFC 8693](https://www.rfc-editor.org/rfc/rfc8693)). Es decir, presenta al Authorization Server el token del miembro y pide a cambio un token nuevo, hecho a la medida de esa llamada. El token nuevo vale para un solo custodio, que se indica con un resource indicator ([RFC 8707](https://www.rfc-editor.org/rfc/rfc8707)). Vale para una sola transacción. Dura como mucho dos minutos, y nunca más que el token original. Y lleva dentro quién pidió, el miembro, y quién actúa en su nombre, el mediador, en el claim `act` que la RFC define para eso.
+Cuando una operación exige llegar a un custodio, el mediador no reutiliza el token del miembro. Lo **intercambia** por otro, siguiendo OAuth 2.0 Token Exchange ([RFC 8693](https://www.rfc-editor.org/rfc/rfc8693)). Es decir, presenta al Authorization Server el token del miembro y pide a cambio un token nuevo, hecho a la medida de esa llamada. El token nuevo vale para un solo custodio, que se indica con un resource indicator ([RFC 8707](https://www.rfc-editor.org/rfc/rfc8707)). Vale para una sola transacción, la que motivó el intercambio, aunque el token del miembro autorice varias. Dura como mucho dos minutos, y nunca más que el token original. Y lleva dentro quién pidió, el miembro, y quién actúa en su nombre, el mediador, en el claim `act` que la RFC define para eso.
 
-El custodio valida ese token por su cuenta, con las claves públicas del Authorization Server, sin llamar a nadie. Así sabe quién pregunta, en nombre de quién actúa la comunidad y para qué.
+El custodio valida ese token por su cuenta, con las claves públicas del Authorization Server, sin tener que preguntarle. Así sabe quién pregunta, en nombre de quién actúa la comunidad y para qué.
 
 Lo mismo vale hacia los componentes centrales. El mediador no tiene acceso propio al Document Registry ni al registro de identidad maestra. Actúa ante ellos con tokens intercambiados de la misma forma, a nombre del miembro que lo pidió. Un puntero queda registrado a nombre de su custodio, no del mediador. El mediador es el primer punto de aplicación de la política de la comunidad, no un participante con autoridad propia.
 
@@ -123,6 +123,7 @@ Una red de intercambio resuelve cómo se conectan las organizaciones y cómo se 
 IHE deja la gobernanza fuera de su alcance. Declara que no define políticas de privacidad ni de seguridad, y que el marco de políticas de una comunidad debe definirse antes de construirla ([MHDS Vol. 1, §1:50.5.1](https://profiles.ihe.net/ITI/MHDS/volume-1.html#15051-policies-and-risk-management))[^mhds-policy]. Por eso, de los compromisos de la tabla, la apuesta por la operación del centro es el que más pesa.
 
 **Tabla 2.1-1:** Compromisos de la arquitectura
+{: #tabla-2-1-1}
 
 | Compromiso | Qué se acepta | Cómo se mitiga |
 | --- | --- | --- |

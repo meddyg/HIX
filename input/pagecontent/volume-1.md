@@ -21,7 +21,7 @@ Dicho en seis afirmaciones:
 1. La comunidad es **la única contraparte** de sus miembros. El Authorization Server emite todo token, el Record Locator Service media toda localización y recuperación, y la infraestructura central valida lo que cada miembro publica y declara. **Ningún miembro interactúa con otro.**
 2. El **índice es central y el contenido es del custodio**. Un documento se queda donde se produjo; la comunidad sabe que existe, de quién es y quién lo conserva.
 3. La **divulgación se decide una vez por cada consulta**, en la infraestructura central, sobre los metadatos del índice y antes de que se mueva contenido alguno. Localizar y recuperar son dos consultas, y cada una se decide por sí misma.
-4. Cada recuperación alcanza al custodio con una **credencial derivada de la petición viva del solicitante**, atada a ese único custodio, con una vida de dos minutos como máximo y verificable sin llamar a nadie. Ningún participante tiene credenciales permanentes hacia otro.
+4. Cada recuperación alcanza al custodio con una **credencial derivada de la petición viva del solicitante**, atada a ese único custodio, con una vida de dos minutos como máximo y verificable por el custodio con las claves públicas del Authorization Server. Ningún participante tiene credenciales permanentes hacia otro.
 5. La **identidad maestra del paciente está anclada en la identidad nacional verificada**; los miembros declaran sus identidades locales y la comunidad las vincula. Ningún miembro crea una persona.
 6. El **transporte hacia cada custodio se declara en el directorio**, no en los punteros ni en la API. Cuando la comunidad opera sobre una red de intercambio como [X-Road](https://x-road.global/), el endpoint del custodio indica ese canal y el Record Locator Service lo recorre automáticamente, sin que cambie un puntero, un token ni una transacción. X-Road es transporte y confianza entre organizaciones; la semántica del intercambio sigue siendo la de los perfiles FHIR.
 
@@ -34,7 +34,7 @@ Dicho en seis afirmaciones:
 - **Capacidades opcionales de los actores** describe lo que un actor puede declarar además de lo requerido, sin dejar de ser conforme.
 - **Agrupaciones de actores requeridas** enumera los actores de otros perfiles que cada actor de HIX agrupa.
 - **Casos de uso y flujos** recorre los escenarios que la arquitectura soporta, con el flujo de cada uno.
-- **Consideraciones de seguridad** especifica el modelo de confianza, los tres regímenes de token, lo que la arquitectura garantiza y lo que no.
+- **Consideraciones de seguridad** especifica el modelo de confianza, los dos regímenes de token y los controles de seguridad y privacidad.
 - **Consideraciones entre perfiles y despliegue** muestra cómo se combinan los perfiles en sistemas concretos y qué modelos de despliegue admite la comunidad.
 
 El Volumen 2 especifica cada transacción y el Volumen 3 el contenido que se intercambia. Este volumen describe qué hace cada actor y por qué; los siguientes, cómo.

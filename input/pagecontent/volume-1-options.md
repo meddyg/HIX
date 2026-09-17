@@ -1,6 +1,7 @@
-Las opciones definen capacidades que un actor puede implementar sin dejar de ser conforme. La Tabla 2.3-1 lista las que cada actor puede declarar. Un actor que declara una opción **SHALL** cumplir todos los requisitos de esa opción.
+Las opciones definen capacidades que un actor puede implementar sin dejar de ser conforme. La [Tabla 2.3-1](volume-1-options.html#tabla-2-3-1) lista las que cada actor puede declarar. Un actor que declara una opción **SHALL** cumplir todos los requisitos de esa opción.
 
 **Tabla 2.3-1:** Actores y opciones de HIX
+{: #tabla-2-3-1}
 
 | Actor | Opción |
 | --- | --- |
