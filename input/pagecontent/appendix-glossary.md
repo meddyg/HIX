@@ -1,4 +1,4 @@
-Este glosario reúne, en una línea cada uno, los actores y términos que usa esta guía. Los actores propios de HIX se definen en la sección 2.2. Los actores IHE enlazan a la página del perfil que los define.
+Este glosario reúne, en una línea cada uno, los actores y términos que usa esta guía. Los actores propios de HIX se definen en la [sección 2.2](volume-1-actors.html). Los actores IHE enlazan a la página del perfil que los define.
 
 ### Actores de HIX
 
@@ -108,11 +108,17 @@ Este glosario reúne, en una línea cada uno, los actores y términos que usa es
 **[OpenID Provider](https://openid.net/specs/openid-connect-core-1_0.html#Terminology).** Authorization Server de OAuth 2.0 que además autentica a la persona y acredita esa autenticación con un `id_token`, según OpenID Connect. En HIX lo es el Authorization Server de la comunidad.
 {: #openid-provider}
 
+**Token del solicitante.** El token que un miembro obtiene con ITI-71, o la aplicación del paciente con [HIX-2](volume-1-actors.html#hix-2), destinado al Record Locator Service. Lleva el sujeto, la organización, el propósito de uso, el alcance y, en el caso de la aplicación del paciente, el contexto de paciente.
+{: #token-del-solicitante}
+
 **Token intercambiado.** El token que el mediador obtiene con [HIX-1](volume-1-actors.html#hix-1) para un único destino y una sola transacción, con el solicitante original como sujeto y el mediador como actor.
 {: #token-intercambiado}
 
 **PEP.** Punto de aplicación de política. El lugar donde se comprueba que una petición cumple las reglas de la comunidad. En HIX, el primero es el mediador.
 {: #pep}
+
+**PDP.** Punto de decisión de política. El lugar donde se toma la decisión que el PEP aplica. En HIX, la decisión de divulgación se toma en la infraestructura central, en el mediador o en el Document Registry.
+{: #pdp}
 
 *[PMIR]: Patient Master Identity Registry, perfil IHE que gestiona la identidad maestra del paciente
 *[PIXm]: Patient Identifier Cross-referencing for mobile, perfil IHE que enlaza los identificadores locales de un paciente con su identidad maestra

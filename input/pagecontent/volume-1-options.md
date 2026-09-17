@@ -38,7 +38,7 @@ El Record Locator Service que declara esta opción **SHALL** consultar la decisi
 
 El modelo de consentimiento, su ciclo de vida, su representación y sus políticas se especificarán en una versión posterior de esta guía a partir de [PCF](https://profiles.ihe.net/ITI/PCF/index.html). Esta opción declara el punto en el que esa decisión se aplica y la información que necesita. Hasta entonces, la comunidad opera bajo la política de divulgación única que haya acordado, aplicada en el mismo punto.
 
-Un Document Registry puede aplicar la misma decisión declarando la [Consent Manager Option](https://profiles.ihe.net/ITI/MHDS/volume-1.html#15022-consent-manager-option) de MHDS. En qué punto se aplica, en el Record Locator Service o en el Document Registry, es decisión de la implementación, como explica la sección 2.1.
+Un Document Registry puede aplicar la misma decisión declarando la [Consent Manager Option](https://profiles.ihe.net/ITI/MHDS/volume-1.html#15022-consent-manager-option) de MHDS. En qué punto se aplica, en el Record Locator Service o en el Document Registry, es decisión de la implementación, como explica la [sección 2.1](volume-1-concepts.html).
 
 ### Opción de Demografía
 

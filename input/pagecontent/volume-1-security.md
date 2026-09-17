@@ -6,19 +6,19 @@ MHDS advierte que el marco de políticas de una comunidad debe definirse antes d
 
 - Qué organizaciones pueden ser miembros, quién lo certifica, bajo qué condiciones dejan de serlo y quién financia la infraestructura central. La [Tabla 2.1-1](volume-1-concepts.html#tabla-2-1-1) de compromisos de la arquitectura lo señala como el riesgo principal de la comunidad a largo plazo.
 - Qué propósitos de uso se admiten, con qué condiciones y qué documentos alcanza cada uno, en particular qué permite `ETREAT` frente a `TREAT`, como indica la [Tabla 2.2-3](volume-1-actors.html#tabla-2-2-3).
-- Qué política de divulgación aplica mientras el modelo de consentimiento no esté especificado, y en qué punto se aplica, en el Record Locator Service o en el Document Registry, como admite la sección 2.3.
+- Qué política de divulgación aplica mientras el modelo de consentimiento no esté especificado, como señala la [sección 2.3](volume-1-options.html).
 - Qué custodios pueden ejercer la Opción de Almacenamiento Central y quién lo decide.
 - Cómo se verifica que los custodios etiquetan correctamente la confidencialidad de sus documentos.
-- Cómo obtiene una persona la identidad verificada con la que se autentica ante el Authorization Server, como señala la sección 2.5.
+- Cómo obtiene una persona la identidad verificada con la que se autentica ante el Authorization Server, como señala la [sección 2.5](volume-1-usecases.html).
 - Qué solicitantes pueden buscar pacientes por datos demográficos y qué identidades maestras se les revelan por esa vía, como exige la Opción de Demografía.
 - Cuánto tiempo se conservan los registros de auditoría, quién puede consultarlos y qué ocurre con una operación cuando el Audit Record Repository no está disponible.
 - Qué constituye un acceso de emergencia, cómo se admite y qué consecuencias tiene invocarlo.
 - Si el acceso de red a los custodios se cierra de modo que la vía mediada sea la única alcanzable, o si esa restricción es solo defensa en profundidad.
-- Si se admite la introspección en el custodio, con la dependencia del Authorization Server en cada recuperación que conlleva, como señala la sección 2.6.2.
+- Si se admite la introspección en el custodio, con la dependencia del Authorization Server en cada recuperación que conlleva, como señala la [sección 2.6.2](volume-1-security.html#modelo-de-confianza).
 
-### Modelo de confianza
+### Modelo de confianza {#modelo-de-confianza}
 
-El límite de confianza pasa entre cada miembro y la infraestructura central, como establece la sección 2.1. Una recuperación cruza ese límite dos veces, del solicitante a la comunidad y de la comunidad al custodio, y cada cruce lleva un token de un régimen distinto. El primero es el token que el solicitante obtiene del Authorization Server, destinado al Record Locator Service y comprobado por introspección. El segundo es el [token intercambiado](appendix-glossary.html#token-intercambiado) que el Record Locator Service obtiene con [HIX-1](volume-1-actors.html#hix-1) para cada destino que alcanza, sea un custodio o un actor central, y que el destino valida por sí mismo. La [Tabla 2.6-1](volume-1-security.html#tabla-2-6-1) los compara.
+El límite de confianza pasa entre cada miembro y la infraestructura central, como establece la [sección 2.1](volume-1-concepts.html). Una recuperación cruza ese límite dos veces, del solicitante a la comunidad y de la comunidad al custodio, y cada cruce lleva un token de un régimen distinto. El primero es el token que el solicitante obtiene del Authorization Server, destinado al Record Locator Service y comprobado por introspección. El segundo es el [token intercambiado](appendix-glossary.html#token-intercambiado) que el Record Locator Service obtiene con [HIX-1](volume-1-actors.html#hix-1) para cada destino que alcanza, sea un custodio o un actor central, y que el destino valida por sí mismo. La [Tabla 2.6-1](volume-1-security.html#tabla-2-6-1) los compara.
 
 **Tabla 2.6-1:** Los dos regímenes de token
 {: #tabla-2-6-1}
@@ -36,7 +36,7 @@ De la tabla se siguen cuatro reglas. De cada una conviene decir qué fija HIX, d
 
 **Un token intercambiado vale ante un solo destino.** El formato no lo impone. El claim `aud` de un JWT admite una lista de audiencias ([RFC 7519, §4.1.3](https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.3))[^rfc7519-aud], y el Authorization Server lo rellena con el recurso que el cliente indicó al pedir el token ([RFC 9068, §3](https://www.rfc-editor.org/rfc/rfc9068.html#section-3))[^rfc9068-aud]. HIX lo restringe para el token intercambiado, porque [HIX-1](volume-1-actors.html#hix-1) pide un destino por intercambio y de esa restricción depende que un custodio no pueda reutilizar el token ante otro. El token del solicitante nombra a los actores centrales que el miembro alcanza directamente. En la arquitectura de este volumen es solo el Record Locator Service. Si la arquitectura cambiara y el miembro alcanzara otro actor central, por ejemplo el registro de identidad maestra, su token nombraría a ambos en `aud`, como el formato permite, sin que cambie nada más de este capítulo.
 
-**El token del solicitante no sale de la infraestructura central.** El Record Locator Service no lo reenvía a ningún custodio ni actor central. Ante cada destino presenta un token intercambiado para ese destino, como fija la sección 2.2. Así el solicitante nunca tiene una credencial que valga ante un custodio, y un custodio nunca recibe una que valga ante otro.
+**El token del solicitante no sale de la infraestructura central.** El Record Locator Service no lo reenvía a ningún custodio ni actor central. Ante cada destino presenta un token intercambiado para ese destino, como fija la [sección 2.2](volume-1-actors.html). Así el solicitante nunca tiene una credencial que valga ante un custodio, y un custodio nunca recibe una que valga ante otro.
 
 **El custodio puede validar el token sin preguntar al Authorization Server.** Todo lo que necesita está en el token y en las claves que el Authorization Server publica. Esa publicación es su única dependencia, y la resuelve por adelantado, conservando las claves y renovándolas cuando aparece un identificador de clave que no conoce. HIX exige esa validación local y no exige introspección en el custodio. Una comunidad puede admitirla además, con la Token Introspection Option de IUA, y quien lo hace acepta que cada recuperación dependa entonces del Authorization Server en ese momento. La subsección siguiente detalla la validación.
 
@@ -70,7 +70,7 @@ Un custodio que recibe un token intercambiado puede comprobar por sí mismo cinc
 - Que autoriza solo la transacción para la que se intercambió. El token del solicitante puede llevar varios scopes, pero el Record Locator Service pide en el intercambio únicamente el de la transacción que va a realizar, por ejemplo el de ITI-68 al recuperar.
 - Que expira en dos minutos como máximo.
 
-El token no nombra ningún documento. Mientras dura, autoriza esa transacción ante ese custodio, sea cual sea el documento. Tampoco nombra al paciente, porque el token de un miembro no lleva ninguno, como explica la sección 2.1. La excepción es la aplicación del paciente. Su contexto de paciente, fijado con [HIX-2](volume-1-actors.html#hix-2), se conserva en el intercambio y limita al custodio a ese expediente.
+El token no nombra ningún documento. Mientras dura, autoriza esa transacción ante ese custodio, sea cual sea el documento. Tampoco nombra al paciente, porque el token de un miembro no lleva ninguno, como explica la [sección 2.1](volume-1-concepts.html). La excepción es la aplicación del paciente. Su contexto de paciente, fijado con [HIX-2](volume-1-actors.html#hix-2), se conserva en el intercambio y limita al custodio a ese expediente.
 
 Lo que el token sí aporta es el contexto con el que se decide, en las extensiones de IUA. Quién pide, para qué organización, con qué propósito de uso y, si lo hay, sobre qué paciente. Ese contexto acota lo que puede alcanzarse con el token, y con él se decide qué documento se entrega, en tres capas y en este orden.
 
@@ -88,12 +88,12 @@ Deshabilitar un cliente en el Authorization Server **SHALL** revocar sus tokens 
 
 HIX especifica los siguientes controles. Cada uno remite a la sección que lo fija.
 
-- **Autenticación de sistemas.** Toda conexión entre dos participantes se autentica en ambos extremos con ATNA, como fija la sección 2.4. Ningún participante acepta tráfico anónimo.
-- **Autorización.** Toda transacción presenta un token emitido por el Authorization Server de la comunidad y destinado a quien la recibe, como fija la sección 2.2.
+- **Autenticación de sistemas.** Toda conexión entre dos participantes se autentica en ambos extremos con ATNA, como fija la [sección 2.4](volume-1-groupings.html). Ningún participante acepta tráfico anónimo.
+- **Autorización.** Toda transacción presenta un token emitido por el Authorization Server de la comunidad y destinado a quien la recibe, como fija la [sección 2.2](volume-1-actors.html).
 - **Delegación acotada.** El token con el que la comunidad alcanza a un custodio se emite para esa recuperación, conserva el sujeto y las extensiones del solicitante original y declara al Record Locator Service como actor.
 - **Mínimo privilegio.** El alcance de un token intercambiado se limita a la transacción que motivó el intercambio y nunca excede el del solicitante, el de la delegación registrada ni las capacidades del destino. Poder localizar un documento nunca da poder para recuperarlo.
 - **Confidencialidad en tránsito.** Todo tramo viaja cifrado, incluido el que atraviesa un canal de interconexión bajo la Opción de Transporte Mediado.
-- **Divulgación decidida sobre los punteros.** La política se evalúa en la infraestructura central, una vez por consulta, sobre los metadatos del índice y antes de que se mueva contenido, como fija la sección 2.1.
+- **Divulgación decidida sobre los punteros.** La política se evalúa en la infraestructura central, una vez por consulta, sobre los metadatos del índice y antes de que se mueva contenido, como fija la [sección 2.1](volume-1-concepts.html).
 - **Auditoría en ambos extremos.** El miembro que solicita y la infraestructura central registran la localización. Infraestructura central y custodio registran la recuperación. Ningún tramo queda sin testigo.
 - **Trazabilidad entre tramos.** Los registros de una misma divulgación comparten un identificador de correlación, de modo que la interacción completa pueda reconstruirse.
 - **Identidad del paciente.** Solo la fuente autoritativa crea identidades maestras. Lo que un miembro declara vincula su identidad local con una de ellas, en su propio dominio, y queda registrado como una afirmación suya.
@@ -102,7 +102,7 @@ HIX especifica los siguientes controles. Cada uno remite a la sección que lo fi
 
 #### Seguridad básica
 
-Todo actor de HIX, salvo la aplicación del paciente, es un Secure Node o Secure Application de ATNA y un Time Client de CT, como fija la sección 2.4. Los actores centrales registran sus eventos en el Audit Record Repository de la comunidad y cada miembro en el suyo, con el contenido que BALP define para cada transacción.
+Todo actor de HIX, salvo la aplicación del paciente, es un Secure Node o Secure Application de ATNA y un Time Client de CT, como fija la [sección 2.4](volume-1-groupings.html). Los actores centrales registran sus eventos en el Audit Record Repository de la comunidad y cada miembro en el suyo, con el contenido que BALP define para cada transacción.
 
 El Record Locator Service **SHALL** registrar tanto la solicitud que recibe como cada recuperación que origina hacia un custodio, bajo un identificador de correlación que él mismo acuña y transmite al custodio, y **SHALL NOT** transmitir hacia el custodio ninguno que el solicitante proponga. Ningún registro de auditoría **SHALL** contener valores de credenciales ni contenido clínico.
 
@@ -122,17 +122,17 @@ La política de la comunidad determina qué solicitante alcanza qué documentos.
 | `V`, muy restringido | Cualquiera salvo el custodio | Denegado, salvo acceso de emergencia |
 {: .table .table-bordered}
 
-Cada comunidad define su equivalente y lo aplica en el punto donde toma la decisión de divulgación. Lo que sí es requisito es que la política falle cerrada. Un puntero sin etiqueta se rechaza al publicar, como fija la sección 2.2, y una etiqueta que la política no reconoce se trata como la más restrictiva. FHIR pide a toda guía de implementación decir qué hacer con una etiqueta que no se reconoce, sin prescribir la respuesta ([FHIR R5, Security Labels](https://hl7.org/fhir/R5/security-labels.html))[^fhir-seclabels].
+Cada comunidad define su equivalente y lo aplica en el punto donde toma la decisión de divulgación. Lo que sí es requisito es que la política falle cerrada. Un puntero sin etiqueta se rechaza al publicar, como fija la [sección 2.2](volume-1-actors.html), y una etiqueta que la política no reconoce se trata como la más restrictiva. FHIR pide a toda guía de implementación decir qué hacer con una etiqueta que no se reconoce, sin prescribir la respuesta ([FHIR R5, Security Labels](https://hl7.org/fhir/R5/security-labels.html))[^fhir-seclabels].
 
 #### Consentimiento del paciente
 
-La decisión de divulgación necesita conocer al paciente, al solicitante, su organización, el propósito de uso que lleva su token y la etiqueta de confidencialidad de cada puntero. La Opción de Consentimiento de la sección 2.3 describe ese punto de aplicación y la información que necesita, y el destino es PCF, como explica la sección 2.1.
+La decisión de divulgación necesita conocer al paciente, al solicitante, su organización, el propósito de uso que lleva su token y la etiqueta de confidencialidad de cada puntero. La Opción de Consentimiento de la [sección 2.3](volume-1-options.html) describe ese punto de aplicación y la información que necesita, y el destino es PCF, como explica la [sección 2.1](volume-1-concepts.html).
 
 Mientras el modelo de consentimiento no esté especificado, la comunidad opera bajo la política de divulgación que haya acordado. Esa política debe estar documentada y ser la misma para todos los miembros.
 
 #### Superficies de identidad
 
-Las transacciones de identidad también divulgan. ITI-83 revela que un identificador corresponde a una persona que la comunidad conoce, e ITI-78 revela qué identidades maestras coinciden con unos datos demográficos. Ninguna revela las identidades locales de otros miembros, como fijan la sección 2.2 para ITI-83 y la Opción de Demografía de la sección 2.3 para ITI-78. Estas superficies las habilita el scope del token, no el propósito de uso, y la comunidad decide qué solicitantes pueden ejercerlas y qué identidades maestras se revelan por datos demográficos, como exige la Opción de Demografía.
+Las transacciones de identidad también divulgan. ITI-83 revela que un identificador corresponde a una persona que la comunidad conoce, e ITI-78 revela qué identidades maestras coinciden con unos datos demográficos. Ninguna revela las identidades locales de otros miembros, como fijan la [sección 2.2](volume-1-actors.html) para ITI-83 y la Opción de Demografía de la [sección 2.3](volume-1-options.html) para ITI-78. Estas superficies las habilita el scope del token, no el propósito de uso, y la comunidad decide qué solicitantes pueden ejercerlas y qué identidades maestras se revelan por datos demográficos, como exige la Opción de Demografía.
 
 #### Acceso de emergencia
 

@@ -14,9 +14,13 @@ Toda localización y toda recuperación pasan por el [Record Locator Service](ap
 
 MHDS admite que un consumidor alcance directamente al servicio que aloja un documento fuera del Document Registry ([MHDS Vol. 1, §1:50.1.1.2](https://profiles.ihe.net/ITI/MHDS/volume-1.html#150112-storage-of-binary))[^mhds-storage]. HIX no lo admite, y la razón está en el propio perfil. MHDS reconoce, al definir su Consent Manager Option, que esa opción **no protege el contenido almacenado fuera del registro** y que, cuando los documentos se almacenan en otro lugar, cada Document Source carga solo con la protección de sus documentos ([MHDS Vol. 1, §1:50.2.2](https://profiles.ihe.net/ITI/MHDS/volume-1.html#15022-consent-manager-option))[^mhds-consent]. Con custodia distribuida y acceso directo, cada custodio tendría que evaluar la política de la comunidad frente a cada consumidor. La mediación cierra ese hueco. La política de divulgación se aplica en un solo lugar, la infraestructura central, con una única superficie auditable que ve la interacción completa y un único contrato de integración.
 
-El precio es que la infraestructura central se vuelve indispensable para operar, y se dimensiona y protege como tal. Todo byte clínico atraviesa el mediador. La sección 2.6 especifica lo que eso exige.
+El precio es que la infraestructura central se vuelve indispensable para operar, y se dimensiona y protege como tal. Todo byte clínico atraviesa el mediador. La [sección 2.6](volume-1-security.html) especifica lo que eso exige.
 
-Mediar no es lo mismo que enrutar. El mediador es imprescindible donde hay que alcanzar a un custodio en nombre de un miembro, es decir, al recuperar, porque es quien obtiene el token delegado para ese custodio y recorre el canal que el directorio declara. La decisión de divulgación sobre los punteros es otra cosa. La toma la infraestructura central antes de mover contenido alguno, y puede tomarla el mediador o un Document Registry que conozca la política de la comunidad, como admiten la Opción de Consentimiento de la sección 2.3 y la Consent Manager Option de MHDS. En las transacciones entre un miembro y un solo componente central, como declarar una identidad, el trabajo es otro. Consiste en comprobar que la petición cumple las reglas de la comunidad para esa transacción, por ejemplo que el miembro solo escribe en su propio dominio de identificadores, y en registrarla. Esa comprobación la puede hacer el mediador o el propio componente, siempre que el componente conozca esas reglas y registre en el mismo repositorio de auditoría. El miembro ejecuta siempre las mismas transacciones, con los mismos mensajes y las mismas reglas. Lo único que cambia es el punto que las valida, el mediador o el componente central.
+Mediar no es lo mismo que enrutar. El mediador es imprescindible donde hay que alcanzar a un custodio en nombre de un miembro, es decir, al recuperar, porque es quien obtiene el token delegado para ese custodio y recorre el canal que el directorio declara.
+
+La decisión de divulgación sobre los punteros es otra cosa. La toma la infraestructura central antes de mover contenido alguno, y puede tomarla el mediador o un Document Registry que conozca la política de la comunidad, como admiten la Opción de Consentimiento de la [sección 2.3](volume-1-options.html) y la Consent Manager Option de MHDS.
+
+En las transacciones entre un miembro y un solo componente central, como declarar una identidad, el trabajo es otro. Consiste en comprobar que la petición cumple las reglas de la comunidad para esa transacción, por ejemplo que el miembro solo escribe en su propio dominio de identificadores, y en registrarla. Esa comprobación la puede hacer el mediador o el propio componente, siempre que el componente conozca esas reglas y registre en el mismo repositorio de auditoría. El miembro ejecuta siempre las mismas transacciones, con los mismos mensajes y las mismas reglas. Lo único que cambia es el punto que las valida, el mediador o el componente central.
 
 > **Nota.** El mediador es desacoplable. No añade nada al modelo de MHDS. Solo concentra el PEP y las transacciones que MHDS reparte entre los miembros. Sin él, la comunidad operaría como MHDS estándar, con el mismo flujo, pero cada miembro tendría que aplicar la política, resolver endpoints, obtener credenciales y auditar por su cuenta. Quitar el mediador no cambia la arquitectura, solo mueve el PEP a cada miembro.
 
@@ -28,7 +32,7 @@ MHDS admite dos ubicaciones válidas para el contenido, dentro del Document Regi
 
 Las dos ubicaciones tienen ejemplos nacionales. Estonia recupera cada documento del proveedor que lo produjo, como se ve en la sección de transporte. Suiza hace lo contrario. Cada comunidad de su expediente electrónico almacena los binarios en su propio Document Repository y las instituciones le entregan el documento al publicarlo ([eHealth Suisse, EPR architecture, §3.3.4](https://www.e-health-suisse.ch/payload/api/documents/file/EPD-Architektur_EN.pdf))[^ch-epr-arch]. Como la API que ve el solicitante es idéntica bajo ambas ubicaciones, un custodio puede pasar de una a otra sin que ningún miembro lo note. Por eso "el contenido nunca sale del custodio" es una política por defecto y no un principio absoluto. La arquitectura admite las dos y la comunidad decide por custodio.
 
-### Identidad del paciente (PMIR)
+### Identidad del paciente
 
 Cada miembro **solo conoce y solo usa sus propios identificadores de paciente**. No conoce los de los demás miembros ni necesita conocerlos. Para la comunidad, cada miembro es un **dominio de identificadores** distinto, y un mismo identificador local solo tiene sentido dentro del dominio del miembro que lo asignó. La comunidad no reemplaza esos identificadores. Mantiene una **identidad maestra** por persona y enlaza con ella las identidades locales que los miembros declaran, de modo que cualquier identificador local, de cualquier miembro, resuelve a la misma persona.
 
@@ -37,8 +41,9 @@ La identidad maestra es un recurso `Patient` en un dominio reservado a la identi
 ![Identidad maestra e identidades locales](hix-master-patient-index.svg)
 
 **Figura 2.1-1:** Identidad maestra e identidades locales
+{: #figura-2-1-1}
 
-La Figura 2.1-1 muestra cómo se construye.
+La [Figura 2.1-1](volume-1-concepts.html#figura-2-1-1) muestra cómo se construye.
 
 - La **fuente autoritativa de identidad** es quien crea la identidad maestra. Lo hace con el feed **[PMIR](https://profiles.ihe.net/ITI/PMIR/index.html)** ([ITI-93](https://profiles.ihe.net/ITI/PMIR/ITI-93.html)), una vez que comprobó quién es la persona con su identificador nacional. Nadie más puede crear una identidad maestra. HIX no define cuál debe ser esa fuente, pero propone que sea el EDUS, como indica la introducción del volumen.
 - Cada **miembro** declara los pacientes de su dominio con el feed **[PIXm](https://profiles.ihe.net/ITI/PIXm/index.html)** ([ITI-104](https://profiles.ihe.net/ITI/PIXm/ITI-104.html)). Envía su identificador local junto con el identificador nacional de la persona, y el registro de identidad enlaza ese identificador local con la identidad maestra que ya existe para esa persona. Si la persona todavía no tiene identidad maestra, la declaración se rechaza. *Un miembro **vincula**, nunca crea.*
@@ -60,7 +65,7 @@ La unidad del índice es el puntero, un [`DocumentReference`](https://hl7.org/fh
 
 El resto de elementos, como `status`, `type` o `date`, son los metadatos habituales de MHD y se especifican en el Volumen 3.
 
-### Directorio de la comunidad (mCSD)
+### Directorio de la comunidad
 
 El directorio describe las organizaciones participantes, su pertenencia a la comunidad y los endpoints en los que responden. Es la fuente de la que la infraestructura central aprende a quién dirigir una recuperación, por qué canal y qué opciones ejerce cada custodio.
 
@@ -80,11 +85,12 @@ El custodio valida ese token por su cuenta, con las claves públicas del Authori
 
 Lo mismo vale hacia los componentes centrales. El mediador no tiene acceso propio al Document Registry ni al registro de identidad maestra. Actúa ante ellos con tokens intercambiados de la misma forma, a nombre del miembro que lo pidió. Un puntero queda registrado a nombre de su custodio, no del mediador. El mediador es el primer punto de aplicación de la política de la comunidad, no un participante con autoridad propia.
 
-La Figura 2.1-2 resume el recorrido de los tokens. Un solo token entra por la izquierda, el del miembro, y de él derivan tantos tokens de un solo destino como custodios y componentes centrales haga falta alcanzar.
+La [Figura 2.1-2](volume-1-concepts.html#figura-2-1-2) resume el recorrido de los tokens. Un solo token entra por la izquierda, el del miembro, y de él derivan tantos tokens de un solo destino como custodios y componentes centrales haga falta alcanzar.
 
 ![Delegación de tokens en HIX](hix-delegacion.svg)
 
 **Figura 2.1-2:** Delegación de tokens en HIX
+{: #figura-2-1-2}
 
 Tres reglas hacen que el mínimo privilegio sea estructural, en lugar de depender de la buena conducta de cada parte.
 

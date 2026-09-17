@@ -6,13 +6,12 @@ Esta guía describe los roles de la comunidad, sus límites de confianza y la re
 
 Esta arquitectura abarca las siguientes capacidades dentro de la comunidad:
 
-- publicación, indexación, localización y recuperación de documentos clínicos;
-- custodia distribuida de documentos y almacenamiento central cuando corresponda;
-- transporte seguro hacia los custodios, HTTPS directo o **[X-Road](https://x-road.global/)**
-  según declare el directorio, sin alterar la topología de la comunidad;
-- identidad maestra de pacientes y vinculación con las identidades locales;
-- directorio de organizaciones participantes, servicios y endpoints;
-- autorización y divulgación controlada de documentos.
+- Publicación, indexación, localización y recuperación de documentos clínicos.
+- Custodia distribuida de documentos y almacenamiento central cuando corresponda.
+- Transporte seguro hacia los custodios, HTTPS directo o **[X-Road](https://x-road.global/)** según declare el directorio, sin alterar la topología de la comunidad.
+- Identidad maestra de pacientes y vinculación con las identidades locales.
+- Directorio de organizaciones participantes, servicios y endpoints.
+- Autorización y divulgación controlada de documentos.
 
 #### Capacidades en desarrollo
 
@@ -21,7 +20,7 @@ Las siguientes capacidades forman parte de la arquitectura HIX, pero su especifi
 - **Consentimiento anticipado del paciente.** HIX define dónde se aplica la decisión de divulgación y qué información necesita. El modelo de consentimiento, su ciclo de vida y sus políticas se especificarán a partir de los perfiles IHE aplicables.
 - **Auditoría de operaciones y divulgaciones.** HIX define la necesidad de registrar las operaciones en ambos extremos de la interacción. El modelo de consulta y el comportamiento ante fallos se especificarán posteriormente.
 
-Los casos de uso que dependen de estas capacidades se listan al final de la sección 2.5 del Volumen 1.
+Los casos de uso que dependen de estas capacidades se listan al final de la [sección 2.5](volume-1-usecases.html) del Volumen 1.
 
 ### Convenciones de la especificación
 

@@ -1,6 +1,6 @@
 Esta sección recorre los casos de uso que la arquitectura soporta. Cada uno se cuenta desde el punto de vista de quien lo vive y se acompaña del flujo entre actores, con las transacciones y el orden en que ocurren. El detalle de cada transacción está en el Volumen 2.
 
-Los casos siguen las tres historias de las figuras de la sección 2.2, el laboratorio que publica, el hospital que consulta y la persona que accede a lo suyo, precedidas por la identidad del paciente, que es condición de todas. La publicación, la consulta y el acceso del paciente son independientes entre sí y ocurren en cualquier orden y con cualquier frecuencia. La incorporación de un miembro, que precede a todo, es un procedimiento administrativo y se describe en la sección 2.7.
+Los casos siguen las tres historias de las figuras de la [sección 2.2](volume-1-actors.html), el laboratorio que publica, el hospital que consulta y la persona que accede a lo suyo, precedidas por la identidad del paciente, que es condición de todas. La publicación, la consulta y el acceso del paciente son independientes entre sí y ocurren en cualquier orden y con cualquier frecuencia. La incorporación de un miembro, que precede a todo, es un procedimiento administrativo y se describe en la sección 2.7.
 
 ### Identidad del paciente
 
@@ -17,6 +17,7 @@ Lo que un miembro declara vincula. Nunca crea una persona, nunca fusiona dos y n
 ![Alimentación y resolución de la identidad del paciente](hix-flujo-identidad.svg)
 
 **Figura 2.5-1:** Alimentación y resolución de la identidad del paciente
+{: #figura-2-5-1}
 
 1. La fuente autoritativa de identidad alimenta la identidad maestra de la persona mediante [ITI-93](https://profiles.ihe.net/ITI/PMIR/ITI-93.html).
 2. El custodio declara su identidad local mediante [ITI-104](https://profiles.ihe.net/ITI/PIXm/ITI-104.html) ante la infraestructura central, en su propio dominio de identificadores y con el identificador nacional de la persona. La infraestructura central comprueba que el dominio corresponde a la organización del token, y el registro de identidad maestra vincula la identidad local con la maestra. Si la persona no existe en la comunidad, rechaza la declaración e indica el motivo.
@@ -35,6 +36,7 @@ El laboratorio nombra al paciente con su identificador local, se nombra a sí mi
 ![Publicación de un documento](hix-flujo-publicacion.svg)
 
 **Figura 2.5-2:** Publicación de un documento
+{: #figura-2-5-2}
 
 1. El custodio conserva el documento en su repositorio y obtiene del Authorization Server un token para publicar.
 2. El custodio publica los metadatos mediante [ITI-65](https://profiles.ihe.net/ITI/MHD/ITI-65.html) ante la infraestructura central. Bajo la Opción de Almacenamiento Central, incluye el contenido.
@@ -47,17 +49,18 @@ El laboratorio nombra al paciente con su identificador local, se nombra a sí mi
 
 Un profesional de un hospital atiende a la misma persona y necesita su historial. Consulta la comunidad con el identificador que su propio sistema conoce y con el propósito de uso de la atención habitual, `TREAT`. Obtiene la lista de documentos que la política le permite ver y recupera el que le interesa. No sabe, ni necesita saber, qué organización lo custodia.
 
-La recuperación atraviesa dos tramos autorizados. El del profesional ante la comunidad, con un token destinado al Record Locator Service. Su sujeto es el sistema del hospital, porque es el cliente que el Authorization Server autentica, y la organización, el profesional y el propósito de uso van en las extensiones que IUA define para el token ([IUA, §3.71.4.2.2.1](https://profiles.ihe.net/ITI/IUA/index.html#3714221-json-web-token-option))[^iua-sub]. Y el de la comunidad ante el custodio, con un [token que el Record Locator Service obtiene por intercambio](appendix-glossary.html#token-intercambiado) para ese único custodio. Ese token conserva el sujeto y las extensiones del original, nombra al Record Locator Service como actor y vence a los dos minutos como máximo. El custodio valida ese token por sí mismo y entrega el documento a la comunidad, que lo entrega al profesional.
+La recuperación atraviesa dos tramos autorizados, el del profesional ante la comunidad, con un [token del solicitante](appendix-glossary.html#token-del-solicitante) destinado al Record Locator Service, y el de la comunidad ante el custodio, con un [token intercambiado](appendix-glossary.html#token-intercambiado) para ese único custodio. El sujeto del primero es el sistema del hospital, porque es el cliente que el Authorization Server autentica, y la organización, el profesional y el propósito de uso van en las extensiones que IUA define para el token ([IUA, §3.71.4.2.2.1](https://profiles.ihe.net/ITI/IUA/index.html#3714221-json-web-token-option))[^iua-sub]. La [sección 2.6](volume-1-security.html) compara los dos tokens. El custodio valida el suyo por sí mismo y entrega el documento a la comunidad, que lo entrega al profesional.
 
 Si un custodio no responde, el profesional recibe un resultado que lo dice, junto con todo lo demás que pidió. Un custodio caído degrada la respuesta y nunca la hace fallar.
 
-En una urgencia la historia cambia en dos puntos. El profesional consulta con el propósito de uso `ETREAT`, y qué permite frente a `TREAT` lo fija la política de la comunidad, por ejemplo divulgar documentos que en atención habitual exigirían un consentimiento. Y si la persona llega sin un identificador fiable, el hospital puede buscarla por sus datos demográficos bajo la Opción de Demografía, como en la Figura 2.2-2. La búsqueda la habilita el scope del token, no el propósito. El propósito se evalúa después, en la [decisión de divulgación](appendix-glossary.html#decision-de-divulgacion).
+En una urgencia la historia cambia en dos puntos. El profesional consulta con el propósito de uso `ETREAT`, y qué permite frente a `TREAT` lo fija la política de la comunidad, por ejemplo divulgar documentos que en atención habitual exigirían un consentimiento. Y si la persona llega sin un identificador fiable, el hospital puede buscarla por sus datos demográficos bajo la Opción de Demografía, como en la [Figura 2.2-2](volume-1-actors.html#figuras-2-2). La búsqueda la habilita el scope del token, no el propósito. El propósito se evalúa después, en la [decisión de divulgación](appendix-glossary.html#decision-de-divulgacion).
 
 #### Flujo del proceso
 
 ![Localización y recuperación mediada](hix-flujo-localizacion.svg)
 
 **Figura 2.5-3:** Localización y recuperación mediada
+{: #figura-2-5-3}
 
 1. El [consumidor](appendix-glossary.html#consumidor) obtiene del Authorization Server un token destinado al Record Locator Service y localiza mediante [ITI-67](https://profiles.ihe.net/ITI/MHD/ITI-67.html). En una urgencia sin identificador conocido, busca antes a la persona por datos demográficos mediante ITI-78 ante la infraestructura central.
 2. El Record Locator Service comprueba el token mediante [ITI-102](https://profiles.ihe.net/ITI/IUA/index.html#3102-introspect-token-iti-102), resuelve la identidad maestra mediante ITI-83, consulta el Document Registry mediante ITI-67, evalúa la decisión de divulgación sobre cada puntero y devuelve los divulgados, con URL de contenido que apuntan a sí mismo.
@@ -80,6 +83,7 @@ Este caso es el que permite a HIX servir a la persona lo que es suyo, y no solo 
 ![Acceso del paciente a su expediente](hix-flujo-paciente.svg)
 
 **Figura 2.5-4:** Acceso del paciente a su expediente
+{: #figura-2-5-4}
 
 1. La [aplicación del paciente](appendix-glossary.html#aplicacion-del-paciente) inicia [HIX-2](volume-1-actors.html#hix-2). El Authorization Server autentica a la persona, obtiene su autorización para la aplicación, resuelve su identidad verificada a la identidad maestra mediante ITI-83 y emite el token con ese contexto de paciente y el propósito de uso que corresponde a quien actúa.
 2. La aplicación localiza y recupera mediante ITI-67 e ITI-68 a través del Record Locator Service, que confina cada operación al paciente del contexto.
