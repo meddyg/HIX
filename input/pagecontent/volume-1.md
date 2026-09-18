@@ -12,7 +12,7 @@ Lo que ningún perfil cubre, como el intercambio de tokens hacia un custodio o e
 
 ### Infraestructura Central
 
-![Infraestructura central de HIX](central-architecture-diagram.svg)
+<a href="central-architecture-diagram.svg" target="_blank" title="Abrir a tamaño completo en una pestaña nueva">![Infraestructura central de HIX](central-architecture-diagram.svg)</a>
 
 **Figura 2-1:** Infraestructura central de HIX
 {: #figura-2-1}
