@@ -77,7 +77,6 @@ HIX organiza sus requisitos en diferentes niveles de abstracción. Los volúmene
 
 - El **Volumen 1** describe la arquitectura, es decir, qué hace cada actor y por qué.
 - El **Volumen 2** especifica cada transacción, incluidas las propias de HIX.
-- El **Volumen 3** especifica el contenido que se intercambia, desde los metadatos de los punteros hasta los registros de auditoría.
 - Los **apéndices** reúnen el material de apoyo, por ahora el glosario.
 
 ### Dependencias

@@ -19,24 +19,22 @@ Lo que ningún perfil cubre, como el intercambio de tokens hacia un custodio o e
 **Figura 2-1:** Infraestructura central de HIX
 {: #figura-2-1}
 
-La [Figura 2-1](volume-1.html#figura-2-1) muestra la infraestructura central de la comunidad, es decir, los servicios que HIX opera y las transacciones que los conectan. Es una vista de arquitectura, no de despliegue, y por eso omite las agrupaciones transversales que casi todo actor lleva, como el Time Client de CT. Tampoco dibuja los sistemas de los miembros. Un miembro solo trata con la infraestructura central, nunca con otro miembro. Obtiene sus tokens del Authorization Server, localiza y recupera a través del Record Locator Service, y publica y declara identidades ante la infraestructura central. Los demás componentes de la figura no le exigen ninguna integración adicional.
+La [Figura 2-1](volume-1.html#figura-2-1) muestra la infraestructura central de la comunidad, es decir, los servicios que HIX opera y las transacciones que los conectan. Es una vista de arquitectura, no de despliegue. Omite las agrupaciones transversales que casi todo actor lleva, como el Time Client de CT, y no dibuja los sistemas de los miembros, que solo tratan con la infraestructura central y nunca entre sí.
 
-- El **Record Locator Service** es el mediador de la comunidad. Localiza y recupera documentos en nombre de los miembros y aplica la decisión de divulgación. Ante los miembros actúa como Resource Server; ante los componentes centrales y los custodios, como cliente delegado que opera en nombre del solicitante original.
-- El **Authorization Server** es el único emisor de tokens de la comunidad. Emite el token que permite a un miembro acceder al mediador, lo valida mediante introspección cuando el mediador lo presenta y, cada vez que el mediador necesita alcanzar a un custodio o a un componente central, lo intercambia por un token acotado a ese destino, a nombre del miembro.
-- El **Document Registry** conserva los punteros a los documentos publicados en la comunidad, cada uno con la identidad maestra del paciente como sujeto.
-- Los **"Shared HIE Services"** completan la infraestructura con el directorio de la comunidad (mCSD), que describe a los miembros y sus endpoints; el registro de identidad maestra (PMIR), que mantiene una identidad por persona; y el Audit Record Repository (ATNA), que concentra los eventos de los componentes centrales. Cada miembro registra su propio lado.
-- La **fuente autoritativa de identidad del paciente** es externa a la comunidad y es la única que puede crear identidades maestras. HIX no la designa; la propuesta para Costa Rica es que sea el EDUS, el expediente digital único de la CCSS, porque ya tiene resuelta la identificación de las personas.
+- El **Record Locator Service** es el mediador de la comunidad. Localiza y recupera documentos en nombre de los miembros y aplica la decisión de divulgación.
+- El **Authorization Server** es el único emisor de tokens de la comunidad. Emite el token con el que un miembro llega al mediador y lo intercambia por otro, acotado a un destino, cada vez que el mediador tiene que alcanzar a un custodio o a un componente central.
+- El **Document Registry** conserva los punteros a los documentos publicados, cada uno con la identidad maestra del paciente como sujeto.
+- Los **Shared HIE Services** de la figura completan la infraestructura. El directorio de la comunidad describe a los miembros y sus endpoints, el registro de identidad maestra mantiene una identidad por persona y el Audit Record Repository concentra los eventos de los componentes centrales.
+- La **fuente autoritativa de identidad** es externa a la comunidad y la única que puede crear identidades maestras. HIX no la designa. Propone que en Costa Rica sea el EDUS, el expediente digital único de la CCSS, que ya tiene resuelta la identificación de las personas.
 
-Dicho en seis afirmaciones:
+Dicho en seis afirmaciones.
 
-1. La comunidad es **la única contraparte** de sus miembros. El Authorization Server emite todo token, el Record Locator Service media toda localización y recuperación, y la infraestructura central valida lo que cada miembro publica y declara. **Ningún miembro interactúa con otro.**
-2. El **índice es central y el contenido es del custodio**. Un documento se queda donde se produjo; la comunidad sabe que existe, de quién es y quién lo conserva.
-3. La **divulgación se decide una vez por cada consulta**, en la infraestructura central, sobre los metadatos del índice y antes de que se mueva contenido alguno. Localizar y recuperar son dos consultas, y cada una se decide por sí misma.
-4. Cada recuperación alcanza al custodio con una **credencial derivada de la petición viva del solicitante**, el [token intercambiado](appendix-glossary.html#token-intercambiado), atada a ese único custodio, con una vida de dos minutos como máximo y verificable por el custodio con las claves públicas del Authorization Server. Ningún participante tiene credenciales permanentes hacia otro.
-5. La **identidad maestra del paciente está anclada en la identidad nacional verificada**; los miembros declaran sus identidades locales y la comunidad las vincula. Ningún miembro crea una persona.
-6. El **transporte hacia cada custodio se declara en el directorio**, no en los punteros ni en la API. Cuando la comunidad opera sobre una red de intercambio como [X-Road](https://x-road.global/), el endpoint del custodio indica ese canal y el Record Locator Service lo recorre automáticamente, sin que cambie un puntero, un token ni una transacción. X-Road es transporte y confianza entre organizaciones; la semántica del intercambio sigue siendo la de los perfiles FHIR.
-
-> **Nota.** El Record Locator Service no tiene acceso arbitrario a nada, ni siquiera al Document Registry. Solo actúa cuando un miembro se lo pide, con una credencial derivada de esa petición y a nombre de ese miembro. Es el primer PEP de la comunidad, el punto en el que se aplica su política, y por eso cada interacción queda auditable de extremo a extremo.
+1. La comunidad es **la única contraparte** de sus miembros. **Ningún miembro interactúa con otro.**
+2. El **índice es central y el contenido es del custodio**. Un documento se queda donde se produjo, y la comunidad sabe que existe, de quién es y quién lo conserva.
+3. La **divulgación se decide una vez por cada consulta**, en la infraestructura central, sobre los metadatos del índice y antes de mover contenido alguno. Localizar y recuperar son dos consultas.
+4. Cada recuperación alcanza al custodio con una **credencial derivada de la petición viva del solicitante**, el [token intercambiado](appendix-glossary.html#token-intercambiado), que vale para ese único custodio, dura dos minutos como máximo y el custodio verifica por sí mismo. Ningún participante tiene credenciales permanentes hacia otro, ni siquiera el mediador.
+5. La **identidad maestra del paciente está anclada en la identidad nacional verificada**. Los miembros declaran sus identidades locales, la comunidad las vincula y ningún miembro crea una persona.
+6. El **transporte hacia cada custodio se declara en el directorio**, no en los punteros ni en la API. Una red de intercambio como [X-Road](https://x-road.global/) puede llevar ese tramo sin que cambie un puntero, un token ni una transacción.
 
 ### Cómo leer este volumen
 
@@ -47,7 +45,7 @@ Dicho en seis afirmaciones:
 - **Casos de uso y flujos** recorre los escenarios que la arquitectura soporta, con el flujo de cada uno.
 - **Consideraciones de seguridad** especifica el modelo de confianza, los dos regímenes de token y los controles de seguridad y privacidad.
 
-El Volumen 2 especifica cada transacción y el Volumen 3 el contenido que se intercambia. Este volumen describe qué hace cada actor y por qué; los siguientes, cómo.
+El Volumen 2 especifica cada transacción. Este volumen describe qué hace cada actor y por qué, y el siguiente, cómo.
 
 ### Referencias
 

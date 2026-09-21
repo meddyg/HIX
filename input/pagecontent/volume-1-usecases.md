@@ -49,7 +49,7 @@ El laboratorio nombra al paciente con su identificador local, se nombra a sí mi
 
 Un profesional de un hospital atiende a la misma persona y necesita su historial. Consulta la comunidad con el identificador que su propio sistema conoce de la persona, o con su identificador nacional, y con el propósito de uso de la atención habitual, `TREAT`. Obtiene la lista de documentos que la política le permite ver y recupera el que le interesa. No sabe, ni necesita saber, qué organización lo custodia.
 
-La recuperación atraviesa dos tramos autorizados, el del profesional ante la comunidad, con un [token del solicitante](appendix-glossary.html#token-del-solicitante) destinado al Record Locator Service, y el de la comunidad ante el custodio, con un [token intercambiado](appendix-glossary.html#token-intercambiado) para ese único custodio. El sujeto del primero es el sistema del hospital, porque el Authorization Server autentica a ese cliente y no a una persona, y en ese caso IUA pone como sujeto al cliente. La organización, el profesional y el propósito de uso van en las extensiones que IUA define para el token ([IUA, §3.71.4.2.2.1](https://profiles.ihe.net/ITI/IUA/index.html#3714221-json-web-token-option))[^iua-sub]. La [sección 2.6](volume-1-security.html) compara los dos tokens. El custodio valida el suyo por sí mismo y entrega el documento a la comunidad, que lo entrega al profesional.
+La recuperación atraviesa dos tramos autorizados. El profesional llega a la comunidad con un [token del solicitante](appendix-glossary.html#token-del-solicitante), y la comunidad llega al custodio con un [token intercambiado](appendix-glossary.html#token-intercambiado) para ese único custodio, que el custodio valida por sí mismo. La [sección 2.6](volume-1-security.html#modelo-de-confianza) compara los dos tokens y dice qué lleva cada uno.
 
 Si un custodio no responde, el profesional recibe un resultado que lo dice, junto con todo lo demás que pidió. Un custodio caído degrada la respuesta y nunca la hace fallar.
 
@@ -74,7 +74,7 @@ En una urgencia la historia cambia en dos puntos. El profesional consulta con el
 
 Una persona abre una aplicación de su elección y accede a sus propios documentos. La aplicación no la opera la comunidad y no tiene autoridad permanente sobre nada, solo lo que esta persona le concedió y mientras dure.
 
-La persona tiene una identidad verificada ante el Authorization Server. Cómo la obtiene es política de la comunidad. Al lanzar la aplicación, el Authorization Server la autentica, resuelve esa identidad a la identidad maestra y emite un token cuyo contexto de paciente es ella misma. La aplicación no elige a qué paciente accede. El contexto viene fijado en el token y el Record Locator Service confina cada consulta a ese paciente. El propósito de uso dice quién actúa, `PATRQT` si es la propia persona, `FAMRQT` si es un familiar que ella autorizó y `PWATRNY` si es su representante legal. A partir de ahí, sus consultas y recuperaciones son las de cualquier otro solicitante.
+La persona tiene una identidad verificada ante el Authorization Server. Cómo la obtiene es política de la comunidad. Al lanzar la aplicación, el Authorization Server la autentica, resuelve esa identidad a la identidad maestra y emite un token cuyo contexto de paciente es ella misma. La aplicación no elige a qué paciente accede. El contexto viene fijado en el token y el Record Locator Service confina cada consulta a ese paciente. El propósito de uso dice quién actúa, la propia persona, un familiar que ella autorizó o su representante legal, con los códigos de la [Tabla 2.2-3](volume-1-actors.html#tabla-2-2-3). A partir de ahí, sus consultas y recuperaciones son las de cualquier otro solicitante.
 
 Este caso es el que permite a HIX servir a la persona lo que es suyo, y no solo lo que la política de la comunidad permite entre organizaciones.
 
@@ -98,11 +98,8 @@ Los siguientes casos forman parte de la arquitectura y se especificarán en vers
 - **Acceso con anulación de la política.** Un profesional accede a documentos que la política ordinaria no le permitiría, declarando el propósito de uso `BTG`. Cómo se admite y cómo se audita lo fija cada comunidad, como indica la [Tabla 2.2-3](volume-1-actors.html#tabla-2-2-3).
 - **Identidad del personal sanitario.** El Authorization Server federa hacia el proveedor de identidad de cada institución en lugar de alojar cuentas de profesionales.
 
-### Referencias
-
 Las citas reproducen el texto publicado por su fuente. Los recortes se marcan con "[...]" y la negrita es de esta guía.
 
-[^iua-sub]: [IUA, §3.71.4.2.2.1 JSON Web Token Option](https://profiles.ihe.net/ITI/IUA/index.html#3714221-json-web-token-option): "sub (required): **If known, unique identifier of the user; the client_id otherwise** [JWT, Section 4.1]. client_id (required): identifier of the client for which the token is issued." Y en §3.71.4.2.2.1.1 JWT IUA extension: "The Authorization Server and Resource Server shall support the following extensions to the JWT access token: **subject_name** (optional): The user's name as String. **subject_organization_id** (optional): Unique identifier of the user's organization. [...] **subject_role** (optional): Coded values indicating the user's roles. [...] **purpose_of_use** (optional): Purpose of use for the request. [...] The above claims shall be wrapped in an "extensions" object with key 'ihe_iua'".
 
 *[PMIR]: Patient Master Identity Registry, perfil IHE que gestiona la identidad maestra del paciente
 *[PIXm]: Patient Identifier Cross-referencing for mobile, perfil IHE que enlaza los identificadores locales de un paciente con su identidad maestra
