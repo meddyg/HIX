@@ -79,6 +79,15 @@ HIX organiza sus requisitos en diferentes niveles de abstracción. Los volúmene
 - El **Volumen 2** especifica cada transacción, incluidas las propias de HIX.
 - Los **apéndices** reúnen el material de apoyo, por ahora el glosario.
 
+### Otros formatos
+
+La guía se publica también en formatos pensados para leerla fuera del sitio.
+
+- **Para asistentes de IA.** [llms.txt](https://hix.meddyg.com/fhir/hix/llms.txt) es un índice en texto plano con una línea por página, que dice de qué trata cada una y enlaza a su versión en Markdown. Un implementador puede dárselo a su agente para que lea solo las páginas que necesita. [llms-full.txt](https://hix.meddyg.com/fhir/hix/llms-full.txt) reúne la guía completa en un solo archivo. Los dos se generan de forma automática en cada publicación, a partir de las mismas páginas que forman este sitio. No hay una segunda redacción, así que su contenido no puede apartarse del de la guía.
+- **Para leer sin conexión.** El PDF y el documento de Word de cada versión se adjuntan a su publicación en [GitHub](https://github.com/meddyg/Health-Information-Exchange/releases).
+
+> **Nota.** Estos archivos sirven para asistir al implementador, no para sustituirlo. Un asistente de IA puede equivocarse al leer o al resumir. El criterio técnico y la responsabilidad sobre lo que se implementa recaen siempre en quien implementa, y el texto que obliga es el de esta guía.
+
 ### Dependencias
 
 HIX es una comunidad FHIR R5. De los perfiles IHE que compone, MHD está publicado sobre R5 y los demás solo sobre R4, y en esa versión se declaran. IUA, ATNA y CT no se distribuyen como paquetes FHIR, y por eso no figuran aquí aunque HIX los use. MHDS tampoco figura, porque HIX lo toma como referencia y no depende de su paquete.
