@@ -165,7 +165,7 @@ El Record Locator Service **SHALL** obtener mediante [HIX-1](volume-1-actors.htm
 
 Cuando un custodio no responde, el Record Locator Service **SHALL** degradar la respuesta señalando el fallo y **SHALL NOT** hacer fallar la operación completa por ese motivo.
 
-> **Nota.** *Record Locator Service* es el nombre que esta guía da al actor. No es vocabulario IHE. En términos de MHDS, es el intermediario que media la localización y la recuperación entre los miembros, el Document Registry y los custodios, agrupado con un Document Consumer y un Document Responder de MHD.
+> **Nota.** *Record Locator Service* es el nombre que esta guía da al actor. No es vocabulario IHE. Corresponde al localizador central del modelo Centralized Discovery and Retrieve de IHE, el que permite descubrir dónde están los documentos y recuperarlos del custodio que registró su existencia ([IHE HIE Whitepaper, §2.8](https://profiles.ihe.net/ITI/HIE-Whitepaper/index.html#28-document-sharing-models))[^hie-cdr]. En HIX media además la recuperación, y se implementa agrupando un Document Consumer y un Document Responder de MHD.
 
 #### Document Registry
 
@@ -195,11 +195,11 @@ El registro de identidad maestra agrupa al [Patient Identity Registry](appendix-
 
 El registro de identidad maestra **SHALL** crear identidades maestras únicamente a partir de [ITI-93](https://profiles.ihe.net/ITI/PMIR/ITI-93.html) recibido de la fuente autoritativa de identidad. **SHALL** aceptar [ITI-104](https://profiles.ihe.net/ITI/PIXm/ITI-104.html) únicamente en el dominio de identificadores del miembro que lo origina y **SHALL** rechazar la declaración que no pueda vincularse a una identidad maestra existente. Dentro de su propio dominio el miembro gestiona sus identidades locales con libertad, incluida la resolución de sus propios duplicados que define ITI-104. 
 
-Una declaración de un miembro **SHALL NOT** crear, fusionar ni eliminar una identidad maestra. **SHALL NOT** modificar la demografía de la identidad maestra a partir de lo que un miembro declara. **SHALL** responder [ITI-83](https://profiles.ihe.net/ITI/PIXm/ITI-83.html) únicamente con la identidad maestra, nunca con las identidades locales que otros miembros declararon. PIXm admite esa restricción, porque deja que la respuesta sea un subconjunto determinado por política ([PIXm, §2:3.83.4.1.3](https://profiles.ihe.net/ITI/PIXm/ITI-83.html#2383413-expected-actions))[^pixm-subset].
+Una declaración de un miembro **SHALL NOT** crear, fusionar ni eliminar una identidad maestra. El registro **SHALL NOT** modificar la demografía de la identidad maestra a partir de lo que un miembro declara. **SHALL** responder [ITI-83](https://profiles.ihe.net/ITI/PIXm/ITI-83.html) únicamente con la identidad maestra, nunca con las identidades locales que otros miembros declararon. PIXm admite esa restricción, porque deja que la respuesta sea un subconjunto determinado por política ([PIXm, §2:3.83.4.1.3](https://profiles.ihe.net/ITI/PIXm/ITI-83.html#2383413-expected-actions))[^pixm-subset].
 
 #### Audit Record Repository
 
-El Audit Record Repository es el actor de ATNA que recibe mediante [ITI-20](https://profiles.ihe.net/ITI/TF/Volume2/ITI-20.html) los eventos que registran los actores centrales. Existe para que una divulgación pueda reconstruirse completa desde el lado de la comunidad, con la solicitud del miembro y la recuperación ante el custodio bajo un mismo identificador de correlación. Cada miembro registra su propio lado en su propio registro, como ATNA exige a todo sistema que participa en una transacción.
+El Audit Record Repository es el actor de ATNA que recibe mediante [ITI-20](https://profiles.ihe.net/ITI/TF/Volume2/ITI-20.html) los eventos que registran los actores centrales. Existe para que una divulgación pueda reconstruirse completa desde el lado de la comunidad, con la solicitud del miembro y la recuperación ante el custodio bajo un mismo identificador de correlación. Cada miembro registra su propio lado en su propio registro, como ATNA exige a todo Secure Node o Secure Application.
 
 #### Fuente autoritativa de identidad
 
@@ -228,6 +228,7 @@ Las citas reproducen el texto publicado por su fuente. Los recortes se marcan co
 [^iua-grants]: [IUA, §34.1.1.1 Authorization Client](https://profiles.ihe.net/ITI/IUA/index.html#34111-authorization-client): "The Get Access Token [ITI-71] transaction **is scoped to the Authorization Code and Client Credential grant types** (see ITI TF-1: 34.4.1.1 Authorization Grant Types)." [§3.71.4.1.2.1 Client Credential grant type](https://profiles.ihe.net/ITI/IUA/index.html#3714121-client-credential-grant-type): "requested_token_type (optional): The requested token format shall be urn:ietf:params:oauth:token-type:jwt, urn:ietf:params:oauth:token-type:saml2 or urn:ietf:params:oauth:token-type:access-token [**RFC 8693 OAuth 2.0 Token Exchange**, Section 3]."
 [^pixm-subset]: [PIXm, §2:3.83.4.1.3 Expected Actions](https://profiles.ihe.net/ITI/PIXm/ITI-83.html#2383413-expected-actions): "**The Patient Identifiers returned may be a subset based on policies that might restrict access to some Patient Identifiers.** For guidance on handling Access Denied, see ITI TF-2: Appendix Z.7."
 [^pixm-deprecated]: [PIXm, §2:3.83.4.2.2.5 Post Merge/Delete](https://profiles.ihe.net/ITI/PIXm/ITI-83.html#23834225-post-mergedelete): "Based upon policy, **when the Patient is deprecated or deleted, the response message shall return: 200 OK, and return a Bundle with no patient resource, or 404 Not Found**"
+[^hie-cdr]: [IHE HIE Whitepaper, §2.8 Document Sharing Models](https://profiles.ihe.net/ITI/HIE-Whitepaper/index.html#28-document-sharing-models): "**Centralized Discovery and Retrieve** – in this model, a centralized locator is used to discover the location of documents which enables a retrieval of the document from a custodian who has registered existence of the document with the centralized locator".
 
 *[PMIR]: Patient Master Identity Registry, perfil IHE que gestiona la identidad maestra del paciente
 *[PIXm]: Patient Identifier Cross-referencing for mobile, perfil IHE que enlaza los identificadores locales de un paciente con su identidad maestra

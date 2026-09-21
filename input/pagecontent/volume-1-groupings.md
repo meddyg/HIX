@@ -12,7 +12,9 @@ Tres perfiles acompañan a casi todos los actores de HIX. Se describen aquí una
 
 **CT mantiene los relojes de acuerdo.** Todo sistema que participa en HIX, salvo la aplicación del paciente, es un [Time Client](appendix-glossary.html#time-client) de CT y sincroniza su reloj con [ITI-1](https://profiles.ihe.net/ITI/TF/Volume2/ITI-1.html) contra el Time Server que la comunidad designa, propio o una fuente de tiempo externa. Sin relojes de acuerdo, los eventos de una misma divulgación no podrían ordenarse entre sistemas y la vigencia de dos minutos del token intercambiado no significaría lo mismo en cada extremo.
 
-La aplicación del paciente queda fuera de ATNA y de CT porque corre en el dispositivo de una persona, sin certificado de nodo ni repositorio de auditoría propio. Su actividad queda registrada por los dos actores centrales ante los que actúa, el Authorization Server al lanzarse y el Record Locator Service en cada consulta.
+Esta guía deja por ahora a la aplicación del paciente fuera de ATNA y de CT. Su actividad queda registrada por los dos actores centrales ante los que actúa, el Authorization Server al lanzarse y el Record Locator Service en cada consulta.
+
+> **TODO.** Alinear el tratamiento de la aplicación del paciente. Figura como cliente en el Authorization Server, puede ser un cliente confidencial cuando tiene backend propio, y de eso depende si se la considera miembro y qué le exigen ATNA, CT y la auditoría.
 
 ### Miembros
 
@@ -30,7 +32,7 @@ La aplicación del paciente queda fuera de ATNA y de CT porque corre en el dispo
 
 - Un [Document Recipient](appendix-glossary.html#document-recipient) de MHD con la [Comprehensive Metadata Option](https://profiles.ihe.net/ITI/MHD/5.0.0/1332_actor_options.html#13321-comprehensive-metadata-option) y la [UnContained Reference Option](https://profiles.ihe.net/ITI/MHD/5.0.0/1332_actor_options.html#13323-uncontained-reference-option), que recibe las publicaciones y admite que `sourcepatient` referencie a un paciente del registro de identidad.
 - Un [Document Responder](appendix-glossary.html#document-responder) de MHD, que responde las localizaciones y, bajo la Opción de Almacenamiento Central, también las recuperaciones.
-- Un [Patient Identity Consumer](appendix-glossary.html#patient-identity-consumer) de PMIR, que recibe por ITI-93 las altas, los cambios y las fusiones de las identidades maestras y las aplica a los punteros que conserva[^mhds-pic].
+- Un [Patient Identity Consumer](appendix-glossary.html#patient-identity-consumer) de PMIR, que recibe por ITI-93 las altas, los cambios y las fusiones de las identidades maestras y las aplica a los punteros y a las listas que conserva[^mhds-pic].
 - Un [Query Client](appendix-glossary.html#query-client) de mCSD, con el que comprueba que quien publica es un miembro activo de la comunidad.
 - Un [Patient Identifier Cross-reference Consumer](appendix-glossary.html#patient-identifier-cross-reference-consumer) de PIXm, que HIX añade, con el que comprueba al indexar que la persona existe y está activa en la comunidad, la misma comprobación que MHDS pide a su Document Registry al validar una publicación[^mhds-subject], y con el que resuelve la identidad local de un puntero a su identidad maestra cuando la publicación le llega sin resolver.
 - Un Resource Server de IUA con la [JWT Token Option](https://profiles.ihe.net/ITI/IUA/index.html#3422-jwt-token-option) y la [Authorization Server Metadata Option](https://profiles.ihe.net/ITI/IUA/index.html#3421-authorization-server-metadata-option), con las que valida cada token con las claves que el Authorization Server publica.

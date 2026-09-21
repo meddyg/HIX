@@ -1,6 +1,7 @@
 Esta sección explica las decisiones que dan forma a esta comunidad. Cada una se presenta con lo que decide, por qué lo decide y lo que cuesta. Son decisiones de arquitectura, no de implementación. Una comunidad puede desplegarlas de muchas maneras sin que cambie nada de lo que aquí se describe. La [Tabla 2.1-1](volume-1-concepts.html#tabla-2-1-1) resume los compromisos asumidos, y la última subsección explica la relación de HIX con MHDS.
 
 ### Comunidad y límite de confianza
+{: #limite-de-confianza}
 
 Una comunidad HIX es un conjunto de organizaciones que acuerdan compartir documentos clínicos bajo una política común y a través de una infraestructura común. La pertenencia es explícita. Una organización es miembro cuando figura en el directorio de la comunidad y el Authorization Server reconoce a sus sistemas.
 
@@ -22,7 +23,7 @@ La decisión de divulgación sobre los punteros es otra cosa. La toma la infraes
 
 En las transacciones entre un miembro y un solo componente central, como declarar una identidad, el trabajo es otro. Consiste en comprobar que la petición cumple las reglas de la comunidad para esa transacción, por ejemplo que el miembro solo escribe en su propio dominio de identificadores, y en registrarla. Esa comprobación la puede hacer el mediador o el propio componente, siempre que el componente conozca esas reglas y registre en el mismo repositorio de auditoría. El miembro ejecuta siempre las mismas transacciones, con los mismos mensajes y las mismas reglas. Lo único que cambia es el punto que las valida, el mediador o el componente central.
 
-> **Nota.** El mediador es desacoplable. No añade nada al modelo de MHDS. Solo concentra el PEP y las transacciones que MHDS reparte entre los miembros. Sin él, la comunidad operaría como MHDS estándar, con el mismo flujo, pero cada miembro tendría que aplicar la política, resolver endpoints, obtener credenciales y auditar por su cuenta. Quitar el mediador no cambia la arquitectura, solo mueve el PEP a cada miembro.
+> **Nota.** El mediador es desacoplable. En esencia no añade nada al modelo de MHDS. Solo concentra el PEP y las transacciones que MHDS reparte entre los miembros. Sin él, la comunidad operaría en esencia como describe MHDS, con el mismo flujo, porque cada miembro puede hacer por su cuenta lo que hace el mediador, es decir, aplicar la política, resolver endpoints, obtener credenciales y auditar. Que pueda no quiere decir que convenga, y ese es [el argumento con el que abre esta sección](volume-1-concepts.html#limite-de-confianza). Quitar el mediador no cambia la arquitectura, solo mueve el PEP a cada miembro.
 
 ### Custodia distribuida y almacenamiento central
 
@@ -36,7 +37,7 @@ Las dos ubicaciones tienen ejemplos nacionales. Estonia recupera cada documento 
 
 Cada miembro **solo conoce y solo usa sus propios identificadores de paciente**. No conoce los de los demás miembros ni necesita conocerlos. Para la comunidad, cada miembro es un **dominio de identificadores** distinto, y un mismo identificador local solo tiene sentido dentro del dominio del miembro que lo asignó. La comunidad no reemplaza esos identificadores. Mantiene una **identidad maestra** por persona y enlaza con ella las identidades locales que los miembros declaran, de modo que cualquier identificador local, de cualquier miembro, resuelve a la misma persona.
 
-La identidad maestra es un recurso `Patient` en un dominio reservado a la identidad verificada, en el que solo escribe la fuente autoritativa. Lleva el identificador nacional de la persona, la cédula en el caso de la figura, que la ancla a alguien real, la demografía verificada que aporta la fuente autoritativa y los enlaces a sus identidades locales, uno por cada miembro que la haya declarado. Contra esa demografía busca ITI-78. No lleva demografía de los miembros. Los nombres y las fechas que cada miembro registra se quedan en él.
+La identidad maestra es un recurso `Patient` en un dominio reservado a la identidad verificada, en el que solo escribe la fuente autoritativa. Lleva el identificador nacional de la persona, la cédula en el caso de la figura, que la ancla a alguien real, la demografía verificada que aporta la fuente autoritativa y los enlaces a sus identidades locales, uno por cada miembro que la haya declarado. Contra esa demografía buscan ITI-78 e ITI-119. No lleva demografía de los miembros. Los nombres y las fechas que cada miembro registra se quedan en él.
 
 ![Identidad maestra e identidades locales](hix-master-patient-index.svg)
 
@@ -97,7 +98,7 @@ La [Figura 2.1-2](volume-1-concepts.html#figura-2-1-2) resume el recorrido de lo
 
 Tres reglas hacen que el mínimo privilegio sea estructural, en lugar de depender de la buena conducta de cada parte.
 
-- **Un token, un destino.** Un token que valiera en dos custodios permitiría a uno de ellos usarlo contra el otro.
+- **Un token, el destino mínimo.** Cada token vale solo ante quien tiene que recibirlo. El intercambiado vale ante un único destino, porque uno que valiera en dos custodios permitiría a uno de ellos usarlo contra el otro.
 - **Solo el mediador puede intercambiar.** Ningún otro participante puede pedir un token a nombre de un tercero, y los custodios no aceptan tokens llegados por otro camino.
 - **La autoridad nunca crece.** El token intercambiado solo permite lo que el miembro ya podía, lo que la comunidad delega al mediador y lo que el custodio ofrece. Poder localizar un documento nunca da poder para recuperarlo.
 
@@ -109,7 +110,7 @@ La decisión de divulgación se toma en la infraestructura central, **sobre los 
 
 Ese orden es lo que hace que centralizar valga su costo. Un puntero cuya divulgación se niega no genera ninguna recuperación, ninguna consulta al directorio y ningún token. La decisión se toma una vez por consulta, y un documento atraviesa dos, porque revelar que existe ya es una divulgación. Al localizar, se filtran los punteros de la respuesta. Al recuperar, el mediador vuelve a evaluar el puntero pedido antes de alcanzar al custodio. Un puntero negado no aparece en la respuesta ni se anuncia como negado.
 
-El punto de partida es un entorno de consentimiento implícito, con una política única para toda la comunidad. MHDS lo describe en su Consent Manager Option como el entorno en el que se permite divulgar mientras el paciente no haya registrado un consentimiento ([MHDS Vol. 1, §1:50.2.2](https://profiles.ihe.net/ITI/MHDS/volume-1.html#15022-consent-manager-option))[^mhds-implied]. El destino es [PCF](https://profiles.ihe.net/ITI/PCF/volume-1.html#1534-pcf-overview), donde las directivas de consentimiento de cada paciente se evalúan en cada petición ([PCF Vol. 1, §1:53.4](https://profiles.ihe.net/ITI/PCF/volume-1.html#1534-pcf-overview))[^pcf]. La Opción de Consentimiento del Record Locator Service declara dónde se aplica esa decisión y qué información necesita. **El modelo de consentimiento se especificará en una versión posterior de esta guía a partir de PCF.**
+El punto de partida es un entorno de consentimiento implícito, con una política única para toda la comunidad. MHDS lo describe en su Consent Manager Option como el entorno en el que se permite divulgar mientras el paciente no haya registrado un consentimiento ([MHDS Vol. 1, §1:50.2.2](https://profiles.ihe.net/ITI/MHDS/volume-1.html#15022-consent-manager-option))[^mhds-implied]. El destino es [PCF](https://profiles.ihe.net/ITI/PCF/volume-1.html#1534-pcf-overview), donde las directivas de consentimiento de cada paciente se evalúan en cada petición ([PCF Vol. 1, §1:53.4](https://profiles.ihe.net/ITI/PCF/volume-1.html#1534-pcf-overview))[^pcf]. La Opción de Consentimiento declara dónde se aplica esa decisión y qué información necesita. **El modelo de consentimiento se especificará en una versión posterior de esta guía a partir de PCF.**
 
 ### Auditoría en ambos extremos
 

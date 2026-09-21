@@ -67,7 +67,7 @@ Un custodio que recibe un token intercambiado puede comprobar por sí mismo cinc
 - Que lo emitió el Authorization Server de la comunidad.
 - Que el Record Locator Service lo pidió en nombre de un solicitante concreto.
 - Que vale ante él y ante nadie más.
-- Que autoriza solo la transacción para la que se intercambió. El token del solicitante puede llevar varios scopes, pero el Record Locator Service pide en el intercambio únicamente el de la transacción que va a realizar, por ejemplo el de ITI-68 al recuperar.
+- Que autoriza solo la transacción para la que se intercambió. El token del solicitante puede llevar varios scopes, pero el Record Locator Service pide en el intercambio únicamente el de la transacción que va a realizar, por ejemplo el de ITI-68 al recuperar. El alcance se expresa siempre con el identificador de la transacción IHE, también en el token de la aplicación del paciente. De SMART esa aplicación toma solo los scopes que piden contexto e identidad, como `launch/patient` y `openid`, que no autorizan nada ante un Resource Server. HIX no usa los scopes de recurso de SMART, como `patient/DocumentReference.rs`, porque dirían lo mismo en un segundo vocabulario.
 - Que expira en dos minutos como máximo.
 
 El token no nombra ningún documento. Mientras dura, autoriza esa transacción ante ese custodio, sea cual sea el documento. Tampoco nombra al paciente, porque el token de un miembro no lleva ninguno, como explica la [sección 2.1](volume-1-concepts.html). La excepción es la aplicación del paciente. Su contexto de paciente, fijado con [HIX-2](volume-1-actors.html#hix-2), se conserva en el intercambio y limita al custodio a ese expediente.
@@ -88,11 +88,11 @@ Deshabilitar un cliente en el Authorization Server **SHALL** revocar sus tokens 
 
 HIX especifica los siguientes controles. Cada uno remite a la sección que lo fija.
 
-- **Autenticación de sistemas.** Toda conexión entre dos participantes se autentica en ambos extremos con ATNA, como fija la [sección 2.4](volume-1-groupings.html). Ningún participante acepta tráfico anónimo.
+- **Autenticación de sistemas.** Toda conexión entre dos participantes se autentica en ambos extremos con ATNA, como fija la [sección 2.4](volume-1-groupings.html). Ningún participante acepta tráfico anónimo. Bajo la Opción de Transporte Mediado, la autenticación mutua del tramo entre organizaciones la aporta la red de intercambio.
 - **Autorización.** Toda transacción presenta un token emitido por el Authorization Server de la comunidad y destinado a quien la recibe, como fija la [sección 2.2](volume-1-actors.html).
 - **Delegación acotada.** El token con el que la comunidad alcanza a un custodio se emite para esa recuperación, conserva el sujeto y las extensiones del solicitante original y declara al Record Locator Service como actor.
 - **Mínimo privilegio.** El alcance de un token intercambiado se limita a la transacción que motivó el intercambio y nunca excede el del solicitante, el de la delegación registrada ni las capacidades del destino. Poder localizar un documento nunca da poder para recuperarlo.
-- **Confidencialidad en tránsito.** Todo tramo viaja cifrado, incluido el que atraviesa un canal de interconexión bajo la Opción de Transporte Mediado.
+- **Confidencialidad en tránsito.** Todo tramo entre participantes viaja cifrado, incluido el que atraviesa un canal de interconexión bajo la Opción de Transporte Mediado. El tramo entre un custodio y su propio servidor de seguridad es responsabilidad del custodio, como fija la [sección 2.3](volume-1-options.html).
 - **Divulgación decidida sobre los punteros.** La política se evalúa en la infraestructura central, una vez por consulta, sobre los metadatos del índice y antes de que se mueva contenido, como fija la [sección 2.1](volume-1-concepts.html).
 - **Auditoría en ambos extremos.** El miembro que solicita y la infraestructura central registran la localización. Infraestructura central y custodio registran la recuperación. Ningún tramo queda sin testigo.
 - **Trazabilidad entre tramos.** Los registros de una misma divulgación comparten un identificador de correlación, de modo que la interacción completa pueda reconstruirse.
