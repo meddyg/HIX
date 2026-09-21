@@ -3,16 +3,19 @@ name: Pages
 # Builds the IG and deploys it to Cloudflare Pages:
 #
 #   pull request  -> https://pr-N.hix-ig.pages.dev/fhir/hix/            preview
-#   push to main  -> https://main.hix-ig.pages.dev/fhir/hix/            ci-build
-#   push to dev   -> https://dev.hix-ig.pages.dev/fhir/hix/             dev
-#   tag vX.Y.Z    -> https://hix.meddyg.com/fhir/hix/                   production
-#                    https://vX-Y-Z.hix-ig-versions.pages.dev/fhir/hix/  frozen copy
+#   push to dev   -> https://dev.hix-ig.pages.dev/fhir/hix/             recent changes
+#   push to main  -> https://hix.meddyg.com/fhir/hix/                   the published guide
+#   tag vX.Y.Z    -> https://vX-Y-Z.hix-ig-versions.pages.dev/fhir/hix/  frozen copy of that version
+#
+# main is the production branch of the hix-ig Pages project, so what merges
+# into main is what hix.meddyg.com serves. A tag publishes nothing new there: it
+# keeps a copy of that version that later merges do not change.
 #
 # Closing a pull request deletes its preview deployments.
 #
 # Needs the CLOUDFLARE_API_TOKEN (permission: Cloudflare Pages, Edit) and
-# CLOUDFLARE_ACCOUNT_ID secrets, and two Pages projects, hix-ig and
-# hix-ig-versions, whose production branch is `production`.
+# CLOUDFLARE_ACCOUNT_ID secrets, and two Pages projects: hix-ig, whose production
+# branch is `main`, and hix-ig-versions, which holds one branch per version.
 
 on:
   push:
@@ -104,10 +107,9 @@ jobs:
           if [ "$EVENT" = pull_request ]; then
             deploy hix-ig "pr-$PR"
           elif [ "$REF_TYPE" = tag ]; then
-            deploy hix-ig production
             deploy hix-ig-versions "$REF"
           else
-            deploy hix-ig "$REF" # main or dev
+            deploy hix-ig "$REF" # dev is a preview; main is production
           fi
 
       # One comment per PR, updated on every push.
