@@ -4,7 +4,7 @@ Esta sección describe el modelo de confianza de HIX, los controles que la arqui
 
 MHDS advierte que el marco de políticas de una comunidad debe definirse antes de construirla[^mhds-security]. Las secciones anteriores dejan a la política de la comunidad una serie de decisiones que aquí se reúnen.
 
-- Qué organizaciones pueden ser miembros, quién lo certifica, bajo qué condiciones dejan de serlo y quién financia la infraestructura central. La [Tabla 2.1-1](volume-1-concepts.html#tabla-2-1-1) de compromisos de la arquitectura lo señala como el riesgo principal de la comunidad a largo plazo.
+- Qué organizaciones pueden ser miembros, quién lo certifica, bajo qué condiciones dejan de serlo y quién financia la infraestructura central. La [Tabla 2.1-2](volume-1-concepts.html#tabla-2-1-2) de compromisos de la arquitectura lo señala como el riesgo principal de la comunidad a largo plazo.
 - Qué propósitos de uso se admiten, con qué condiciones y qué documentos alcanza cada uno, en particular qué permite `ETREAT` frente a `TREAT`, como indica la [Tabla 2.2-3](volume-1-actors.html#tabla-2-2-3).
 - Qué política de divulgación aplica mientras el modelo de consentimiento no esté especificado, como señala la [sección 2.3](volume-1-options.html).
 - Qué custodios pueden ejercer la Opción de Almacenamiento Central y quién lo decide.
@@ -29,18 +29,22 @@ El límite de confianza pasa entre cada miembro y la infraestructura central, co
 | Audiencia | El Record Locator Service | Un único destino, custodio o actor central |
 | Vida | La que fije el Authorization Server | Dos minutos como máximo, y nunca más que la vida restante del token del solicitante |
 | Cómo se valida | Por introspección en el Authorization Server con ITI-102, una vez por operación | En el destino, con las claves que publica el Authorization Server ([JWKs](https://www.rfc-editor.org/info/rfc7517/)), sin necesidad de introspección |
-| Qué lleva | El sujeto, que es el sistema del miembro o la persona que lanzó la aplicación, la organización y el propósito de uso en las extensiones de IUA, el alcance concedido y, si lo obtuvo una aplicación del paciente, el contexto de paciente | El mismo sujeto, las mismas extensiones y, si lo hay, el mismo contexto de paciente, solo el alcance de la transacción que motivó el intercambio y el Record Locator Service como actor en el claim `act` |
+| Sujeto | El sistema del miembro, o la persona que lanzó la aplicación | El mismo |
+| Extensiones de IUA | La organización y el propósito de uso | Las mismas |
+| Alcance | El concedido al solicitante | Solo el de la transacción que motivó el intercambio |
+| Contexto de paciente | Solo si lo obtuvo una aplicación del paciente | El mismo, si lo hay |
+| Actor | Ninguno | El Record Locator Service, en el claim `act` |
 {: .table .table-bordered}
 
 El sujeto del token del solicitante es el sistema del miembro, porque el Authorization Server autentica a ese cliente y no a una persona, y en ese caso IUA pone como sujeto al cliente. La organización, el profesional y el propósito de uso van en las extensiones que IUA define para el token ([IUA, §3.71.4.2.2.1](https://profiles.ihe.net/ITI/IUA/index.html#3714221-json-web-token-option))[^iua-sub]. Cuando el token lo obtiene una aplicación del paciente, el sujeto es la persona que la lanzó.
 
 De la tabla se siguen cuatro reglas. De cada una conviene decir qué fija HIX, de qué depende y qué queda en manos de la comunidad.
 
-**Un token intercambiado vale ante un solo destino.** El formato no lo impone. El claim `aud` de un JWT admite una lista de audiencias ([RFC 7519, §4.1.3](https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.3))[^rfc7519-aud], y el Authorization Server lo rellena con el recurso que el cliente indicó al pedir el token ([RFC 9068, §3](https://www.rfc-editor.org/rfc/rfc9068.html#section-3))[^rfc9068-aud]. HIX lo restringe para el token intercambiado, porque [HIX-1](volume-1-actors.html#hix-1) pide un destino por intercambio y de esa restricción depende que un custodio no pueda reutilizar el token ante otro. El token del solicitante nombra a los actores centrales que el miembro alcanza directamente. En la arquitectura de este volumen es solo el Record Locator Service. Si la arquitectura cambiara y el miembro alcanzara otro actor central, por ejemplo el registro de identidad maestra, su token nombraría a ambos en `aud`, como el formato permite, sin que cambie nada más de este capítulo.
+**Un token intercambiado vale ante un solo destino.** El formato no lo impone. El claim `aud` de un JWT admite una lista de audiencias ([RFC 7519, §4.1.3](https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.3))[^rfc7519-aud], y el Authorization Server lo rellena con el recurso que el cliente indicó al pedir el token ([RFC 9068, §3](https://www.rfc-editor.org/rfc/rfc9068.html#section-3))[^rfc9068-aud]. HIX lo restringe para el token intercambiado, porque de eso depende que un custodio no pueda reutilizarlo ante otro. El token del solicitante nombra a los actores centrales que el miembro alcanza directamente, que en este volumen es solo el Record Locator Service. Si la arquitectura cambiara y alcanzara otro, su token nombraría a ambos en `aud` sin que cambie nada más de este capítulo.
 
 **El token del solicitante no sale de la infraestructura central.** El Record Locator Service no lo reenvía a ningún custodio ni actor central. Ante cada destino presenta un token intercambiado para ese destino, como fija la [sección 2.2](volume-1-actors.html). Así el solicitante nunca tiene una credencial que valga ante un custodio, y un custodio nunca recibe una que valga ante otro.
 
-**El custodio puede validar el token sin preguntar al Authorization Server.** Todo lo que necesita está en el token y en las claves que el Authorization Server publica. Esa publicación es su única dependencia, y la resuelve por adelantado, conservando las claves y renovándolas cuando aparece un identificador de clave que no conoce. HIX exige esa validación local y no exige introspección en el custodio. Una comunidad puede admitirla además, con la Token Introspection Option de IUA, y quien lo hace acepta que cada recuperación dependa entonces del Authorization Server en ese momento. La subsección siguiente detalla la validación.
+**El custodio puede validar el token sin preguntar al Authorization Server.** Todo lo que necesita está en el token y en las claves que el Authorization Server publica. Esa publicación es su única dependencia, y la resuelve por adelantado, conservando las claves y renovándolas cuando aparece un identificador de clave que no conoce. La subsección siguiente detalla la validación y dice cuándo una comunidad puede añadirle la introspección.
 
 **El Record Locator Service no actúa por cuenta propia ante los actores centrales.** No tiene credenciales permanentes hacia el Document Registry ni hacia el registro de identidad maestra. Cada acceso lo hace a nombre de un solicitante, con el token intercambiado para ese destino, y así queda auditado. De esta forma se evita el acceso arbitrario entre los componentes centrales. Ninguno puede consultar a otro sin una petición de un solicitante que lo justifique, y una credencial del mediador comprometida no da acceso a nada por sí sola, porque no existe ninguna que valga sin ese intercambio.
 
@@ -80,11 +84,11 @@ Lo que el token sí aporta es el contexto con el que se decide, en las extension
 2. La política local del custodio sobre su propio endpoint.
 3. La auditoría, que no previene pero acota y detecta.
 
-En resumen, el token prueba quién pide, en nombre de quién actúa la comunidad, ante quién vale, hasta cuándo y con qué contexto. Qué se entrega lo deciden esas tres capas a partir de ese contexto.
-
 #### Contención de una credencial comprometida
 
-Deshabilitar un cliente en el Authorization Server **SHALL** revocar sus tokens vigentes, de modo que la siguiente introspección los declare inactivos, que es el estado que RFC 7662 prevé para un token revocado ([RFC 7662, §2.2](https://www.rfc-editor.org/rfc/rfc7662.html#section-2.2))[^rfc7662-active], y ningún intercambio pueda partir de ellos. Un token ya intercambiado no tiene ciclo de vida propio. El Record Locator Service lo usa una sola vez, en la recuperación que lo motivó, y expira en dos minutos como máximo. Revocar el token del solicitante impide todo intercambio nuevo, y la recuperación que ya estaba en curso termina. Lo que contiene una credencial comprometida es que los tokens obtenidos con ella dejen de valer, no que cambie la credencial. Si el Authorization Server revoca también esos tokens al rotar el secreto o la clave de un cliente es decisión de su implementación. Si no lo hace, hay que revocarlos aparte.
+Deshabilitar un cliente en el Authorization Server **SHALL** revocar sus tokens vigentes, de modo que la siguiente introspección los declare inactivos, que es el estado que RFC 7662 prevé para un token revocado ([RFC 7662, §2.2](https://www.rfc-editor.org/rfc/rfc7662.html#section-2.2))[^rfc7662-active], y ningún intercambio pueda partir de ellos. Un token ya intercambiado no tiene ciclo de vida propio. El Record Locator Service lo usa una sola vez, en la recuperación que lo motivó, y expira en dos minutos como máximo, así que una recuperación ya en curso termina.
+
+Lo que contiene una credencial comprometida es que los tokens obtenidos con ella dejen de valer, no que cambie la credencial. Si el Authorization Server los revoca también al rotar el secreto o la clave de un cliente es decisión de su implementación. Si no lo hace, hay que revocarlos aparte.
 
 ### Controles técnicos de seguridad y privacidad
 
@@ -92,8 +96,8 @@ HIX especifica los siguientes controles. Cada uno remite a la sección que lo fi
 
 - **Autenticación de sistemas.** Toda conexión entre dos participantes se autentica en ambos extremos con ATNA, como fija la [sección 2.4](volume-1-groupings.html). Ningún participante acepta tráfico anónimo. Bajo la Opción de Transporte Mediado, la autenticación mutua del tramo entre organizaciones la aporta la red de intercambio.
 - **Autorización.** Toda transacción presenta un token emitido por el Authorization Server de la comunidad y destinado a quien la recibe, como fija la [sección 2.2](volume-1-actors.html).
-- **Delegación acotada.** El token con el que la comunidad alcanza a un custodio se emite para esa recuperación, conserva el sujeto y las extensiones del solicitante original y declara al Record Locator Service como actor.
-- **Mínimo privilegio.** El alcance de un token intercambiado se limita a la transacción que motivó el intercambio y nunca excede el del solicitante, el de la delegación registrada ni las capacidades del destino. Poder localizar un documento nunca da poder para recuperarlo.
+- **Delegación acotada.** El token con el que la comunidad alcanza a un custodio se emite para esa recuperación, a nombre del solicitante original y con el Record Locator Service como actor, como fija la [sección 2.2](volume-1-actors.html#authorization-server).
+- **Mínimo privilegio.** El alcance de un token intercambiado se limita a la transacción que motivó el intercambio, como fija la [sección 2.2](volume-1-actors.html#authorization-server). Poder localizar un documento nunca da poder para recuperarlo.
 - **Confidencialidad en tránsito.** Todo tramo entre participantes viaja cifrado, incluido el que atraviesa un canal de interconexión bajo la Opción de Transporte Mediado. El tramo entre un custodio y su propio servidor de seguridad es responsabilidad del custodio, como fija la [sección 2.3](volume-1-options.html).
 - **Divulgación decidida sobre los punteros.** La política se evalúa en la infraestructura central, una vez por consulta, sobre los metadatos del índice y antes de que se mueva contenido, como fija la [sección 2.1](volume-1-concepts.html).
 - **Auditoría en ambos extremos.** El miembro que solicita y la infraestructura central registran la localización. Infraestructura central y custodio registran la recuperación. Ningún tramo queda sin testigo.
@@ -128,13 +132,11 @@ Cada comunidad define su equivalente y lo aplica en el punto donde toma la decis
 
 #### Consentimiento del paciente
 
-La decisión de divulgación necesita conocer al paciente, al solicitante, su organización, el propósito de uso que lleva su token y la etiqueta de confidencialidad de cada puntero. La Opción de Consentimiento de la [sección 2.3](volume-1-options.html) describe ese punto de aplicación y la información que necesita, y el destino es PCF, como explica la [sección 2.1](volume-1-concepts.html).
-
-Mientras el modelo de consentimiento no esté especificado, la comunidad opera bajo la política de divulgación que haya acordado. Esa política debe estar documentada y ser la misma para todos los miembros.
+La decisión de divulgación se aplica en el punto y con la información que describe la Opción de Consentimiento de la [sección 2.3](volume-1-options.html), y su destino es PCF, como explica la [sección 2.1](volume-1-concepts.html). Mientras el modelo de consentimiento no esté especificado, la comunidad opera bajo la política de divulgación que haya acordado, que debe estar documentada y ser la misma para todos los miembros.
 
 #### Superficies de identidad
 
-Las transacciones de identidad también divulgan. ITI-83 revela que un identificador corresponde a una persona que la comunidad conoce, e ITI-78 e ITI-119 revelan qué identidades maestras coinciden con unos datos demográficos, o se les parecen. Ninguna revela las identidades locales de otros miembros, como fijan la [sección 2.2](volume-1-actors.html) para ITI-83 y las opciones de Demografía y de Coincidencia Demográfica de la [sección 2.3](volume-1-options.html) para ITI-78 e ITI-119. Estas superficies las habilita el scope del token, no el propósito de uso, y la comunidad decide qué solicitantes pueden ejercerlas y qué identidades maestras se revelan por datos demográficos, como exigen la Opción de Demografía y la Opción de Coincidencia Demográfica.
+Las transacciones de identidad también divulgan. ITI-83 revela que un identificador corresponde a una persona que la comunidad conoce, e ITI-78 e ITI-119 revelan qué identidades maestras coinciden con unos datos demográficos, o se les parecen. Ninguna revela las identidades locales de otros miembros, como fijan la [sección 2.2](volume-1-actors.html) para ITI-83 y las opciones de Demografía y de Coincidencia Demográfica de la [sección 2.3](volume-1-options.html) para ITI-78 e ITI-119. Estas superficies las habilita el scope del token, no el propósito de uso, y la comunidad decide qué solicitantes pueden ejercerlas y qué identidades maestras se revelan por datos demográficos.
 
 #### Acceso de emergencia
 

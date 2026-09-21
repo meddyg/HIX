@@ -1,4 +1,4 @@
-Esta sección explica las decisiones que dan forma a esta comunidad. Cada una se presenta con lo que decide, por qué lo decide y lo que cuesta. Son decisiones de arquitectura, no de implementación. Una comunidad puede desplegarlas de muchas maneras sin que cambie nada de lo que aquí se describe. La [Tabla 2.1-1](volume-1-concepts.html#tabla-2-1-1) resume los compromisos asumidos, y la última subsección explica la relación de HIX con MHDS.
+Esta sección explica las decisiones que dan forma a esta comunidad. Cada una se presenta con lo que decide, por qué lo decide y lo que cuesta. Son decisiones de arquitectura, no de implementación. Una comunidad puede desplegarlas de muchas maneras sin que cambie nada de lo que aquí se describe. La [Tabla 2.1-2](volume-1-concepts.html#tabla-2-1-2) resume los compromisos asumidos, y la última subsección explica la relación de HIX con MHDS.
 
 ### Comunidad y límite de confianza
 {: #limite-de-confianza}
@@ -48,9 +48,17 @@ La [Figura 2.1-1](volume-1-concepts.html#figura-2-1-1) muestra cómo se construy
 
 - La **fuente autoritativa de identidad** es quien crea la identidad maestra. Lo hace con el feed **[PMIR](https://profiles.ihe.net/ITI/PMIR/index.html)** ([ITI-93](https://profiles.ihe.net/ITI/PMIR/ITI-93.html)), una vez que comprobó quién es la persona con su identificador nacional. Nadie más puede crear una identidad maestra. HIX no define cuál debe ser esa fuente, pero propone que sea el EDUS, como indica la introducción del volumen.
 - Cada **miembro que publica** declara los pacientes de su dominio con el feed **[PIXm](https://profiles.ihe.net/ITI/PIXm/index.html)** ([ITI-104](https://profiles.ihe.net/ITI/PIXm/ITI-104.html)). Envía su identificador local junto con el identificador nacional de la persona, y el registro de identidad enlaza ese identificador local con la identidad maestra que ya existe para esa persona. Si la persona todavía no tiene identidad maestra, la declaración se rechaza. *Un miembro **vincula**, nunca crea.*
-- La consulta **por identificador** es PIXm ([ITI-83](https://profiles.ihe.net/ITI/PIXm/ITI-83.html)). Recibe un identificador, local o nacional, y devuelve la identidad maestra enlazada a él. Es la vía normal. La usan el Record Locator Service al localizar, el Document Registry al indexar y el Authorization Server al fijar el contexto de paciente, cada vez que necesitan saber quién es un paciente.
-- La búsqueda **por datos demográficos** es **[PDQm](https://profiles.ihe.net/ITI/PDQm/index.html)** ([ITI-78](https://profiles.ihe.net/ITI/PDQm/ITI-78.html)). Recibe criterios como el nombre o la fecha de nacimiento y devuelve las identidades maestras que coinciden con ellos. Es el respaldo cuando no hay un identificador fiable. Busca solo entre identidades maestras.
-- La coincidencia **probabilística** es también PDQm ([ITI-119](https://profiles.ihe.net/ITI/PDQm/ITI-119.html)). Recibe los datos de un candidato y devuelve las identidades maestras que más se le parecen, ordenadas de más a menos probable y cada una con su grado de coincidencia ([PDQm, §2:3.119.4.2.2.4](https://profiles.ihe.net/ITI/PDQm/ITI-119.html#231194224-quality-of-match))[^pdqm-match]. Sirve cuando los datos están incompletos o pueden traer errores, como un apellido mal escrito. Busca solo entre identidades maestras.
+Tres consultas responden quién es un paciente, y todas buscan solo entre identidades maestras. La [Tabla 2.1-1](volume-1-concepts.html#tabla-2-1-1) las compara. La tercera ordena sus resultados y da a cada uno un grado de coincidencia, como fija PDQm ([PDQm, §2:3.119.4.2.2.4](https://profiles.ihe.net/ITI/PDQm/ITI-119.html#231194224-quality-of-match))[^pdqm-match].
+
+**Tabla 2.1-1:** Consultas de identidad
+{: #tabla-2-1-1}
+
+| Consulta | Transacción | Qué recibe | Qué devuelve | Cuándo se usa |
+| --- | --- | --- | --- | --- |
+| Por identificador | [ITI-83](https://profiles.ihe.net/ITI/PIXm/ITI-83.html) de PIXm | Un identificador, local o nacional | La identidad maestra enlazada a él | Es la vía normal. La usan también el Record Locator Service al localizar, el Document Registry al indexar y el Authorization Server al fijar el contexto de paciente |
+| Por datos demográficos | [ITI-78](https://profiles.ihe.net/ITI/PDQm/ITI-78.html) de PDQm | Criterios como el nombre o la fecha de nacimiento | Las identidades maestras que coinciden con ellos | Cuando no hay un identificador fiable |
+| Por coincidencia probabilística | [ITI-119](https://profiles.ihe.net/ITI/PDQm/ITI-119.html) de PDQm | Los datos de un candidato | Las identidades maestras que más se le parecen, de más a menos probable | Cuando los datos están incompletos o pueden traer errores, como un apellido mal escrito |
+{: .table .table-bordered}
 
 > **Nota.** Un miembro no puede crear una persona, fusionar dos personas ni escribir en el dominio de otro. Sobre las identidades locales de su propio dominio decide él. Y ninguna de las tres consultas prueba una identidad. Eso solo lo hace la fuente autoritativa.
 
@@ -130,14 +138,16 @@ Una red de intercambio resuelve cómo se conectan las organizaciones y cómo se 
 
 ### Comunidades vecinas
 
-MHDS ofrece una función similar a la de XDS, sobre FHIR en lugar de SOAP ([MHDS Vol. 1, §1:50.4.1](https://profiles.ihe.net/ITI/MHDS/volume-1.html#15041-concepts))[^mhds-xds]. Una comunidad HIX puede conectarse con comunidades que operen sobre [XDS](https://profiles.ihe.net/ITI/TF/Volume1/ch-10.html) o [XCA](https://profiles.ihe.net/ITI/TF/Volume1/ch-18.html) mediante una pasarela. Ante HIX, la pasarela es un miembro más, custodio de los documentos que trae de la otra comunidad o consumidor de los que le pide, y se incorpora como cualquier otro. Ante la otra comunidad, es un Initiating Gateway o un Responding Gateway de XCA. Así la mediación de HIX se conserva, porque el Record Locator Service alcanza a la pasarela como a cualquier custodio y ningún miembro habla con la otra comunidad. MHD prevé un puente así hacia XDS con su [XDS on FHIR Option](https://profiles.ihe.net/ITI/MHD/5.0.0/1332_actor_options.html#13322-xds-on-fhir-option), en la que un Document Responder pasa las consultas y recuperaciones a un entorno XDS ([MHD, §1:33.2.2](https://profiles.ihe.net/ITI/MHD/5.0.0/1332_actor_options.html#13322-xds-on-fhir-option))[^mhd-xds-on-fhir]. MHD advierte que esa opción no convive en un mismo despliegue con la UnContained Reference Option, que en HIX declaran quien publica y el Document Registry, así que la pasarela es siempre un sistema aparte. Esta guía no la especifica.
+Una comunidad HIX puede conectarse con comunidades que operen sobre [XDS](https://profiles.ihe.net/ITI/TF/Volume1/ch-10.html) o [XCA](https://profiles.ihe.net/ITI/TF/Volume1/ch-18.html) mediante una pasarela. Ante HIX la pasarela es un miembro más, custodio de los documentos que trae de la otra comunidad o consumidor de los que le pide. Ante la otra comunidad es un Initiating Gateway o un Responding Gateway de XCA. Así la mediación se conserva, porque el Record Locator Service alcanza a la pasarela como a cualquier custodio y ningún miembro habla con la otra comunidad.
+
+MHD prevé un puente así hacia XDS con su [XDS on FHIR Option](https://profiles.ihe.net/ITI/MHD/5.0.0/1332_actor_options.html#13322-xds-on-fhir-option)[^mhd-xds-on-fhir], y advierte que no convive en un mismo despliegue con la UnContained Reference Option que declaran los actores de HIX. Por eso la pasarela es siempre un sistema aparte. Esta guía no la especifica.
 
 ### Compromisos asumidos
 
 IHE deja la gobernanza fuera de su alcance. Declara que no define políticas de privacidad ni de seguridad, y que el marco de políticas de una comunidad debe definirse antes de construirla ([MHDS Vol. 1, §1:50.5](https://profiles.ihe.net/ITI/MHDS/volume-1.html#1505-mhds-security-considerations) y [§1:50.5.1](https://profiles.ihe.net/ITI/MHDS/volume-1.html#15051-policies-and-risk-management))[^mhds-policy]. Por eso, de los compromisos de la tabla, la apuesta por la operación del centro es el que más pesa.
 
-**Tabla 2.1-1:** Compromisos de la arquitectura
-{: #tabla-2-1-1}
+**Tabla 2.1-2:** Compromisos de la arquitectura
+{: #tabla-2-1-2}
 
 | Compromiso | Qué se acepta | Cómo se mitiga |
 | --- | --- | --- |
@@ -156,10 +166,10 @@ Hay dos razones. La primera es que la última publicación de MHDS es de agosto 
 
 La segunda es que algunas de sus decisiones chocan con los perfiles que compone. MHDS agrupa el Document Registry con el Authorization Server ([MHDS Vol. 1, §1:50.2.1](https://profiles.ihe.net/ITI/MHDS/volume-1.html#15021-authorization-option))[^mhds-as-grouping] y deja en este la gestión del consentimiento ([MHDS Vol. 1, §1:50.2.2](https://profiles.ihe.net/ITI/MHDS/volume-1.html#15022-consent-manager-option))[^mhds-consent-as]. IUA, en cambio, se distingue precisamente por no atar el Authorization Server a los Resource Servers ([IUA, Relation to SMART-on-FHIR](https://profiles.ihe.net/ITI/IUA/index.html#relation-to-smart-on-fhir))[^iua-loose].
 
-De ahí salen dos reglas. Cuando MHDS y un perfil vigente dicen cosas distintas, prevalece el perfil vigente. Cuando MHDS y una decisión de HIX dicen cosas distintas, esta guía declara en qué se aparta y por qué. La [Tabla 2.1-2](volume-1-concepts.html#tabla-2-1-2) reúne lo que HIX toma de MHDS y lo que no.
+De ahí salen dos reglas. Cuando MHDS y un perfil vigente dicen cosas distintas, prevalece el perfil vigente. Cuando MHDS y una decisión de HIX dicen cosas distintas, esta guía declara en qué se aparta y por qué. La [Tabla 2.1-3](volume-1-concepts.html#tabla-2-1-3) reúne lo que HIX toma de MHDS y lo que no.
 
-**Tabla 2.1-2:** Lo que HIX toma de MHDS y lo que no
-{: #tabla-2-1-2}
+**Tabla 2.1-3:** Lo que HIX toma de MHDS y lo que no
+{: #tabla-2-1-3}
 
 | Asunto | En MHDS | En HIX |
 | --- | --- | --- |
@@ -188,7 +198,6 @@ Las citas reproducen el texto publicado por su fuente. Los recortes se marcan co
 [^mhds-policy]: [MHDS Vol. 1, §1:50.5 MHDS Security Considerations](https://profiles.ihe.net/ITI/MHDS/volume-1.html#1505-mhds-security-considerations): "**The policy landscape that the community is built on needs to be defined well before the community is built.**" [§1:50.5.1 Policies and Risk Management](https://profiles.ihe.net/ITI/MHDS/volume-1.html#15051-policies-and-risk-management): "IHE solves interoperability problems via the implementation of technology standards. **It does not define Privacy or Security Policies**, Risk Management, Healthcare Application Functionality, Operating System Functionality, Physical Controls, or even general Network Controls."
 [^balp-corr]: [BALP, §3:5.7.3.1 X-Request-Id header](https://profiles.ihe.net/ITI/BALP/content.html#35731-x-request-id-header): "Where it is known that an http RESTful transaction included an X-Request-Id, that value should be recorded in an .entity dedicated to X-Request-Id. **This ID can be used to correlated AuditEvents from client and server**, and may aid with correlation on further activities recorded caused by the transaction."
 [^ch-epr-arch]: [eHealth Suisse, EPR architecture. A detailed description, §3.3.4 XDS Document Repositories](https://www.e-health-suisse.ch/payload/api/documents/file/EPD-Architektur_EN.pdf): "The Document Repository Service implements interfaces to **store and query the binary objects** of the XDS documents. **The data are captured by the connected systems of the (core) communities when documents are saved** and are registered via interfaces."
-[^mhds-xds]: [MHDS Vol. 1, §1:50.4.1 Concepts](https://profiles.ihe.net/ITI/MHDS/volume-1.html#15041-concepts): "The MHDS Profile supports Document Sharing utilizing only FHIR infrastructures. **This is similar functionality to XDS but using the FHIR standard and not SOAP.**"
 [^estonia]: [e-Estonia, e-Health Record](https://e-estonia.com/solutions/healthcare/e-health-records/): "the e-Health Record actually **retrieves data as necessary from various providers**, who may be using different systems" and "presents it in a standard format".
 [^estonia-xroad]: [e-Estonia, X-Road](https://e-estonia.com/solutions/interoperability-services/x-road/): "X-Road®, an open-source software and ecosystem solution that provides unified and secure data exchange between private and public sector organisations, **is the backbone of e-Estonia**. Invisible yet crucial, it allows the nation’s various public and private sector e-service information systems to link up and function in harmony."
 [^mhds-version]: [MHDS, pie de la publicación vigente](https://profiles.ihe.net/ITI/MHDS/index.html): "Package ihe.iti.mhds#2.3.1 based on FHIR 4.0.1. Generated 2023-08-04"
