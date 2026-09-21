@@ -1,0 +1,44 @@
+@startuml hix-flujo-paciente
+skinparam shadowing false
+skinparam defaultFontName Verdana
+skinparam defaultFontSize 11
+skinparam sequenceMessageAlign center
+skinparam ParticipantPadding 10
+skinparam sequence {
+  ArrowColor #333333
+  LifeLineBorderColor #999999
+  ParticipantBorderColor #555555
+  ParticipantBackgroundColor white
+  ActorBorderColor #555555
+  ActorBackgroundColor white
+  GroupBorderColor #999999
+}
+
+actor "Persona" as P
+participant "Aplicación\ndel paciente" as APP
+participant "Authorization\nServer" as AS
+participant "Fuente autoritativa\n(p. ej. EDUS)" as SRC
+participant "Registro de\nidentidad maestra" as PMIR
+participant "Record Locator\nService" as RLS
+
+== Enrolamiento (una vez) ==
+P -> AS : crea su cuenta
+AS -> SRC : verificación de identidad
+SRC --> AS : identidad verificada
+AS --> P : cuenta enlazada a la\nidentidad verificada
+
+== Lanzamiento [HIX-2] ==
+APP -> AS : authorization code + PKCE,\ncontexto de lanzamiento de paciente
+AS -> P : autenticación y consentimiento
+P --> AS : autoriza
+AS -> PMIR : [ITI-83] identidad verificada → identidad maestra
+PMIR --> AS : identidad maestra
+AS --> APP : token (audiencia: RLS,\ncontexto de paciente = identidad maestra)
+
+== Acceso ==
+APP -> RLS : [ITI-67] / [ITI-68] [ITI-72]
+RLS -> AS : [ITI-102] Introspect Token
+AS --> RLS : activo, contexto de paciente
+RLS -> RLS : confina la operación\nal paciente del contexto
+RLS --> APP : punteros o documento
+@enduml

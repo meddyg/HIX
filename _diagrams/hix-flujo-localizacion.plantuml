@@ -1,0 +1,55 @@
+@startuml hix-flujo-localizacion
+skinparam shadowing false
+skinparam defaultFontName Verdana
+skinparam defaultFontSize 11
+skinparam sequenceMessageAlign center
+skinparam ParticipantPadding 8
+skinparam sequence {
+  ArrowColor #333333
+  LifeLineBorderColor #999999
+  ParticipantBorderColor #555555
+  ParticipantBackgroundColor white
+  GroupBorderColor #999999
+}
+
+participant "Consumidor" as C
+participant "Authorization\nServer" as AS
+participant "Record Locator\nService" as RLS
+participant "Registro de\nidentidad maestra" as PMIR
+participant "Document\nRegistry" as REG
+participant "Directorio" as DIR
+participant "Custodio" as K
+
+== Localización ==
+C -> AS : [ITI-71] Get Access Token
+AS --> C : token (audiencia: RLS)
+C -> RLS : [ITI-67] Find Document References\n(patient) [ITI-72]
+RLS -> AS : [ITI-102] Introspect Token
+AS --> RLS : activo, organización, propósito
+RLS -> PMIR : [ITI-83] identidad maestra
+PMIR --> RLS : identidad maestra
+RLS -> AS : [HIX-1] intercambio\n(resource = Document Registry)
+AS --> RLS : JWT (aud = registro, sub = consumidor,\nact = RLS, vida ≤ 120 s)
+RLS -> REG : [ITI-67] [ITI-72]
+REG --> RLS : punteros
+RLS -> RLS : decisión de divulgación por puntero\nURL de contenido → RLS
+RLS --> C : Bundle de punteros divulgados
+
+== Recuperación ==
+C -> RLS : [ITI-68] Retrieve Document\n(URL del RLS) [ITI-72]
+RLS -> AS : [ITI-102] Introspect Token
+RLS -> RLS : relee el puntero\nrecomprueba la divulgación
+RLS -> DIR : [ITI-90] custodio → endpoint
+DIR --> RLS : endpoint activo del custodio
+RLS -> AS : [HIX-1] Custodian Token Exchange\n(resource = custodio)
+AS --> RLS : JWT (aud = custodio, sub = consumidor,\nact = RLS, vida ≤ 120 s)
+RLS -> K : [ITI-68] Retrieve Document [ITI-72]
+K -> K : validación local del JWT
+alt el custodio responde
+  K --> RLS : documento
+  RLS --> C : documento
+else el custodio no responde
+  RLS --> C : OperationOutcome (transitorio)
+end
+note over C, K : Cada llamada del RLS a un servicio central o a un custodio va precedida de un intercambio [HIX-1] a nombre del solicitante; se muestra solo donde importa.\nCada actor registra sus eventos [ITI-20] bajo el identificador de correlación de la operación.
+@enduml

@@ -1,0 +1,40 @@
+@startuml hix-flujo-publicacion
+skinparam shadowing false
+skinparam defaultFontName Verdana
+skinparam defaultFontSize 11
+skinparam sequenceMessageAlign center
+skinparam ParticipantPadding 10
+skinparam sequence {
+  ArrowColor #333333
+  LifeLineBorderColor #999999
+  ParticipantBorderColor #555555
+  ParticipantBackgroundColor white
+  GroupBorderColor #999999
+}
+
+participant "Custodio" as K
+participant "Authorization\nServer" as AS
+participant "Record Locator\nService" as RLS
+participant "Registro de\nidentidad maestra" as PMIR
+participant "Document\nRegistry" as REG
+
+K -> K : almacena el documento\nen su repositorio
+K -> AS : [ITI-71] Get Access Token
+AS --> K : token (audiencia: RLS)
+K -> RLS : [ITI-65] Provide Document Bundle\n(metadatos, URL relativa) [ITI-72]
+RLS -> AS : [ITI-102] Introspect Token
+AS --> RLS : activo, organización, propósito
+RLS -> RLS : custodio = organización del token\nURL relativa\netiqueta de confidencialidad presente
+RLS -> PMIR : [ITI-83] paciente local → identidad maestra
+PMIR --> RLS : identidad maestra
+RLS -> AS : [HIX-1] Token Exchange\n(resource = Document Registry)
+AS --> RLS : JWT (aud = registro, sub = custodio,\nact = RLS, vida ≤ 120 s)
+RLS -> REG : [ITI-65] puntero con\nsubject = identidad maestra [ITI-72]
+REG --> RLS : 200
+RLS --> K : 200
+alt la comunidad rechaza la publicación
+  RLS --> K : 4xx con OperationOutcome
+  K -> K : revierte el documento local
+end
+note over K, REG : Cada llamada del RLS a un servicio central o a un custodio va precedida de un intercambio [HIX-1] a nombre del solicitante.\nCada actor registra sus eventos [ITI-20] bajo el identificador de correlación de la operación.
+@enduml
