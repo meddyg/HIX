@@ -8,7 +8,7 @@ Los casos siguen las tres historias de las figuras de la [sección 2.2](volume-1
 
 Una persona existe en la comunidad desde que la fuente autoritativa de identidad la alimenta al registro de identidad maestra. El custodio que la atiende declara a la comunidad qué [identidad local](appendix-glossary.html#identidad-local) le corresponde. El registro vincula esa identidad con la [identidad maestra](appendix-glossary.html#identidad-maestra) y, desde entonces, los documentos que ese custodio publique con su identificador local quedan asociados a la misma persona que los publicados por los demás miembros.
 
-Un miembro que solo conoce su propio identificador de una persona, o el nacional, pregunta con él y obtiene la identidad maestra enlazada, que es como la comunidad la nombra. No obtiene los identificadores de los demás miembros. Un miembro que no dispone de ningún identificador conocido por la comunidad puede, si declara la Opción de Demografía, buscar por datos demográficos entre las identidades maestras.
+Un miembro que solo conoce su propio identificador de una persona, o el nacional, pregunta con él y obtiene la identidad maestra enlazada, que es como la comunidad la nombra. No obtiene los identificadores de los demás miembros. Un miembro que no dispone de ningún identificador conocido por la comunidad puede, si declara la Opción de Demografía, buscar por datos demográficos entre las identidades maestras y, si declara la Opción de Coincidencia Demográfica, pedir las que más se parecen a unos datos incompletos.
 
 Lo que un miembro declara vincula. Nunca crea una persona, nunca fusiona dos y nunca modifica lo que la identidad maestra dice de ella.
 
@@ -21,7 +21,7 @@ Lo que un miembro declara vincula. Nunca crea una persona, nunca fusiona dos y n
 
 1. La fuente autoritativa de identidad alimenta la identidad maestra de la persona mediante [ITI-93](https://profiles.ihe.net/ITI/PMIR/ITI-93.html).
 2. El custodio declara su identidad local mediante [ITI-104](https://profiles.ihe.net/ITI/PIXm/ITI-104.html) ante la infraestructura central, en su propio dominio de identificadores y con el identificador nacional de la persona. La infraestructura central comprueba que el dominio corresponde a la organización del token, y el registro de identidad maestra vincula la identidad local con la maestra. Si la persona no existe en la comunidad, rechaza la declaración e indica el motivo.
-3. Un consumidor resuelve su identificador a la identidad maestra mediante [ITI-83](https://profiles.ihe.net/ITI/PIXm/ITI-83.html) ante la infraestructura central y, si declara la Opción de Demografía, busca por datos demográficos mediante [ITI-78](https://profiles.ihe.net/ITI/PDQm/ITI-78.html).
+3. Un consumidor resuelve su identificador a la identidad maestra mediante [ITI-83](https://profiles.ihe.net/ITI/PIXm/ITI-83.html) ante la infraestructura central y, si declara la Opción de Demografía, busca por datos demográficos mediante [ITI-78](https://profiles.ihe.net/ITI/PDQm/ITI-78.html) o, con la Opción de Coincidencia Demográfica, mediante [ITI-119](https://profiles.ihe.net/ITI/PDQm/ITI-119.html).
 
 ### Publicación de un documento
 
@@ -53,7 +53,7 @@ La recuperación atraviesa dos tramos autorizados, el del profesional ante la co
 
 Si un custodio no responde, el profesional recibe un resultado que lo dice, junto con todo lo demás que pidió. Un custodio caído degrada la respuesta y nunca la hace fallar.
 
-En una urgencia la historia cambia en dos puntos. El profesional consulta con el propósito de uso `ETREAT`, y qué permite frente a `TREAT` lo fija la política de la comunidad, por ejemplo divulgar documentos que en atención habitual exigirían un consentimiento. Y si la persona llega sin un identificador fiable, el hospital puede buscarla por sus datos demográficos bajo la Opción de Demografía, como en la [Figura 2.2-2](volume-1-actors.html#figuras-2-2). La búsqueda la habilita el scope del token, no el propósito. El propósito se evalúa después, en la [decisión de divulgación](appendix-glossary.html#decision-de-divulgacion).
+En una urgencia la historia cambia en dos puntos. El profesional consulta con el propósito de uso `ETREAT`, y qué permite frente a `TREAT` lo fija la política de la comunidad, por ejemplo divulgar documentos que en atención habitual exigirían un consentimiento. Y si la persona llega sin un identificador fiable, el hospital puede buscarla por sus datos demográficos bajo la Opción de Demografía o la Opción de Coincidencia Demográfica, como en la [Figura 2.2-2](volume-1-actors.html#figuras-2-2). La búsqueda la habilita el scope del token, no el propósito. El propósito se evalúa después, en la [decisión de divulgación](appendix-glossary.html#decision-de-divulgacion).
 
 #### Flujo del proceso
 
@@ -62,7 +62,7 @@ En una urgencia la historia cambia en dos puntos. El profesional consulta con el
 **Figura 2.5-3:** Localización y recuperación mediada
 {: #figura-2-5-3}
 
-1. El [consumidor](appendix-glossary.html#consumidor) obtiene del Authorization Server un token destinado al Record Locator Service y localiza mediante [ITI-67](https://profiles.ihe.net/ITI/MHD/5.0.0/ITI-67.html). En una urgencia sin identificador conocido, busca antes a la persona por datos demográficos mediante ITI-78 ante la infraestructura central.
+1. El [consumidor](appendix-glossary.html#consumidor) obtiene del Authorization Server un token destinado al Record Locator Service y localiza mediante [ITI-67](https://profiles.ihe.net/ITI/MHD/5.0.0/ITI-67.html). En una urgencia sin identificador conocido, busca antes a la persona por datos demográficos mediante ITI-78 o ITI-119 ante la infraestructura central.
 2. El Record Locator Service comprueba el token mediante [ITI-102](https://profiles.ihe.net/ITI/IUA/index.html#3102-introspect-token-iti-102), resuelve la identidad maestra mediante ITI-83, consulta el Document Registry mediante ITI-67, evalúa la decisión de divulgación sobre cada puntero y devuelve los divulgados, con URL de contenido que apuntan a sí mismo.
 3. El consumidor recupera mediante [ITI-68](https://profiles.ihe.net/ITI/MHD/5.0.0/ITI-68.html) sobre una de esas URL.
 4. El Record Locator Service relee el puntero, vuelve a evaluar la divulgación, resuelve el endpoint del custodio en el directorio mediante [ITI-90](https://profiles.ihe.net/ITI/mCSD/ITI-90.html) y obtiene mediante [HIX-1](volume-1-actors.html#hix-1) un token para ese custodio.

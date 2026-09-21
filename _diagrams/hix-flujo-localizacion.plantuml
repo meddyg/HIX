@@ -40,7 +40,7 @@ C -> RLS : [ITI-68] Retrieve Document\n(URL del RLS) [ITI-72]
 RLS -> AS : [ITI-102] Introspect Token
 RLS -> RLS : relee el puntero\nrecomprueba la divulgación
 RLS -> DIR : [ITI-90] custodio → endpoint
-DIR --> RLS : exactamente un endpoint activo
+DIR --> RLS : endpoint activo del custodio
 RLS -> AS : [HIX-1] Custodian Token Exchange\n(resource = custodio)
 AS --> RLS : JWT (aud = custodio, sub = consumidor,\nact = RLS, vida ≤ 120 s)
 RLS -> K : [ITI-68] Retrieve Document [ITI-72]

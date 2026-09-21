@@ -10,7 +10,7 @@ MHDS advierte que el marco de políticas de una comunidad debe definirse antes d
 - Qué custodios pueden ejercer la Opción de Almacenamiento Central y quién lo decide.
 - Cómo se verifica que los custodios etiquetan correctamente la confidencialidad de sus documentos.
 - Cómo obtiene una persona la identidad verificada con la que se autentica ante el Authorization Server, como señala la [sección 2.5](volume-1-usecases.html).
-- Qué solicitantes pueden buscar pacientes por datos demográficos y qué identidades maestras se les revelan por esa vía, como exige la Opción de Demografía.
+- Qué solicitantes pueden buscar pacientes por datos demográficos y qué identidades maestras se les revelan por esa vía, como exigen la Opción de Demografía y la Opción de Coincidencia Demográfica.
 - Cuánto tiempo se conservan los registros de auditoría, quién puede consultarlos y qué ocurre con una operación cuando el Audit Record Repository no está disponible.
 - Qué constituye un acceso de emergencia, cómo se admite y qué consecuencias tiene invocarlo.
 - Si el acceso de red a los custodios se cierra de modo que la vía mediada sea la única alcanzable, o si esa restricción es solo defensa en profundidad.
@@ -104,7 +104,7 @@ HIX especifica los siguientes controles. Cada uno remite a la sección que lo fi
 
 Todo actor de HIX, salvo la aplicación del paciente, es un Secure Node o Secure Application de ATNA y un Time Client de CT, como fija la [sección 2.4](volume-1-groupings.html). Los actores centrales registran sus eventos en el Audit Record Repository de la comunidad y cada miembro en el suyo, con el contenido que cada perfil define para su transacción a partir de los patrones de BALP.
 
-El Record Locator Service **SHALL** registrar tanto la solicitud que recibe como cada recuperación que origina hacia un custodio, bajo un identificador de correlación que él mismo acuña y transmite al custodio, y **SHALL NOT** transmitir hacia el custodio ninguno que el solicitante proponga. Ningún registro de auditoría **SHALL** contener valores de credenciales ni contenido clínico.
+El Record Locator Service **SHALL** registrar tanto la solicitud que recibe como cada recuperación que origina hacia un custodio, bajo un identificador de correlación que él mismo acuña y transmite al custodio, y **SHALL NOT** transmitir hacia el custodio ninguno que el solicitante proponga. Ningún registro de auditoría **SHALL** contener un token completo ni contenido clínico. Lo que ata un evento a su token es un identificador suyo, como el `jti`, que es la evidencia que BALP pide registrar en lugar del token ([BALP, §3:5.7.5](https://profiles.ihe.net/ITI/BALP/content.html#3575-oauth-security-token))[^balp-token].
 
 #### Protección según el tipo de documento
 
@@ -132,7 +132,7 @@ Mientras el modelo de consentimiento no esté especificado, la comunidad opera b
 
 #### Superficies de identidad
 
-Las transacciones de identidad también divulgan. ITI-83 revela que un identificador corresponde a una persona que la comunidad conoce, e ITI-78 revela qué identidades maestras coinciden con unos datos demográficos. Ninguna revela las identidades locales de otros miembros, como fijan la [sección 2.2](volume-1-actors.html) para ITI-83 y la Opción de Demografía de la [sección 2.3](volume-1-options.html) para ITI-78. Estas superficies las habilita el scope del token, no el propósito de uso, y la comunidad decide qué solicitantes pueden ejercerlas y qué identidades maestras se revelan por datos demográficos, como exige la Opción de Demografía.
+Las transacciones de identidad también divulgan. ITI-83 revela que un identificador corresponde a una persona que la comunidad conoce, e ITI-78 e ITI-119 revelan qué identidades maestras coinciden con unos datos demográficos, o se les parecen. Ninguna revela las identidades locales de otros miembros, como fijan la [sección 2.2](volume-1-actors.html) para ITI-83 y las opciones de Demografía y de Coincidencia Demográfica de la [sección 2.3](volume-1-options.html) para ITI-78 e ITI-119. Estas superficies las habilita el scope del token, no el propósito de uso, y la comunidad decide qué solicitantes pueden ejercerlas y qué identidades maestras se revelan por datos demográficos, como exigen la Opción de Demografía y la Opción de Coincidencia Demográfica.
 
 #### Acceso de emergencia
 
@@ -178,6 +178,7 @@ Las citas reproducen el texto publicado por su fuente. Los recortes se marcan co
 [^rfc8693-act]: [RFC 8693, §4.1 "act" (Actor) Claim](https://www.rfc-editor.org/rfc/rfc8693.html#section-4.1): "The act (actor) claim provides a means within a JWT to express that **delegation has occurred and identify the acting party to whom authority has been delegated**."
 [^rfc7662-active]: [RFC 7662, §2.2 Introspection Response](https://www.rfc-editor.org/rfc/rfc7662.html#section-2.2): "active. REQUIRED. **Boolean indicator of whether or not the presented token is currently active.** [...] a "true" value return for the "active" property will generally indicate that a given token has been issued by this authorization server, **has not been revoked by the resource owner**, and is within its given time window of validity".
 [^btg]: [v3-ActReason, BTG](https://terminology.hl7.org/CodeSystem-v3-ActReason.html#v3-ActReason-BTG): "break the glass. **To perform policy override operations on information for provision of immediately needed health care for an emergent condition** affecting potential harm, death or patient safety **by end users who are not provisioned for this purpose of use**. Includes override of organizational provisioning policies and may include override of subject of care consent directive restricting access." [ETREAT](https://terminology.hl7.org/CodeSystem-v3-ActReason.html#v3-ActReason-ETREAT): "Emergency Treatment. To perform one or more operations on information for provision of **immediately needed health care for an emergent condition**."
+[^balp-token]: [BALP, §3:5.7.5 OAuth Security Token](https://profiles.ihe.net/ITI/BALP/content.html#3575-oauth-security-token): "There is still a need to include some evidence in the AuditEvent to tie this audit log entry with a specific token, but **the whole token should not be recorded for security reasons**."
 
 *[PMIR]: Patient Master Identity Registry, perfil IHE que gestiona la identidad maestra del paciente
 *[PIXm]: Patient Identifier Cross-referencing for mobile, perfil IHE que enlaza los identificadores locales de un paciente con su identidad maestra

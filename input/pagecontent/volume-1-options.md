@@ -7,9 +7,11 @@ Las opciones definen capacidades que un actor puede implementar sin dejar de ser
 | --- | --- |
 | Record Locator Service | Opción de Consentimiento |
 | Document Registry | Opción de Almacenamiento Central |
+| | Opción de Consentimiento |
 | Sistema que publica y custodia documentos | Opción de Almacenamiento Central |
 | | Opción de Transporte Mediado |
 | Sistema que consume documentos | Opción de Demografía |
+| | Opción de Coincidencia Demográfica |
 {: .table .table-bordered}
 
 ### Opción de Almacenamiento Central
@@ -34,17 +36,23 @@ El canal y la arquitectura son capas separadas que no se afectan entre sí. El c
 
 Habilita la evaluación de una decisión de divulgación por paciente antes de responder una localización o una recuperación.
 
-El Record Locator Service que declara esta opción **SHALL** consultar la decisión aplicable al paciente, al solicitante, a su organización, al propósito de uso que lleva su token y a la etiqueta de confidencialidad de cada puntero, **SHALL** omitir de la respuesta los documentos cuya divulgación no esté permitida, y **SHALL** registrar la omisión en la auditoría. La omisión **SHALL NOT** ser distinguible, para el solicitante, de la ausencia del documento.
+El actor que declara esta opción, sea el Record Locator Service o el Document Registry, **SHALL** consultar la decisión aplicable al paciente, al solicitante, a su organización, al propósito de uso que lleva su token y a la etiqueta de confidencialidad de cada puntero, **SHALL** omitir de la respuesta los documentos cuya divulgación no esté permitida, y **SHALL** registrar la omisión en la auditoría. La omisión **SHALL NOT** ser distinguible, para el solicitante, de la ausencia del documento.
 
 El modelo de consentimiento, su ciclo de vida, su representación y sus políticas se especificarán en una versión posterior de esta guía a partir de [PCF](https://profiles.ihe.net/ITI/PCF/index.html). Esta opción declara el punto en el que esa decisión se aplica y la información que necesita. Hasta entonces, la comunidad opera bajo la política de divulgación única que haya acordado, aplicada en el mismo punto.
 
-Un Document Registry puede aplicar la misma decisión declarando la [Consent Manager Option](https://profiles.ihe.net/ITI/MHDS/volume-1.html#15022-consent-manager-option) de MHDS. En qué punto se aplica, en el Record Locator Service o en el Document Registry, es decisión de la implementación, como explica la [sección 2.1](volume-1-concepts.html).
+En qué punto se aplica, en el Record Locator Service o en el Document Registry, es decisión de la implementación, como explica la [sección 2.1](volume-1-concepts.html). MHDS resuelve este mismo problema de otro modo, con un Authorization Server agrupado con su Document Registry que gestiona el consentimiento. HIX no sigue ese camino, por las razones que da la [misma sección](volume-1-concepts.html#relacion-con-mhds).
 
 ### Opción de Demografía
 
-Permite a un [consumidor](appendix-glossary.html#consumidor) localizar a un paciente por sus datos demográficos cuando no dispone de un identificador conocido por la comunidad.
+Permite a un [consumidor](appendix-glossary.html#consumidor) localizar a un paciente por sus datos demográficos cuando no dispone de un identificador conocido por la comunidad. Corresponde a la [Patient Search Option](https://profiles.ihe.net/ITI/PDQm/volume-1.html#13821-patient-search-option) de PDQm.
 
-El consumidor que declara esta opción **SHALL** presentar al menos un criterio demográfico en cada consulta [ITI-78](https://profiles.ihe.net/ITI/PDQm/ITI-78.html). La infraestructura central **SHALL** responder sobre las identidades maestras, nunca sobre las identidades locales de los miembros, **SHALL** limitar la respuesta a los pacientes que la política de la comunidad permita revelar por esta vía, **SHALL** indicar el grado de coincidencia de cada resultado y **SHALL** rechazar una consulta sin criterio.
+El consumidor que declara esta opción **SHALL** presentar al menos un criterio demográfico en cada consulta [ITI-78](https://profiles.ihe.net/ITI/PDQm/ITI-78.html). La infraestructura central **SHALL** responder sobre las identidades maestras, nunca sobre las identidades locales de los miembros, **SHALL** limitar la respuesta a los pacientes que la política de la comunidad permita revelar por esta vía y **SHALL** rechazar una consulta sin criterio. Es una búsqueda determinista. Cada criterio filtra, y ningún resultado lleva grado de coincidencia.
+
+### Opción de Coincidencia Demográfica
+
+Permite a un [consumidor](appendix-glossary.html#consumidor) encontrar a un paciente a partir de datos demográficos incompletos o inexactos, con la coincidencia probabilística del registro de identidad maestra. Corresponde a la [Match Operation Option](https://profiles.ihe.net/ITI/PDQm/volume-1.html#13822-match-operation-option) de PDQm.
+
+El consumidor que declara esta opción **SHALL** presentar en cada [ITI-119](https://profiles.ihe.net/ITI/PDQm/ITI-119.html) los datos del paciente que busca. La infraestructura central **SHALL** responder sobre las identidades maestras, nunca sobre las identidades locales de los miembros, **SHALL** limitar la respuesta a los pacientes que la política de la comunidad permita revelar por esta vía, **SHALL** ordenar los resultados de más a menos probable y **SHALL** indicar el grado de coincidencia de cada uno, como fija PDQm ([PDQm, §2:3.119.4.2.2.4](https://profiles.ihe.net/ITI/PDQm/ITI-119.html#231194224-quality-of-match))[^pdqm-match]. Un resultado de esta búsqueda es un candidato, no una identidad confirmada.
 
 ### Referencias
 
@@ -52,6 +60,7 @@ Las citas reproducen el texto publicado por su fuente. Los recortes se marcan co
 
 [^ch-epr-arch]: [eHealth Suisse, EPR architecture. A detailed description, §3.3.4 XDS Document Repositories](https://www.e-health-suisse.ch/payload/api/documents/file/EPD-Architektur_EN.pdf): "The Document Repository Service implements interfaces to **store and query the binary objects** of the XDS documents. **The data are captured by the connected systems of the (core) communities when documents are saved** and are registered via interfaces." [EPR by example, Provide and Register Document Set [ITI-41], Overview](https://ehealthsuisse.github.io/EPR-by-example/ProvideAndRegister/): "Primary systems shall **provide documents and the related document metadata to a patient EPR**" and provide "the master patient ID [...], the document metadata as defined in the ordinances of the Swiss EPR and **the binary data of the document**."
 [^mhds-storage]: [MHDS Vol. 1, §1:50.1.1.2 Storage of Binary](https://profiles.ihe.net/ITI/MHDS/volume-1.html#150112-storage-of-binary): "(1) The Document Source includes the Binary Resource in the [ITI-65] transaction, and the Document Registry is required to store it. (2) **The Community allows the Binary to be stored elsewhere in the Community.** [...] This might be other centralized infrastructure, distributed infrastructure, or **within the system implementing the Document Source**."
+[^pdqm-match]: [PDQm, §2:3.119.4.1.3 Expected Actions](https://profiles.ihe.net/ITI/PDQm/ITI-119.html#23119413-expected-actions): "The results are ordered from most likely to least likely." [§2:3.119.4.2.2.4 Quality of Match](https://profiles.ihe.net/ITI/PDQm/ITI-119.html#231194224-quality-of-match): "**The Patient Demographics Supplier SHALL convey the quality of each match** based on strength of the particular result to the supplied Patient Resource. [...] it SHALL represent the confidence of a particular match within the bundle as a score attribute."
 
 *[PMIR]: Patient Master Identity Registry, perfil IHE que gestiona la identidad maestra del paciente
 *[PIXm]: Patient Identifier Cross-referencing for mobile, perfil IHE que enlaza los identificadores locales de un paciente con su identidad maestra

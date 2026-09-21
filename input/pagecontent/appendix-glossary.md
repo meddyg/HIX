@@ -61,10 +61,10 @@ Este glosario reúne, en una línea cada uno, los actores y términos que usa es
 **[Patient Identifier Cross-reference Consumer](https://profiles.ihe.net/ITI/PIXm/volume-1.html).** Actor de PIXm que resuelve un identificador con ITI-83.
 {: #patient-identifier-cross-reference-consumer}
 
-**[Patient Demographics Supplier](https://profiles.ihe.net/ITI/PDQm/volume-1.html).** Actor de PDQm que responde búsquedas por datos demográficos con ITI-78.
+**[Patient Demographics Supplier](https://profiles.ihe.net/ITI/PDQm/volume-1.html).** Actor de PDQm que responde búsquedas por datos demográficos con ITI-78 y coincidencias probabilísticas con ITI-119.
 {: #patient-demographics-supplier}
 
-**[Patient Demographics Consumer](https://profiles.ihe.net/ITI/PDQm/volume-1.html).** Actor de PDQm que busca pacientes por datos demográficos con ITI-78.
+**[Patient Demographics Consumer](https://profiles.ihe.net/ITI/PDQm/volume-1.html).** Actor de PDQm que busca pacientes por datos demográficos con ITI-78 o con ITI-119.
 {: #patient-demographics-consumer}
 
 **[Directory](https://profiles.ihe.net/ITI/mCSD/volume-1.html#146111-directory).** Actor de mCSD que publica el directorio y responde ITI-90. Hasta mCSD 3 se llamaba Care Services Selective Supplier, y así lo nombra todavía MHDS.
