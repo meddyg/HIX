@@ -1,4 +1,4 @@
-Esta sección explica las decisiones que dan forma a esta comunidad. Cada una se presenta con lo que decide, por qué lo decide y lo que cuesta. Son decisiones de arquitectura, no de implementación. Una comunidad puede desplegarlas de muchas maneras sin que cambie nada de lo que aquí se describe. La tabla del final resume los compromisos asumidos.
+Esta sección explica las decisiones que dan forma a esta comunidad. Cada una se presenta con lo que decide, por qué lo decide y lo que cuesta. Son decisiones de arquitectura, no de implementación. Una comunidad puede desplegarlas de muchas maneras sin que cambie nada de lo que aquí se describe. La [Tabla 2.1-1](volume-1-concepts.html#tabla-2-1-1) resume los compromisos asumidos, y la última subsección explica la relación de HIX con MHDS.
 
 ### Comunidad y límite de confianza
 
@@ -50,14 +50,14 @@ La [Figura 2.1-1](volume-1-concepts.html#figura-2-1-1) muestra cómo se construy
 - La consulta **determinista** es PIXm ([ITI-83](https://profiles.ihe.net/ITI/PIXm/ITI-83.html)). Recibe un identificador, local o nacional, y devuelve la identidad maestra enlazada a él. Es la vía normal. La usan el Record Locator Service al localizar, el Document Registry al indexar y el Authorization Server al fijar el contexto de paciente, cada vez que necesitan saber quién es un paciente.
 - La consulta **probabilística** es **[PDQm](https://profiles.ihe.net/ITI/PDQm/index.html)** ([ITI-78](https://profiles.ihe.net/ITI/PDQm/ITI-78.html)). Recibe datos demográficos y devuelve identidades maestras candidatas con un grado de coincidencia. Es el respaldo cuando no hay un identificador fiable. Busca solo entre identidades maestras. Como cualquier otra transacción, la habilita el scope del token del solicitante. El propósito de uso no la habilita ni la bloquea, se evalúa después, en la decisión de divulgación.
 
-> **Nota.** Un miembro no puede crear una persona, fusionar dos ni escribir en el dominio de otro. Y ninguna de las dos consultas prueba una identidad. Eso solo lo hace la fuente autoritativa.
+> **Nota.** Un miembro no puede crear una persona, fusionar dos personas ni escribir en el dominio de otro. Sobre las identidades locales de su propio dominio decide él. Y ninguna de las dos consultas prueba una identidad. Eso solo lo hace la fuente autoritativa.
 
 ### El puntero
 
 La unidad del índice es el puntero, un [`DocumentReference`](https://hl7.org/fhir/R5/documentreference.html) de FHIR R5 que describe un documento sin contenerlo. Toda decisión de la comunidad se toma sobre el puntero, antes de mover un byte del documento, así que lo que el puntero lleva es una decisión de arquitectura. Estos son sus elementos.
 
-- **`subject`** apunta a la identidad maestra del paciente, nunca a una identidad local. Lo escribe el Document Registry al indexar, con la consulta determinista, a partir de la identidad local que el miembro declara en `sourcepatient`. El miembro no lo declara ni necesita conocer la identidad maestra.
-- **`sourcepatient`** es una extensión que apunta a la identidad local, es decir, al paciente tal como lo declaró el miembro, con su identificador en su propio dominio. Es la extensión estándar [`documentreference-sourcepatient`](https://hl7.org/fhir/extensions/StructureDefinition-documentreference-sourcepatient.html), que en R5 reemplaza a `context.sourcePatientInfo`. Conserva la traza de qué miembro declaró a quién y permite volver a resolver `subject` si un enlace de identidad cambia.
+- **`subject`** apunta a la identidad maestra del paciente en todo puntero que la comunidad registra, nunca a una identidad local. El miembro no necesita conocer la identidad maestra para publicar. Nombra al paciente con la identidad local que declaró, y la infraestructura central la resuelve con la consulta determinista y escribe el resultado en `subject` al indexar. Así ningún miembro tiene que resolver identidades antes de publicar. Un miembro que ya conoce la identidad maestra puede publicarla directamente, y la infraestructura central la comprueba igual.
+- **`sourcepatient`** es una extensión que apunta a la identidad local, es decir, al paciente tal como lo declaró el miembro, con su identificador en su propio dominio. Es la extensión estándar [`documentreference-sourcepatient`](https://hl7.org/fhir/extensions/StructureDefinition-documentreference-sourcepatient.html), que en R5 reemplaza a `context.sourcePatientInfo`. Conserva la traza de qué miembro declaró a quién y permite volver a resolver `subject` si un enlace de identidad cambia. Todo puntero registrado lleva los dos, `sourcepatient` hacia la identidad local y `subject` hacia la identidad maestra.
 - **`custodian.identifier`** nombra a la organización responsable con el mismo identificador que lleva su token y que publica el directorio. Nunca es una referencia a un recurso.
 - **`content.attachment.url`** es una ruta relativa. Un puntero nunca contiene una dirección física ni nada que identifique un transporte. La dirección se resuelve en el directorio en cada recuperación.
 - **`securityLabel`** lleva la [etiqueta de confidencialidad](https://hl7.org/fhir/R5/security-labels.html) del documento, un código del sistema [v3-Confidentiality](https://terminology.hl7.org/CodeSystem-v3-Confidentiality.html) de HL7, como `N` para normal, `R` para restringido o `V` para muy restringido. Es obligatorio desde la primera publicación. Sin la etiqueta en el índice, decidir si un documento se puede divulgar exigiría leerlo primero, y añadirla después obligaría a releer todos los documentos en los custodios.
@@ -143,6 +143,33 @@ IHE deja la gobernanza fuera de su alcance. Declara que no define políticas de 
 | Apuesta por la operación del centro | La garantía de la comunidad vale lo que valga la operación de su infraestructura central. Un centro bien operado supera a una federación operada a medias, y un centro mal operado es peor que esa federación | Quién certifica miembros, quién responde al paciente y quién financia el centro se fija en la gobernanza de la comunidad, antes de construirla. Es su riesgo principal a largo plazo |
 {: .table .table-bordered}
 
+### Relación con MHDS
+{: #relacion-con-mhds}
+
+HIX sigue la forma de comunidad que describe [MHDS](https://profiles.ihe.net/ITI/MHDS/volume-1.html), con una infraestructura central de servicios compartidos y miembros que publican y consumen a través de ella, y toma de él buena parte de su vocabulario. No declara conformidad con MHDS. La declara con los perfiles que MHDS compone, que son los que se mantienen, se prueban y se distribuyen como paquetes versionados.
+
+Hay dos razones. La primera es que la última publicación de MHDS es de agosto de 2023 y está hecha sobre FHIR R4[^mhds-version], y los perfiles que compone siguieron cambiando después. [MHD se publicó sobre FHIR R5](https://profiles.ihe.net/ITI/MHD/5.0.0/index.html) y mCSD rehízo y renombró todos sus actores ([mCSD, Significant Changes](https://profiles.ihe.net/ITI/mCSD/issues.html#significant-changes))[^mcsd-rename], de modo que MHDS nombra hoy actores que mCSD ya no define.
+
+La segunda es que algunas de sus decisiones chocan con los perfiles que compone. MHDS agrupa el Document Registry con el Authorization Server ([MHDS Vol. 1, §1:50.2.1](https://profiles.ihe.net/ITI/MHDS/volume-1.html#15021-authorization-option))[^mhds-as-grouping] y deja en este la gestión del consentimiento ([MHDS Vol. 1, §1:50.2.2](https://profiles.ihe.net/ITI/MHDS/volume-1.html#15022-consent-manager-option))[^mhds-consent-as]. IUA, en cambio, se distingue precisamente por no atar el Authorization Server a los Resource Servers ([IUA, Relation to SMART-on-FHIR](https://profiles.ihe.net/ITI/IUA/index.html#relation-to-smart-on-fhir))[^iua-loose].
+
+De ahí salen dos reglas. Cuando MHDS y un perfil vigente dicen cosas distintas, prevalece el perfil vigente. Cuando MHDS y una decisión de HIX dicen cosas distintas, esta guía declara en qué se aparta y por qué. La [Tabla 2.1-2](volume-1-concepts.html#tabla-2-1-2) reúne lo que HIX toma de MHDS y lo que no.
+
+**Tabla 2.1-2:** Lo que HIX toma de MHDS y lo que no
+{: #tabla-2-1-2}
+
+| Asunto | En MHDS | En HIX |
+| --- | --- | --- |
+| Forma de la comunidad | Infraestructura central de servicios compartidos, con miembros que publican y consumen | La misma |
+| Document Registry | Actor propio de MHDS, con sus opciones | Actor de HIX con el mismo nombre y la misma función, definido por los actores que agrupa en la [sección 2.4](volume-1-groupings.html) |
+| Acceso de quien consulta | Directo al Document Registry y, si el contenido está fuera de él, al servicio que lo aloja | Siempre a través del Record Locator Service |
+| Identidad que aporta un miembro | El miembro crea y actualiza identidades en el registro de la comunidad, como Patient Identity Source de PMIR | El miembro declara sus identidades locales con ITI-104 de PIXm y nunca crea una persona |
+| Authorization Server | Agrupado con el Document Registry bajo la Authorization Option | Servicio central independiente y único emisor de la comunidad |
+| Consentimiento | Lo gestiona y decide el Authorization Server agrupado | La decisión de divulgación se toma en la infraestructura central, separada de la autorización |
+| Versiones | FHIR R4 y las versiones de los perfiles vigentes en 2023 | FHIR R5 y la versión vigente de cada perfil |
+{: .table .table-bordered}
+
+El apartamiento de más peso es el de la identidad. MHDS deja que los participantes creen y actualicen identidades en el registro de la comunidad ([MHDS Vol. 1, §1:50.1](https://profiles.ihe.net/ITI/MHDS/volume-1.html#1501-mhds-actors-transactions-and-content-modules))[^mhds-identity]. HIX reserva esa facultad a la fuente autoritativa, como explica el apartado sobre la [identidad del paciente](volume-1-concepts.html#identidad-del-paciente), para que ningún miembro pueda crear una persona.
+
 ### Referencias
 
 Las citas reproducen el texto publicado por su fuente. Los recortes se marcan con "[...]" y la negrita es de esta guía.
@@ -159,6 +186,12 @@ Las citas reproducen el texto publicado por su fuente. Los recortes se marcan co
 [^ch-epr-arch]: [eHealth Suisse, EPR architecture. A detailed description, §3.3.4 XDS Document Repositories](https://www.e-health-suisse.ch/payload/api/documents/file/EPD-Architektur_EN.pdf): "The Document Repository Service implements interfaces to **store and query the binary objects** of the XDS documents. **The data are captured by the connected systems of the (core) communities when documents are saved** and are registered via interfaces."
 [^mhds-xds]: [MHDS Vol. 1, §1:50.4.1 Concepts](https://profiles.ihe.net/ITI/MHDS/volume-1.html#15041-concepts): "The MHDS Profile supports Document Sharing utilizing only FHIR infrastructures. **This is similar functionality to XDS but using the FHIR standard and not SOAP.**"
 [^estonia]: [e-Estonia, e-Health Record](https://e-estonia.com/solutions/healthcare/e-health-records/): "the e-Health Record actually **retrieves data as necessary from various providers**, who may be using different systems" and "presents it in a standard format".
+[^mhds-version]: [MHDS, pie de la publicación vigente](https://profiles.ihe.net/ITI/MHDS/index.html): "Package ihe.iti.mhds#2.3.1 based on FHIR 4.0.1. Generated 2023-08-04"
+[^mcsd-rename]: [mCSD, Significant Changes](https://profiles.ihe.net/ITI/mCSD/issues.html#significant-changes): "**Reworked all Actors to improve clarity**", con la tabla de equivalencias "New Actor (with Option) | Old Actor", que incluye "Directory | Care Services Selective Supplier" y "Query Client | Care Services Selective Consumer".
+[^mhds-as-grouping]: [MHDS Vol. 1, §1:50.2.1 Authorization Option](https://profiles.ihe.net/ITI/MHDS/volume-1.html#15021-authorization-option): "**The Document Registry SHALL be grouped with an IUA Resource Server and the IUA Authorization Server Actors.** The IUA Authorization Server Metadata Option shall be supported."
+[^mhds-consent-as]: [MHDS Vol. 1, §1:50.2.2 Consent Manager Option](https://profiles.ihe.net/ITI/MHDS/volume-1.html#15022-consent-manager-option): "**The grouped IUA Authorization Server would be used to manage the consent status and make authorization decisions based on the consent status.** [...] The IUA Resource Server that is grouped with the MHDS Document Registry would enforce these decisions."
+[^iua-loose]: [IUA, Relation to SMART-on-FHIR](https://profiles.ihe.net/ITI/IUA/index.html#relation-to-smart-on-fhir): "**IUA promotes a loose coupling of Resource Server and Authorization Servers.** This allows for deployments with multiple Resource Servers per Authorization Server as well as deployments with several or even no Authorization Servers."
+[^mhds-identity]: [MHDS Vol. 1, §1:50.1 MHDS Actors, Transactions, and Content Modules](https://profiles.ihe.net/ITI/MHDS/volume-1.html#1501-mhds-actors-transactions-and-content-modules): "PMIR – Patient Identity Source and Patient Identity Registry – to provide patient identity lookup by demographics or identity, and **to receive create and update of patient identity from participants**"
 
 *[PMIR]: Patient Master Identity Registry, perfil IHE que gestiona la identidad maestra del paciente
 *[PIXm]: Patient Identifier Cross-referencing for mobile, perfil IHE que enlaza los identificadores locales de un paciente con su identidad maestra

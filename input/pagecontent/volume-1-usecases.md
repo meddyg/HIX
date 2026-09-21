@@ -41,7 +41,7 @@ El laboratorio nombra al paciente con su identificador local, se nombra a sí mi
 1. El custodio conserva el documento en su repositorio y obtiene del Authorization Server un token para publicar.
 2. El custodio publica los metadatos mediante [ITI-65](https://profiles.ihe.net/ITI/MHD/ITI-65.html) ante la infraestructura central. Bajo la Opción de Almacenamiento Central, incluye el contenido.
 3. El Document Registry comprueba que el custodio del puntero es la organización que el token declara y que esa organización es un miembro activo según el directorio, que la URL de contenido es relativa y que el puntero lleva etiqueta de confidencialidad. Rechaza la publicación que no cumpla alguna de esas condiciones e indica el motivo.
-4. El Document Registry resuelve el paciente local a la identidad maestra mediante [ITI-83](https://profiles.ihe.net/ITI/PIXm/ITI-83.html), la escribe como sujeto del puntero, lo registra a nombre del custodio y responde. Si el paciente no resuelve a una identidad maestra, rechaza la publicación.
+4. La infraestructura central resuelve a la identidad maestra, mediante [ITI-83](https://profiles.ihe.net/ITI/PIXm/ITI-83.html), la identidad local con la que el custodio nombró al paciente, y la escribe como sujeto del puntero, que conserva también la identidad local. El Document Registry lo registra a nombre del custodio y responde. Si el paciente no resuelve a una identidad maestra, la publicación se rechaza.
 
 ### Consulta del expediente por un profesional
 

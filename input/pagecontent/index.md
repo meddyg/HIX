@@ -1,4 +1,4 @@
-HIX define una arquitectura de referencia para comunidades que comparten documentos clínicos. No propone un estándar nuevo sino que toma como fundamento el perfil **[Mobile Health Document Sharing (MHDS)](https://profiles.ihe.net/ITI/MHDS/volume-1.html)** de IHE y articula los perfiles, estándares y especificaciones necesarios para operarlo sobre FHIR.
+HIX define una arquitectura de referencia para comunidades que comparten documentos clínicos. No propone un estándar nuevo. Articula los perfiles de IHE, los estándares y las especificaciones necesarios para operar una comunidad así sobre FHIR, y sigue el modelo de comunidad de **[Mobile Health Document Sharing (MHDS)](https://profiles.ihe.net/ITI/MHDS/volume-1.html)**, que toma como referencia sin declarar conformidad con él.
 
 ### Propósito y alcance
 
@@ -42,7 +42,7 @@ desempeña dentro de dicho perfil.
 
 | Término | Significado |
 | --- | --- |
-| **[MHDS](https://profiles.ihe.net/ITI/MHDS/volume-1.html)** — *Mobile Health Document Sharing* | Perfil IHE que define una comunidad de intercambio de documentos clínicos basada en FHIR y la composición de perfiles necesaria para operarla. |
+| **[MHDS](https://profiles.ihe.net/ITI/MHDS/volume-1.html)** — *Mobile Health Document Sharing* | Perfil IHE que define una comunidad de intercambio de documentos clínicos basada en FHIR y la composición de perfiles necesaria para operarla. HIX lo toma como arquitectura de referencia. |
 | **[MHD](https://profiles.ihe.net/ITI/MHD/index.html)** — *Mobile access to Health Documents* | Perfil IHE para publicar, localizar y recuperar documentos clínicos mediante FHIR. HIX usa sus actores **Document Source**, **Document Consumer**, **Document Recipient** y **Document Responder**. |
 | **[PMIR](https://profiles.ihe.net/ITI/PMIR/index.html)** — *Patient Master Identity Registry* | Perfil IHE para gestionar y sincronizar identidades maestras de pacientes. |
 | **[PIXm](https://profiles.ihe.net/ITI/PIXm/index.html)** — *Patient Identifier Cross-referencing for mobile* | Perfil IHE con el que cada miembro declara sus identidades locales de paciente y resuelve un identificador a la identidad maestra. |
@@ -79,3 +79,9 @@ HIX organiza sus requisitos en diferentes niveles de abstracción. Los volúmene
 - El **Volumen 2** especifica cada transacción, incluidas las propias de HIX.
 - El **Volumen 3** especifica el contenido que se intercambia, desde los metadatos de los punteros hasta los registros de auditoría.
 - Los **apéndices** reúnen el material de apoyo, por ahora el glosario.
+
+### Dependencias
+
+HIX es una comunidad FHIR R5. De los perfiles IHE que compone, MHD está publicado sobre R5 y los demás solo sobre R4, y en esa versión se declaran. IUA, ATNA y CT no se distribuyen como paquetes FHIR, y por eso no figuran aquí aunque HIX los use. MHDS tampoco figura, porque HIX lo toma como referencia y no depende de su paquete.
+
+{% include dependency-table.xhtml %}

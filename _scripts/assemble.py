@@ -10,12 +10,20 @@ ROOT = Path(__file__).resolve().parent.parent
 work = Path(sys.argv[1])
 cfg = pageorder.config()
 
+DEPENDENCY_TABLE = "\n".join(
+    ["| Paquete | Versión | Aporta |", "| --- | --- | --- |"]
+    + [f"| {name} | {version} | {reason} |" for name, version, reason in pageorder.dependencies(cfg)]
+)
+
 names = []
 for name, title, depth in pageorder.pages(cfg):
     body = (ROOT / "input" / "pagecontent" / name).read_text()
     body = re.sub(r"^\{:.*\}$", "", body, flags=re.M)
     # kramdown abbreviations (`*[PMIR]: ...`) become tooltips on the site; pandoc has no equivalent
     body = re.sub(r"^\*\[[^\]]+\]: .*$", "", body, flags=re.M)
+    # The dependency table is a fragment the publisher generates and Jekyll
+    # includes. Pandoc gets the same rows straight from sushi-config.yaml.
+    body = body.replace("{% include dependency-table.xhtml %}", DEPENDENCY_TABLE)
 
     # The publisher copies input/images/ to the root of the site, so a page
     # refers to a figure by its bare name. Pandoc runs from the repository and

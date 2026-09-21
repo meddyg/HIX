@@ -5,7 +5,7 @@ Este glosario reúne, en una línea cada uno, los actores y términos que usa es
 **Record Locator Service.** El mediador de la comunidad. Localiza y recupera documentos en nombre de los miembros y aplica la decisión de divulgación sobre los punteros. Es un nombre propio de esta guía, no vocabulario IHE.
 {: #record-locator-service}
 
-**[Document Registry](https://profiles.ihe.net/ITI/MHDS/volume-1.html).** El MHDS Document Registry de la comunidad. Conserva los punteros a los documentos publicados y, bajo la Opción de Almacenamiento Central, el contenido que los custodios le entregan.
+**Document Registry.** El registro de documentos de la comunidad. Conserva los punteros a los documentos publicados y, bajo la Opción de Almacenamiento Central, el contenido que los custodios le entregan. Toma su nombre y su función del [Document Registry de MHDS](https://profiles.ihe.net/ITI/MHDS/volume-1.html#150111-document-registry), pero es un actor de HIX, definido por los actores que agrupa.
 {: #document-registry}
 
 **[Authorization Server](https://profiles.ihe.net/ITI/IUA/index.html).** El Authorization Server de IUA. Emite, comprueba e intercambia los tokens que circulan por la comunidad.

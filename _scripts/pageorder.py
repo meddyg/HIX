@@ -26,6 +26,19 @@ def folded(key, cfg=None):
     return " ".join(line.strip() for line in m.group(1).split("\n") if line.strip())
 
 
+def dependencies(cfg=None):
+    """(package, version, reason) for each entry under `dependencies:`."""
+    cfg = cfg if cfg is not None else config()
+    m = re.search(r"^dependencies:\n(.*?)(?=^\S)", cfg, re.S | re.M)
+
+    out = []
+    for name, body in re.findall(r"^  ([\w.-]+):\n((?:    .*\n)+)", m.group(1) if m else "", re.M):
+        fields = dict(re.findall(r"^    (\w+):\s*(.+?)\s*$", body, re.M))
+        out.append((name, fields.get("version", ""), fields.get("reason", "").strip("\"'")))
+
+    return out
+
+
 def pages(cfg=None):
     """(filename, title, depth) in declaration order; depth 1 = top level."""
     cfg = cfg if cfg is not None else config()

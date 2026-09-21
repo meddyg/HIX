@@ -1,4 +1,6 @@
-HIX es una comunidad de intercambio de documentos clínicos construida sobre el perfil **[MHDS](https://profiles.ihe.net/ITI/MHDS/volume-1.html)** de IHE, con una restricción añadida que define su arquitectura. **La localización y la recuperación de documentos se median de forma centralizada, mientras la custodia de los documentos permanece distribuida** entre los miembros que los producen. Este volumen especifica esa arquitectura, desde los conceptos y decisiones sobre los que se apoya hasta el modelo de confianza que la sostiene, pasando por sus actores, las transacciones que los vinculan, las opciones que admite y los flujos que soporta.
+HIX es una comunidad de intercambio de documentos clínicos sobre FHIR. Sigue el modelo que IHE llama **Centralized Discovery and Retrieve**, en el que un localizador central permite descubrir dónde están los documentos y recuperarlos del custodio que registró su existencia ([IHE HIE Whitepaper, §2.8](https://profiles.ihe.net/ITI/HIE-Whitepaper/index.html#28-document-sharing-models))[^hie-cdr]. HIX lo aplica con una precisión. También la recuperación pasa por ese localizador, de modo que **la localización y la recuperación se median de forma centralizada, mientras la custodia de los documentos permanece distribuida** entre los miembros que los producen.
+
+IHE realiza ese modelo sobre FHIR con **[MHDS](https://profiles.ihe.net/ITI/MHDS/volume-1.html)**. HIX lo toma como arquitectura de referencia, sin declarar conformidad con él, y compone directamente los perfiles que resuelven cada pieza, por las razones que da la [sección 2.1](volume-1-concepts.html#relacion-con-mhds).
 
 Cada perfil que HIX compone aporta una pieza de esa arquitectura.
 
@@ -21,7 +23,7 @@ La [Figura 2-1](volume-1.html#figura-2-1) muestra la infraestructura central de 
 
 - El **Record Locator Service** es el mediador de la comunidad. Localiza y recupera documentos en nombre de los miembros y aplica la decisión de divulgación. Ante los miembros actúa como Resource Server; ante los componentes centrales y los custodios, como cliente delegado que opera en nombre del solicitante original.
 - El **Authorization Server** es el único emisor de tokens de la comunidad. Emite el token que permite a un miembro acceder al mediador, lo valida mediante introspección cuando el mediador lo presenta y, cada vez que el mediador necesita alcanzar a un custodio o a un componente central, lo intercambia por un token acotado a ese destino, a nombre del miembro.
-- El **Document Registry** conserva los punteros a los documentos publicados en la comunidad y resuelve la identidad maestra de cada uno al indexarlo.
+- El **Document Registry** conserva los punteros a los documentos publicados en la comunidad, cada uno con la identidad maestra del paciente como sujeto.
 - Los **"Shared HIE Services"** completan la infraestructura con el directorio de la comunidad (mCSD), que describe a los miembros y sus endpoints; el registro de identidad maestra (PMIR), que mantiene una identidad por persona; y el Audit Record Repository (ATNA), que concentra los eventos de los componentes centrales. Cada miembro registra su propio lado.
 - La **fuente autoritativa de identidad del paciente** es externa a la comunidad y es la única que puede crear identidades maestras. HIX no la designa; la propuesta para Costa Rica es que sea el EDUS, el expediente digital único de la CCSS, porque ya tiene resuelta la identificación de las personas.
 
@@ -46,3 +48,7 @@ Dicho en seis afirmaciones:
 - **Consideraciones de seguridad** especifica el modelo de confianza, los dos regímenes de token y los controles de seguridad y privacidad.
 
 El Volumen 2 especifica cada transacción y el Volumen 3 el contenido que se intercambia. Este volumen describe qué hace cada actor y por qué; los siguientes, cómo.
+
+### Referencias
+
+[^hie-cdr]: [IHE HIE Whitepaper, §2.8 Document Sharing Models](https://profiles.ihe.net/ITI/HIE-Whitepaper/index.html#28-document-sharing-models): "**Centralized Discovery and Retrieve** – in this model, a centralized locator is used to discover the location of documents which enables a retrieval of the document from a custodian who has registered existence of the document with the centralized locator". [§3 Document Sharing Profiles](https://profiles.ihe.net/ITI/HIE-Whitepaper/index.html#3-document-sharing-profiles) asocia ese modelo a "Mobile access to Health Documents (MHD), Mobile Health Document Sharing (MHDS), and Cross-Enterprise Document Sharing (XDS)".

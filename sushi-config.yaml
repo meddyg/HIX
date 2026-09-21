@@ -13,8 +13,8 @@ name: HixHealthInformationExchange
 title: Health Information Exchange
 description: >-
   Specification of the hix health information exchange: a Document Sharing
-  community built on the IHE MHDS profile, together with the authorization,
-  identity, directory and audit mechanisms that surround it.
+  community composed from the IHE MHD, PMIR, PIXm, PDQm, mCSD, IUA, ATNA and
+  BALP profiles, with IHE MHDS as its reference architecture.
 status: draft
 version: 0.1.0
 fhirVersion: 5.0.0
@@ -25,6 +25,26 @@ jurisdiction: urn:iso:std:iso:3166#CR "Costa Rica"
 publisher:
   name: Meddyg
   url: https://meddyg.com
+
+# dependencies:
+#   ihe.iti.mhd:
+#     version: 5.0.0
+#     reason: "Publicación, localización y recuperación de documentos (FHIR R5)"
+#   ihe.iti.pmir:
+#     version: 1.6.0
+#     reason: "Identidad maestra del paciente (FHIR R4)"
+#   ihe.iti.pixm:
+#     version: 3.1.0
+#     reason: "Declaración de identidades locales y resolución a la identidad maestra (FHIR R4)"
+#   ihe.iti.pdqm:
+#     version: 3.2.0
+#     reason: "Búsqueda de pacientes por datos demográficos (FHIR R4)"
+#   ihe.iti.mcsd:
+#     version: 4.0.0
+#     reason: "Directorio de organizaciones, servicios y endpoints (FHIR R4)"
+#   ihe.iti.balp:
+#     version: 1.1.4
+#     reason: "Patrones de los eventos de auditoría (FHIR R4)"
 
 # Page order drives the automatic section numbering shown in the rendered site.
 pages:
