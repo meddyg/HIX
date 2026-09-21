@@ -39,7 +39,7 @@ El laboratorio nombra al paciente con su identificador local, se nombra a sí mi
 {: #figura-2-5-2}
 
 1. El custodio conserva el documento en su repositorio y obtiene del Authorization Server un token para publicar.
-2. El custodio publica los metadatos mediante [ITI-65](https://profiles.ihe.net/ITI/MHD/ITI-65.html) ante la infraestructura central. Bajo la Opción de Almacenamiento Central, incluye el contenido.
+2. El custodio publica los metadatos mediante [ITI-65](https://profiles.ihe.net/ITI/MHD/5.0.0/ITI-65.html) ante la infraestructura central. Bajo la Opción de Almacenamiento Central, incluye el contenido.
 3. El Document Registry comprueba que el custodio del puntero es la organización que el token declara y que esa organización es un miembro activo según el directorio, que la URL de contenido es relativa y que el puntero lleva etiqueta de confidencialidad. Rechaza la publicación que no cumpla alguna de esas condiciones e indica el motivo.
 4. La infraestructura central resuelve a la identidad maestra, mediante [ITI-83](https://profiles.ihe.net/ITI/PIXm/ITI-83.html), la identidad local con la que el custodio nombró al paciente, y la escribe como sujeto del puntero, que conserva también la identidad local. El Document Registry lo registra a nombre del custodio y responde. Si el paciente no resuelve a una identidad maestra, la publicación se rechaza.
 
@@ -62,9 +62,9 @@ En una urgencia la historia cambia en dos puntos. El profesional consulta con el
 **Figura 2.5-3:** Localización y recuperación mediada
 {: #figura-2-5-3}
 
-1. El [consumidor](appendix-glossary.html#consumidor) obtiene del Authorization Server un token destinado al Record Locator Service y localiza mediante [ITI-67](https://profiles.ihe.net/ITI/MHD/ITI-67.html). En una urgencia sin identificador conocido, busca antes a la persona por datos demográficos mediante ITI-78 ante la infraestructura central.
+1. El [consumidor](appendix-glossary.html#consumidor) obtiene del Authorization Server un token destinado al Record Locator Service y localiza mediante [ITI-67](https://profiles.ihe.net/ITI/MHD/5.0.0/ITI-67.html). En una urgencia sin identificador conocido, busca antes a la persona por datos demográficos mediante ITI-78 ante la infraestructura central.
 2. El Record Locator Service comprueba el token mediante [ITI-102](https://profiles.ihe.net/ITI/IUA/index.html#3102-introspect-token-iti-102), resuelve la identidad maestra mediante ITI-83, consulta el Document Registry mediante ITI-67, evalúa la decisión de divulgación sobre cada puntero y devuelve los divulgados, con URL de contenido que apuntan a sí mismo.
-3. El consumidor recupera mediante [ITI-68](https://profiles.ihe.net/ITI/MHD/ITI-68.html) sobre una de esas URL.
+3. El consumidor recupera mediante [ITI-68](https://profiles.ihe.net/ITI/MHD/5.0.0/ITI-68.html) sobre una de esas URL.
 4. El Record Locator Service relee el puntero, vuelve a evaluar la divulgación, resuelve el endpoint del custodio en el directorio mediante [ITI-90](https://profiles.ihe.net/ITI/mCSD/ITI-90.html) y obtiene mediante [HIX-1](volume-1-actors.html#hix-1) un token para ese custodio.
 5. El Record Locator Service recupera el documento del custodio mediante ITI-68. El custodio valida el token con las claves públicas del Authorization Server y entrega el documento, que el Record Locator Service entrega al consumidor. Bajo la Opción de Almacenamiento Central, lo recupera del Document Registry en lugar del custodio, con un token intercambiado para él.
 

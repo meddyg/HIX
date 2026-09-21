@@ -98,7 +98,7 @@ Tres reglas hacen que el mínimo privilegio sea estructural, en lugar de depende
 - **Solo el mediador puede intercambiar.** Ningún otro participante puede pedir un token a nombre de un tercero, y los custodios no aceptan tokens llegados por otro camino.
 - **La autoridad nunca crece.** El token intercambiado solo permite lo que el miembro ya podía, lo que la comunidad delega al mediador y lo que el custodio ofrece. Poder localizar un documento nunca da poder para recuperarlo.
 
-Un token dice quién pide, qué puede pedir, ante quién y hasta cuándo. El token de un miembro **no nombra a ningún paciente**. Solo lo hace el de una persona que entra a su propio expediente con [SMART App Launch](https://build.fhir.org/ig/HL7/smart-app-launch/scopes-and-launch-context.html), y ahí el paciente en contexto sirve para confinar el token a ese expediente. La cuenta con la que esa persona entra no es un identificador de paciente. El Authorization Server resuelve el paciente en contexto contra la identidad maestra con la consulta determinista. En ambos casos, **tener un token da derecho a preguntar, no a ver**. Qué documentos se entregan lo decide la infraestructura central, puntero por puntero. Esa separación es la idea más importante de este volumen.
+Un token dice quién pide, qué puede pedir, ante quién y hasta cuándo. El token de un miembro **no nombra a ningún paciente**. Solo lo hace el de una persona que entra a su propio expediente con [SMART App Launch](https://hl7.org/fhir/smart-app-launch/scopes-and-launch-context.html), y ahí el paciente en contexto sirve para confinar el token a ese expediente. La cuenta con la que esa persona entra no es un identificador de paciente. El Authorization Server resuelve el paciente en contexto contra la identidad maestra con la consulta determinista. En ambos casos, **tener un token da derecho a preguntar, no a ver**. Qué documentos se entregan lo decide la infraestructura central, puntero por puntero. Esa separación es la idea más importante de este volumen.
 
 ### Divulgación
 
@@ -130,7 +130,7 @@ MHDS ofrece la misma función que XDS, sobre FHIR en lugar de SOAP ([MHDS Vol. 1
 
 ### Compromisos asumidos
 
-IHE deja la gobernanza fuera de su alcance. Declara que no define políticas de privacidad ni de seguridad, y que el marco de políticas de una comunidad debe definirse antes de construirla ([MHDS Vol. 1, §1:50.5.1](https://profiles.ihe.net/ITI/MHDS/volume-1.html#15051-policies-and-risk-management))[^mhds-policy]. Por eso, de los compromisos de la tabla, la apuesta por la operación del centro es el que más pesa.
+IHE deja la gobernanza fuera de su alcance. Declara que no define políticas de privacidad ni de seguridad, y que el marco de políticas de una comunidad debe definirse antes de construirla ([MHDS Vol. 1, §1:50.5](https://profiles.ihe.net/ITI/MHDS/volume-1.html#1505-mhds-security-considerations) y [§1:50.5.1](https://profiles.ihe.net/ITI/MHDS/volume-1.html#15051-policies-and-risk-management))[^mhds-policy]. Por eso, de los compromisos de la tabla, la apuesta por la operación del centro es el que más pesa.
 
 **Tabla 2.1-1:** Compromisos de la arquitectura
 {: #tabla-2-1-1}

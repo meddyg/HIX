@@ -4,10 +4,10 @@ IHE realiza ese modelo sobre FHIR con **[MHDS](https://profiles.ihe.net/ITI/MHDS
 
 Cada perfil que HIX compone aporta una pieza de esa arquitectura.
 
-- **[MHD](https://profiles.ihe.net/ITI/MHD/index.html)** pone las transacciones con las que se publica, localiza y recupera un documento.
+- **[MHD](https://profiles.ihe.net/ITI/MHD/5.0.0/index.html)** pone las transacciones con las que se publica, localiza y recupera un documento.
 - **[PMIR](https://profiles.ihe.net/ITI/PMIR/index.html)**, **[PIXm](https://profiles.ihe.net/ITI/PIXm/index.html)** y **[PDQm](https://profiles.ihe.net/ITI/PDQm/index.html)** ponen la identidad maestra del paciente y su vínculo con las identidades locales.
 - **[mCSD](https://profiles.ihe.net/ITI/mCSD/index.html)** pone el directorio del que la infraestructura central aprende dónde responde cada custodio.
-- **[IUA](https://profiles.ihe.net/ITI/IUA/index.html)** y OAuth 2.0 ponen los tokens que cruzan cada límite de confianza, con **[SMART App Launch](https://build.fhir.org/ig/HL7/smart-app-launch/)** cuando quien autoriza es una persona.
+- **[IUA](https://profiles.ihe.net/ITI/IUA/index.html)** y OAuth 2.0 ponen los tokens que cruzan cada límite de confianza, con **[SMART App Launch](https://hl7.org/fhir/smart-app-launch/)** cuando quien autoriza es una persona.
 - **[ATNA](https://profiles.ihe.net/ITI/TF/Volume1/ch-9.html)** con **[BALP](https://profiles.ihe.net/ITI/BALP/index.html)** pone el registro que hace reconstruible cada divulgación.
 
 Lo que ningún perfil cubre, como el intercambio de tokens hacia un custodio o el lanzamiento de la aplicación del paciente, HIX lo especifica como transacción propia, identificada como `HIX-n`, en el Volumen 2.

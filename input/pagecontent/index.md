@@ -2,7 +2,7 @@ HIX define una arquitectura de referencia para comunidades que comparten documen
 
 ### Propósito y alcance
 
-Esta guía describe los roles de la comunidad, sus límites de confianza y la relación entre sus componentes. Explica, entre otras decisiones, por qué la localización y la recuperación se median de forma centralizada, por qué la custodia documental se mantiene distribuida por defecto y cómo **[IUA](https://profiles.ihe.net/ITI/IUA/index.html)** y **[OAuth 2.0](https://www.rfc-editor.org/info/rfc6749/)** establecen la base de autorización y delegación entre los participantes. Cuando la autorización requiere la participación de una persona, incorpora **[SMART App Launch](https://build.fhir.org/ig/HL7/smart-app-launch/)** en el flujo interactivo que esa persona completa desde su navegador.
+Esta guía describe los roles de la comunidad, sus límites de confianza y la relación entre sus componentes. Explica, entre otras decisiones, por qué la localización y la recuperación se median de forma centralizada, por qué la custodia documental se mantiene distribuida por defecto y cómo **[IUA](https://profiles.ihe.net/ITI/IUA/index.html)** y **[OAuth 2.0](https://www.rfc-editor.org/info/rfc6749/)** establecen la base de autorización y delegación entre los participantes. Cuando la autorización requiere la participación de una persona, incorpora **[SMART App Launch](https://hl7.org/fhir/smart-app-launch/)** en el flujo interactivo que esa persona completa desde su navegador.
 
 Esta arquitectura abarca las siguientes capacidades dentro de la comunidad:
 
@@ -43,7 +43,7 @@ desempeña dentro de dicho perfil.
 | Término | Significado |
 | --- | --- |
 | **[MHDS](https://profiles.ihe.net/ITI/MHDS/volume-1.html)** — *Mobile Health Document Sharing* | Perfil IHE que define una comunidad de intercambio de documentos clínicos basada en FHIR y la composición de perfiles necesaria para operarla. HIX lo toma como arquitectura de referencia. |
-| **[MHD](https://profiles.ihe.net/ITI/MHD/index.html)** — *Mobile access to Health Documents* | Perfil IHE para publicar, localizar y recuperar documentos clínicos mediante FHIR. HIX usa sus actores **Document Source**, **Document Consumer**, **Document Recipient** y **Document Responder**. |
+| **[MHD](https://profiles.ihe.net/ITI/MHD/5.0.0/index.html)** — *Mobile access to Health Documents* | Perfil IHE para publicar, localizar y recuperar documentos clínicos mediante FHIR. HIX usa sus actores **Document Source**, **Document Consumer**, **Document Recipient** y **Document Responder**. |
 | **[PMIR](https://profiles.ihe.net/ITI/PMIR/index.html)** — *Patient Master Identity Registry* | Perfil IHE para gestionar y sincronizar identidades maestras de pacientes. |
 | **[PIXm](https://profiles.ihe.net/ITI/PIXm/index.html)** — *Patient Identifier Cross-referencing for mobile* | Perfil IHE con el que cada miembro declara sus identidades locales de paciente y resuelve un identificador a la identidad maestra. |
 | **[PDQm](https://profiles.ihe.net/ITI/PDQm/index.html)** — *Patient Demographics Query for Mobile* | Perfil IHE para localizar a un paciente por sus datos demográficos cuando no se dispone de un identificador conocido por la comunidad. |
@@ -52,7 +52,7 @@ desempeña dentro de dicho perfil.
 | **[CT](https://profiles.ihe.net/ITI/TF/Volume1/ch-7.html)** — *Consistent Time* | Perfil IHE que mantiene sincronizados los relojes de todos los sistemas de la comunidad, para que los eventos de auditoría y la vigencia de los tokens signifiquen lo mismo en cada extremo. |
 | **[BALP](https://profiles.ihe.net/ITI/BALP/index.html)** — *Basic Audit Log Patterns* | Perfil IHE que define el contenido de los eventos de auditoría FHIR por transacción. |
 | **[IUA](https://profiles.ihe.net/ITI/IUA/index.html)** — *Internet User Authorization* | Perfil IHE utilizado por HIX como base de autorización para las interacciones protegidas entre sus participantes. Sus requisitos aplican a todos los flujos de autorización de HIX. |
-| **[SMART App Launch](https://build.fhir.org/ig/HL7/smart-app-launch/app-launch.html)** | Especificación de HL7 que HIX usa en los flujos interactivos en los que la autorización requiere la participación de una persona desde su navegador. |
+| **[SMART App Launch](https://hl7.org/fhir/smart-app-launch/app-launch.html)** | Especificación de HL7 que HIX usa en los flujos interactivos en los que la autorización requiere la participación de una persona desde su navegador. |
 | **[X-Road](https://x-road.global/)** | Capa de intercambio de datos entre organizaciones sobre transporte mTLS entre servidores de seguridad. HIX la admite como canal hacia un custodio, declarado en el directorio; no aporta semántica documental. |
 | **RLS** — *Record Locator Service* | Componente central de HIX responsable de localizar los documentos clínicos disponibles para un paciente y mediar su recuperación desde los custodios correspondientes. |
 {: .table .table-bordered}

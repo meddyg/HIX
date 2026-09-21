@@ -11,7 +11,7 @@ Este glosario reúne, en una línea cada uno, los actores y términos que usa es
 **[Authorization Server](https://profiles.ihe.net/ITI/IUA/index.html).** El Authorization Server de IUA. Emite, comprueba e intercambia los tokens que circulan por la comunidad.
 {: #authorization-server}
 
-**Directorio de la comunidad.** Publica las organizaciones participantes, su pertenencia a la comunidad y los endpoints en los que responden. Es el Care Services Selective Supplier de mCSD.
+**Directorio de la comunidad.** Publica las organizaciones participantes, su pertenencia a la comunidad y los endpoints en los que responden. Es el Directory de mCSD.
 {: #directorio-de-la-comunidad}
 
 **Registro de identidad maestra.** Conserva una identidad maestra por persona y sus enlaces con las identidades locales. Agrupa al Patient Identity Registry de PMIR, al Patient Identifier Cross-reference Manager de PIXm y al Patient Demographics Supplier de PDQm.
@@ -34,16 +34,16 @@ Este glosario reúne, en una línea cada uno, los actores y términos que usa es
 
 ### Actores IHE que HIX agrupa
 
-**[Document Source](https://profiles.ihe.net/ITI/MHD/1331_actors_and_transactions.html).** Actor de MHD que publica documentos y sus punteros con ITI-65.
+**[Document Source](https://profiles.ihe.net/ITI/MHD/5.0.0/1331_actors_and_transactions.html).** Actor de MHD que publica documentos y sus punteros con ITI-65.
 {: #document-source}
 
-**[Document Consumer](https://profiles.ihe.net/ITI/MHD/1331_actors_and_transactions.html).** Actor de MHD que localiza listas y documentos con ITI-66 e ITI-67 y recupera documentos con ITI-68.
+**[Document Consumer](https://profiles.ihe.net/ITI/MHD/5.0.0/1331_actors_and_transactions.html).** Actor de MHD que localiza listas y documentos con ITI-66 e ITI-67 y recupera documentos con ITI-68.
 {: #document-consumer}
 
-**[Document Responder](https://profiles.ihe.net/ITI/MHD/1331_actors_and_transactions.html).** Actor de MHD que responde la localización y la recuperación de documentos.
+**[Document Responder](https://profiles.ihe.net/ITI/MHD/5.0.0/1331_actors_and_transactions.html).** Actor de MHD que responde la localización y la recuperación de documentos.
 {: #document-responder}
 
-**[Document Recipient](https://profiles.ihe.net/ITI/MHD/1331_actors_and_transactions.html).** Actor de MHD que recibe las publicaciones ITI-65.
+**[Document Recipient](https://profiles.ihe.net/ITI/MHD/5.0.0/1331_actors_and_transactions.html).** Actor de MHD que recibe las publicaciones ITI-65.
 {: #document-recipient}
 
 **[Patient Identity Source](https://profiles.ihe.net/ITI/PMIR/volume-1.html).** Actor de PMIR y de PIXm que alimenta identidades de paciente, con ITI-93 o ITI-104.
@@ -67,11 +67,11 @@ Este glosario reúne, en una línea cada uno, los actores y términos que usa es
 **[Patient Demographics Consumer](https://profiles.ihe.net/ITI/PDQm/volume-1.html).** Actor de PDQm que busca pacientes por datos demográficos con ITI-78.
 {: #patient-demographics-consumer}
 
-**[Care Services Selective Supplier](https://profiles.ihe.net/ITI/mCSD/volume-1.html).** Actor de mCSD que publica el directorio y responde ITI-90.
-{: #care-services-selective-supplier}
+**[Directory](https://profiles.ihe.net/ITI/mCSD/volume-1.html#146111-directory).** Actor de mCSD que publica el directorio y responde ITI-90. Hasta mCSD 3 se llamaba Care Services Selective Supplier, y así lo nombra todavía MHDS.
+{: #directory}
 
-**[Care Services Selective Consumer](https://profiles.ihe.net/ITI/mCSD/volume-1.html).** Actor de mCSD que consulta el directorio con ITI-90.
-{: #care-services-selective-consumer}
+**[Query Client](https://profiles.ihe.net/ITI/mCSD/volume-1.html#146112-query-client).** Actor de mCSD que consulta el directorio con ITI-90. Hasta mCSD 3 se llamaba Care Services Selective Consumer, y así lo nombra todavía MHDS.
+{: #query-client}
 
 **[Authorization Client](https://profiles.ihe.net/ITI/IUA/index.html).** Actor de IUA que obtiene tokens con ITI-71 y los presenta con ITI-72.
 {: #authorization-client}
