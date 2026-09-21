@@ -1,0 +1,226 @@
+Esta sección explica las decisiones que dan forma a esta comunidad. Cada una se presenta con lo que decide, por qué lo decide y lo que cuesta. Son decisiones de arquitectura, no de implementación. Una comunidad puede desplegarlas de muchas maneras sin que cambie nada de lo que aquí se describe. La [Tabla 2.1-2](volume-1-concepts.html#tabla-2-1-2) resume los compromisos asumidos, y la última subsección explica la relación de HIX con MHDS.
+
+### Comunidad y límite de confianza
+{: #limite-de-confianza}
+
+Una comunidad HIX es un conjunto de organizaciones que acuerdan compartir documentos clínicos bajo una política común y a través de una infraestructura común. La pertenencia es explícita. Una organización es miembro cuando figura en el directorio de la comunidad y el Authorization Server reconoce a sus sistemas.
+
+**En una malla de pares, las garantías de la comunidad valen lo que valga su miembro más débil.** Ese es el argumento que decide la topología. Si cada miembro descubre y consulta a los demás, cada uno tiene que implementar el descubrimiento y mantener tantas relaciones de confianza como miembros haya. Cada uno tiene que poner además un punto de aplicación de política, el PEP, delante de sus propios datos, y auditar por su cuenta. La política de la comunidad se aplica entonces en tantos lugares como miembros, con la calidad que cada uno pueda pagar, y basta un miembro mal implementado para que la garantía deje de existir para todos. IHE describe ambas topologías en su whitepaper sobre intercambio de información de salud ([HIE Whitepaper, §2.8](https://profiles.ihe.net/ITI/HIE-Whitepaper/index.html#28-document-sharing-models) y [§3.2](https://profiles.ihe.net/ITI/HIE-Whitepaper/index.html#32-centralized-discovery-and-retrieve))[^hie-wp]. HIX elige la centralizada y absorbe esa complejidad una sola vez, en el centro, donde se puede operar, verificar y auditar.
+
+Por esta razón, la relación de confianza no se establece de forma directa entre los miembros, sino entre cada miembro y la infraestructura central. Un miembro no confía en los demás ni necesita conocerlos. Confía en que la comunidad autoriza, media y registra cada interacción. Integrarse a HIX es integrarse una sola vez, con la comunidad. No hay que integrarse con cada uno de los demás miembros, ni volver a hacerlo cuando entra uno nuevo.
+
+### Mediación central de la localización y la recuperación
+
+Toda localización y toda recuperación pasan por el [Record Locator Service](appendix-glossary.html#record-locator-service), el mediador de la comunidad. Un solicitante obtiene del mediador los punteros que la política le permite ver, y las URL de contenido que recibe apuntan al propio mediador, nunca al custodio. Al recuperar, el mediador alcanza al custodio en nombre del solicitante y le entrega el documento.
+
+MHDS admite que un consumidor alcance directamente al servicio que aloja un documento fuera del Document Registry ([MHDS Vol. 1, §1:50.1.1.2](https://profiles.ihe.net/ITI/MHDS/volume-1.html#150112-storage-of-binary))[^mhds-storage], y reconoce que en ese caso su opción de consentimiento **no protege el contenido** y que cada Document Source carga solo con la protección de sus documentos ([MHDS Vol. 1, §1:50.2.2](https://profiles.ihe.net/ITI/MHDS/volume-1.html#15022-consent-manager-option))[^mhds-consent]. Con custodia distribuida, eso obligaría a cada custodio a evaluar la política de la comunidad frente a cada consumidor. La mediación cierra ese hueco. La política se aplica en un solo lugar, con una única superficie auditable y un único contrato de integración.
+
+El precio es que la infraestructura central se vuelve indispensable para operar, y se dimensiona y protege como tal. Todo byte clínico atraviesa el mediador. La [sección 2.6](volume-1-security.html) especifica lo que eso exige.
+
+Mediar no es lo mismo que enrutar. El mediador es imprescindible donde hay que alcanzar a un custodio en nombre de un miembro, es decir, al recuperar, porque es quien obtiene el [token intercambiado](appendix-glossary.html#token-intercambiado) para ese custodio y recorre el canal que el directorio declara.
+
+La decisión de divulgación sobre los punteros es otra cosa. La toma la infraestructura central antes de mover contenido alguno, y puede tomarla el mediador o un Document Registry que conozca la política de la comunidad, como admite la Opción de Consentimiento de la [sección 2.3](volume-1-options.html).
+
+En las transacciones entre un miembro y un solo componente central, como declarar una identidad, el trabajo es otro. Consiste en comprobar que la petición cumple las reglas de la comunidad para esa transacción, por ejemplo que el miembro solo escribe en su propio dominio de identificadores, y en registrarla. Esa comprobación la puede hacer el mediador o el propio componente, siempre que el componente conozca esas reglas y registre en el mismo repositorio de auditoría. El miembro ejecuta siempre las mismas transacciones, con los mismos mensajes y las mismas reglas. Lo único que cambia es el punto que las valida, el mediador o el componente central.
+
+> **Nota.** El mediador es desacoplable. En esencia no añade nada al modelo de MHDS. Solo concentra el PEP y las transacciones que MHDS reparte entre los miembros. Sin él, la comunidad operaría en esencia como describe MHDS, con el mismo flujo, porque cada miembro puede hacer por su cuenta lo que hace el mediador, es decir, aplicar la política, resolver endpoints, obtener credenciales y auditar. Que pueda no quiere decir que convenga, y ese es [el argumento con el que abre esta sección](volume-1-concepts.html#limite-de-confianza). Quitar el mediador no cambia la arquitectura, solo mueve el PEP a cada miembro.
+
+### Custodia distribuida y almacenamiento central
+
+El documento permanece donde se produjo. El miembro que lo creó lo conserva, responde por su contenido y participa en cada recuperación que lo alcanza. La infraestructura central mantiene el índice, no una copia del expediente.
+
+MHDS admite dos ubicaciones válidas para el contenido, dentro del Document Registry o en cualquier otro lugar de la comunidad, incluido el sistema del propio Document Source ([MHDS Vol. 1, §1:50.1.1.2](https://profiles.ihe.net/ITI/MHDS/volume-1.html#150112-storage-of-binary))[^mhds-storage]. HIX adopta la segunda como **política por defecto** y ofrece la primera como opción. Un custodio que no puede alojar un endpoint ejerce la Opción de Almacenamiento Central y entrega el contenido a la infraestructura central sin dejar de figurar como custodio.
+
+Las dos ubicaciones tienen ejemplos nacionales. Estonia recupera cada documento del proveedor que lo produjo, como se ve en la sección de transporte. Suiza hace lo contrario. Cada comunidad de su expediente electrónico almacena los binarios en su propio Document Repository y las instituciones le entregan el documento al publicarlo ([eHealth Suisse, EPR architecture, §3.3.4](https://www.e-health-suisse.ch/payload/api/documents/file/EPD-Architektur_EN.pdf))[^ch-epr-arch]. Su acceso móvil se especifica sobre MHD en [CH EPR FHIR](https://fhir.ch/ig/ch-epr-fhir/index.html). Como la API que ve el solicitante es idéntica bajo ambas ubicaciones, un custodio puede pasar de una a otra sin que ningún miembro lo note. Por eso "el contenido nunca sale del custodio" es una política por defecto y no un principio absoluto. La arquitectura admite las dos y la comunidad decide por custodio.
+
+### Identidad del paciente
+
+Cada miembro **solo conoce y solo usa sus propios identificadores de paciente**. No conoce los de los demás miembros ni necesita conocerlos. Para la comunidad, cada miembro es un **dominio de identificadores** distinto, y un mismo identificador local solo tiene sentido dentro del dominio del miembro que lo asignó. La comunidad no reemplaza esos identificadores. Mantiene una **identidad maestra** por persona y enlaza con ella las identidades locales que los miembros declaran, de modo que cualquier identificador local, de cualquier miembro, resuelve a la misma persona.
+
+La identidad maestra es un recurso `Patient` en un dominio reservado a la identidad verificada, en el que solo escribe la fuente autoritativa. Lleva el identificador nacional de la persona, la cédula en el caso de la figura, que la ancla a alguien real, la demografía verificada que aporta la fuente autoritativa y los enlaces a sus identidades locales, uno por cada miembro que la haya declarado. Contra esa demografía buscan ITI-78 e ITI-119. No lleva demografía de los miembros. Los nombres y las fechas que cada miembro registra se quedan en él.
+
+![Identidad maestra e identidades locales](hix-master-patient-index.svg)
+
+**Figura 2.1-1:** Identidad maestra e identidades locales
+{: #figura-2-1-1}
+
+La [Figura 2.1-1](volume-1-concepts.html#figura-2-1-1) muestra cómo se construye.
+
+- La **fuente autoritativa de identidad** es quien crea la identidad maestra. Lo hace con el feed **[PMIR](https://profiles.ihe.net/ITI/PMIR/index.html)** ([ITI-93](https://profiles.ihe.net/ITI/PMIR/ITI-93.html)), una vez que comprobó quién es la persona con su identificador nacional. Nadie más puede crear una identidad maestra. HIX no define cuál debe ser esa fuente, pero propone que sea el EDUS, como indica la introducción del volumen.
+- Cada **miembro que publica** declara los pacientes de su dominio con el feed **[PIXm](https://profiles.ihe.net/ITI/PIXm/index.html)** ([ITI-104](https://profiles.ihe.net/ITI/PIXm/ITI-104.html)). Envía su identificador local junto con el identificador nacional de la persona, y el registro de identidad enlaza ese identificador local con la identidad maestra que ya existe para esa persona. Si la persona todavía no tiene identidad maestra, la declaración se rechaza. *Un miembro **vincula**, nunca crea.*
+Tres consultas responden quién es un paciente, y todas buscan solo entre identidades maestras. La [Tabla 2.1-1](volume-1-concepts.html#tabla-2-1-1) las compara. La tercera ordena sus resultados y da a cada uno un grado de coincidencia, como fija PDQm ([PDQm, §2:3.119.4.2.2.4](https://profiles.ihe.net/ITI/PDQm/ITI-119.html#231194224-quality-of-match))[^pdqm-match].
+
+**Tabla 2.1-1:** Consultas de identidad
+{: #tabla-2-1-1}
+
+| Consulta | Transacción | Qué recibe | Qué devuelve | Cuándo se usa |
+| --- | --- | --- | --- | --- |
+| Por identificador | [ITI-83](https://profiles.ihe.net/ITI/PIXm/ITI-83.html) de PIXm | Un identificador, local o nacional | La identidad maestra enlazada a él | Es la vía normal. La usan también el Record Locator Service al localizar, el Document Registry al indexar y el Authorization Server al fijar el contexto de paciente |
+| Por datos demográficos | [ITI-78](https://profiles.ihe.net/ITI/PDQm/ITI-78.html) de PDQm | Criterios como el nombre o la fecha de nacimiento | Las identidades maestras que coinciden con ellos | Cuando no hay un identificador fiable |
+| Por coincidencia probabilística | [ITI-119](https://profiles.ihe.net/ITI/PDQm/ITI-119.html) de PDQm | Los datos de un candidato | Las identidades maestras que más se le parecen, de más a menos probable | Cuando los datos están incompletos o pueden traer errores, como un apellido mal escrito |
+{: .table .table-bordered}
+
+> **Nota.** Un miembro no puede crear una persona, fusionar dos personas ni escribir en el dominio de otro. Sobre las identidades locales de su propio dominio decide él. Y ninguna de las tres consultas prueba una identidad. Eso solo lo hace la fuente autoritativa.
+
+### El puntero
+
+La unidad del índice es el puntero, un [`DocumentReference`](https://hl7.org/fhir/R5/documentreference.html) de FHIR R5 que describe un documento sin contenerlo. Toda decisión de la comunidad se toma sobre el puntero, antes de mover un byte del documento, así que lo que el puntero lleva es una decisión de arquitectura. Estos son sus elementos.
+
+- **`subject`** apunta a la identidad maestra del paciente en todo puntero que la comunidad registra, nunca a una identidad local. El miembro no necesita conocer la identidad maestra para publicar. Nombra al paciente con la identidad local que declaró, y la infraestructura central la resuelve con la consulta por identificador y escribe el resultado en `subject` al indexar. Así ningún miembro tiene que resolver identidades antes de publicar. Un miembro que ya conoce la identidad maestra puede publicarla directamente, y la infraestructura central la comprueba igual.
+- **`sourcepatient`** es una extensión que apunta a la identidad local, es decir, al paciente tal como lo declaró el miembro, con su identificador en su propio dominio. Es la extensión estándar [`documentreference-sourcepatient`](https://hl7.org/fhir/extensions/StructureDefinition-documentreference-sourcepatient.html), que en R5 reemplaza a `context.sourcePatientInfo`. Conserva la traza de qué miembro declaró a quién y permite volver a resolver `subject` si un enlace de identidad cambia. Todo puntero registrado lleva los dos, `sourcepatient` hacia la identidad local y `subject` hacia la identidad maestra.
+- **`custodian.identifier`** nombra a la organización responsable con el mismo identificador que lleva su token y que publica el directorio. Nunca es una referencia a un recurso.
+- **`content.attachment.url`** es una ruta relativa al endpoint del custodio cuando el contenido queda en él. Bajo la Opción de Almacenamiento Central apunta al contenido que conserva el Document Registry. Un puntero nunca contiene una dirección física ni nada que identifique un transporte. La dirección se resuelve en el directorio en cada recuperación.
+- **`securityLabel`** lleva la [etiqueta de confidencialidad](https://hl7.org/fhir/R5/security-labels.html) del documento, un código del sistema [v3-Confidentiality](https://terminology.hl7.org/CodeSystem-v3-Confidentiality.html) de HL7, como `N` para normal, `R` para restringido o `V` para muy restringido. Es obligatorio desde la primera publicación. Sin la etiqueta en el índice, decidir si un documento se puede divulgar exigiría leerlo primero, y añadirla después obligaría a releer todos los documentos en los custodios.
+- **`identifier`** es el identificador de negocio del documento. Identifica una versión concreta, de modo que publicar dos veces la misma versión no duplica el puntero. Una versión nueva no sobrescribe el puntero anterior. Se publica como un puntero nuevo que declara en `relatesTo` que reemplaza al anterior, y el anterior pasa a estado `superseded`, como fija MHD ([MHD, §2:3.65.4.1.2.3](https://profiles.ihe.net/ITI/MHD/5.0.0/ITI-65.html#23654123-replace-transform-signs-and-append-associations))[^mhd-replace]. Así el índice conserva la historia de cada documento.
+
+El resto de elementos, como `status`, `type` o `date`, son los metadatos habituales de MHD y se especificarán más adelante en esta guía.
+
+Un puntero nunca se publica suelto. Cada publicación es un ITI-65 con un SubmissionSet, un recurso `List` que agrupa los punteros publicados juntos y dice quién los publicó y cuándo, y puede llevar además carpetas, que también son recursos `List` ([MHD, §2:3.65.4.1.2](https://profiles.ihe.net/ITI/MHD/5.0.0/ITI-65.html#2365412-message-semantics))[^mhd-bundle]. El Document Registry conserva esas listas junto a los punteros, y son lo que devuelve ITI-66. Por eso la decisión de divulgación se aplica también a ellas, y las fusiones de identidad alcanzan a su `subject` igual que al de los punteros.
+
+### Directorio de la comunidad
+
+El directorio describe las organizaciones participantes, su pertenencia a la comunidad y los endpoints en los que responden. Es la fuente de la que la infraestructura central aprende a quién dirigir una recuperación, por qué canal y qué opciones ejerce cada custodio.
+
+Los miembros no consultan el directorio, porque nunca se comunican entre sí. Lo consulta el mediador, en cada operación, para saber a qué custodio dirigirse y en qué endpoint. Por eso incorporar un miembro no exige reconfigurar nada. Basta con darlo de alta en el directorio para que el mediador pueda alcanzarlo. Un custodio puede tener más de un endpoint, porque mCSD lo admite ([mCSD, §1:46.8.2](https://profiles.ihe.net/ITI/mCSD/volume-1.html#14682-endpoint-content))[^mcsd-endpoints]. Con qué criterio elige el mediador entre ellos es política de la comunidad. Si el directorio no devuelve ninguno activo, el mediador trata al custodio como no disponible.
+
+El directorio fija dos valores que se usan tal cual en toda la comunidad. El **identificador de la organización** es el mismo que el Authorization Server incluye en los tokens del miembro para decir en nombre de qué organización actúa, y el mismo que sus punteros llevan en `custodian.identifier`. La **dirección del endpoint** es la URL a la que el mediador llama, la audiencia del token que obtiene para ese custodio y la base contra la que se resuelven las rutas relativas de sus punteros. Como token, puntero y directorio parten del mismo valor, no pueden desincronizarse.
+
+### Autorización y delegación
+
+HIX usa OAuth 2.0 ([RFC 6749](https://www.rfc-editor.org/rfc/rfc6749)) según lo perfila [IUA](https://profiles.ihe.net/ITI/IUA/index.html). La idea de fondo es sencilla. Para hablar con la comunidad, un sistema necesita un token, y todos los tokens los emite un único Authorization Server.
+
+Un miembro obtiene un token para hablar con el Record Locator Service, y solo con él. Ese token no sirve ante ningún custodio, y el miembro nunca recibe uno que sirva. El mediador comprueba cada token que recibe preguntando al Authorization Server si sigue siendo válido. Esa consulta es la introspección de [RFC 7662](https://www.rfc-editor.org/rfc/rfc7662), que IUA recoge como la transacción Introspect Token ([ITI-102](https://profiles.ihe.net/ITI/IUA/index.html#3102-introspect-token-iti-102)).
+
+Cuando una operación exige llegar a un custodio, el mediador no reutiliza el [token del solicitante](appendix-glossary.html#token-del-solicitante). Lo **intercambia** por otro, siguiendo OAuth 2.0 Token Exchange ([RFC 8693](https://www.rfc-editor.org/rfc/rfc8693)) con un resource indicator ([RFC 8707](https://www.rfc-editor.org/rfc/rfc8707)). Presenta al Authorization Server el token del solicitante y pide a cambio uno nuevo, hecho a la medida de esa llamada. Vale para un solo custodio y una sola transacción, dura como mucho dos minutos y dice dentro quién pidió y quién actúa en su nombre. La [Tabla 2.6-1](volume-1-security.html#tabla-2-6-1) detalla lo que lleva.
+
+El custodio valida ese token por su cuenta, con las claves públicas del Authorization Server, sin tener que preguntarle. Así sabe quién pregunta, en nombre de quién actúa la comunidad y para qué.
+
+Lo mismo vale hacia los componentes centrales. El mediador no tiene acceso propio al Document Registry ni al registro de identidad maestra. Actúa ante ellos con tokens intercambiados de la misma forma, a nombre del miembro que lo pidió. Un puntero queda registrado a nombre de su custodio, no del mediador. El mediador es el primer punto de aplicación de la política de la comunidad, no un participante con autoridad propia.
+
+La [Figura 2.1-2](volume-1-concepts.html#figura-2-1-2) resume el recorrido de los tokens. Un solo token entra por la izquierda, el del miembro, y de él derivan tantos tokens de un solo destino como custodios y componentes centrales haga falta alcanzar.
+
+![Delegación de tokens en HIX](hix-delegacion.svg)
+
+**Figura 2.1-2:** Delegación de tokens en HIX
+{: #figura-2-1-2}
+
+Tres reglas hacen que el mínimo privilegio sea estructural, en lugar de depender de la buena conducta de cada parte.
+
+- **Un token, el destino mínimo.** Cada token vale solo ante quien tiene que recibirlo. El intercambiado vale ante un único destino, porque uno que valiera en dos custodios permitiría a uno de ellos usarlo contra el otro.
+- **Solo el mediador puede intercambiar.** Ningún otro participante puede pedir un token a nombre de un tercero, y los custodios no aceptan tokens llegados por otro camino.
+- **La autoridad nunca crece.** El token intercambiado solo permite lo que el miembro ya podía, lo que la comunidad delega al mediador y lo que el custodio ofrece. Poder localizar un documento nunca da poder para recuperarlo.
+
+Un token dice quién pide, qué puede pedir, ante quién y hasta cuándo. El token de un miembro **no nombra a ningún paciente**. Solo lo hace el de una persona que entra a su propio expediente con [SMART App Launch](https://hl7.org/fhir/smart-app-launch/scopes-and-launch-context.html), y ahí el paciente en contexto sirve para confinar el token a ese expediente. La cuenta con la que esa persona entra no es un identificador de paciente. El Authorization Server resuelve el paciente en contexto contra la identidad maestra con la consulta por identificador. En ambos casos, **tener un token da derecho a preguntar, no a ver**. Qué documentos se entregan lo decide la infraestructura central, puntero por puntero. Esa separación es la idea más importante de este volumen.
+
+### Divulgación
+
+La decisión de divulgación se toma en la infraestructura central, **sobre los punteros y antes de recuperar contenido alguno**. La toma el mediador o, cuando la comunidad la sitúa allí, el Document Registry. Quien la toma combina dos fuentes. Del token toma lo que el Authorization Server avaló del solicitante, es decir, su organización, su propósito de uso y, cuando existe, el paciente en contexto. Del puntero toma el paciente, la etiqueta de confidencialidad, el tipo de documento y el custodio. Nada de lo que el solicitante afirme de sí mismo en la petición cuenta.
+
+Ese orden es lo que hace que centralizar valga su costo. Un puntero cuya divulgación se niega no genera ninguna recuperación, ninguna consulta al directorio y ningún token. La decisión se toma una vez por consulta, y un documento atraviesa dos, porque revelar que existe ya es una divulgación. Al localizar, se filtran los punteros de la respuesta. Al recuperar, el mediador vuelve a evaluar el puntero pedido antes de alcanzar al custodio. Un puntero negado no aparece en la respuesta ni se anuncia como negado.
+
+El punto de partida es un entorno de consentimiento implícito, con una política única para toda la comunidad. MHDS lo describe en su Consent Manager Option como el entorno en el que se permite divulgar mientras el paciente no haya registrado un consentimiento ([MHDS Vol. 1, §1:50.2.2](https://profiles.ihe.net/ITI/MHDS/volume-1.html#15022-consent-manager-option))[^mhds-implied]. El destino es [PCF](https://profiles.ihe.net/ITI/PCF/volume-1.html#1534-pcf-overview), donde las directivas de consentimiento de cada paciente se evalúan en cada petición ([PCF Vol. 1, §1:53.4](https://profiles.ihe.net/ITI/PCF/volume-1.html#1534-pcf-overview))[^pcf]. La Opción de Consentimiento declara dónde se aplica esa decisión y qué información necesita. **El modelo de consentimiento se especificará en una versión posterior de esta guía a partir de PCF.**
+
+### Auditoría en ambos extremos
+
+Cada participante registra lo que hace. Es lo que [ATNA](https://profiles.ihe.net/ITI/TF/Volume1/ch-9.html) exige a todo sistema que se declara [Secure Node o Secure Application](appendix-glossary.html#secure-node) ([ITI TF-1, §9.1.1.1](https://profiles.ihe.net/ITI/TF/Volume1/ch-9.html#9.1.1.1))[^atna-node] y lo que MHDS exige a su Document Registry ([MHDS Vol. 1, §1:50.1.1.1](https://profiles.ihe.net/ITI/MHDS/volume-1.html#150111-document-registry))[^mhds-audit]. Los registros siguen los patrones de [BALP](https://profiles.ihe.net/ITI/BALP/index.html), que definen cómo se escribe un `AuditEvent` de FHIR para cada tipo de evento. La infraestructura central registra la solicitud que recibe del miembro y la recuperación que ella misma inicia hacia el custodio. El custodio registra la entrega.
+
+Los registros de una misma divulgación comparten un identificador de correlación. El mediador lo genera al recibir la solicitud y lo transmite al custodio en cada llamada. BALP prevé este uso y reserva un elemento del `AuditEvent` para guardar el identificador de la petición y correlacionar los registros de cliente y servidor ([BALP, §3:5.7.3.1](https://profiles.ihe.net/ITI/BALP/content.html#35731-x-request-id-header))[^balp-corr]. Así una divulgación se puede reconstruir completa desde sus dos lados.
+
+El token intercambiado nombra al solicitante original y al mediador como actor. Por eso el custodio registra quién pidió el documento y en nombre de quién actuó la comunidad, y no solo que lo pidió la comunidad.
+
+Ningún registro contiene un token completo ni contenido clínico. Basta un identificador del token, como su `jti`, para atar el evento a él. Todos los componentes centrales registran en el mismo [Audit Record Repository](appendix-glossary.html#audit-record-repository) de ATNA, el repositorio de auditoría de la comunidad. Como además toda divulgación pasa por el mediador, la pregunta "quién accedió al expediente de esta persona" se responde desde un solo lugar, ese repositorio. Cómo se consulta se especificará más adelante, como señala la [descripción general](index.html). Eso no exime a ningún custodio de registrar su lado.
+
+### Transporte y redes de intercambio
+
+La dirección física de un custodio vive únicamente en el directorio. El puntero lleva una organización y una ruta relativa. El mediador resuelve la dirección en cada recuperación y llega al custodio por el canal que el directorio declara para él. Ese canal puede ser una conexión directa o una red de intercambio ya establecida, como [X-Road](https://x-road.global/). En ambos casos el puntero, la API que ven los miembros y el modelo de tokens son los mismos. Cambiar de canal es cambiar un dato del directorio.
+
+Una red de intercambio resuelve cómo se conectan las organizaciones y cómo se identifican entre sí. No dice nada de documentos, punteros ni consentimiento. Por eso HIX la usa solo por debajo del mediador. Si los miembros la usaran para hablar entre sí, volverían a la malla de pares que HIX descarta. Estonia sigue este mismo patrón. Su registro nacional de salud recupera los datos de cada proveedor cuando se necesitan y los presenta en un formato común ([e-Estonia](https://e-estonia.com/solutions/healthcare/e-health-records/))[^estonia], y los sistemas de información del país se conectan entre sí sobre X-Road ([e-Estonia](https://e-estonia.com/solutions/interoperability-services/x-road/))[^estonia-xroad]. El token intercambiado sigue viajando por ese canal y el custodio sigue validándolo. La identidad que la red asigna a cada organización no lo sustituye.
+
+### Comunidades vecinas
+
+Una comunidad HIX puede conectarse con comunidades que operen sobre [XDS](https://profiles.ihe.net/ITI/TF/Volume1/ch-10.html) o [XCA](https://profiles.ihe.net/ITI/TF/Volume1/ch-18.html) mediante una pasarela. Ante HIX la pasarela es un miembro más, custodio de los documentos que trae de la otra comunidad o consumidor de los que le pide. Ante la otra comunidad es un Initiating Gateway o un Responding Gateway de XCA. Así la mediación se conserva, porque el Record Locator Service alcanza a la pasarela como a cualquier custodio y ningún miembro habla con la otra comunidad.
+
+MHD prevé un puente así hacia XDS con su [XDS on FHIR Option](https://profiles.ihe.net/ITI/MHD/5.0.0/1332_actor_options.html#13322-xds-on-fhir-option)[^mhd-xds-on-fhir], y advierte que no convive en un mismo despliegue con la UnContained Reference Option que declaran los actores de HIX. Por eso la pasarela es siempre un sistema aparte. Esta guía no la especifica.
+
+### Compromisos asumidos
+
+IHE deja la gobernanza fuera de su alcance. Declara que no define políticas de privacidad ni de seguridad, y que el marco de políticas de una comunidad debe definirse antes de construirla ([MHDS Vol. 1, §1:50.5](https://profiles.ihe.net/ITI/MHDS/volume-1.html#1505-mhds-security-considerations) y [§1:50.5.1](https://profiles.ihe.net/ITI/MHDS/volume-1.html#15051-policies-and-risk-management))[^mhds-policy]. Por eso, de los compromisos de la tabla, la apuesta por la operación del centro es el que más pesa.
+
+**Tabla 2.1-2:** Compromisos de la arquitectura
+{: #tabla-2-1-2}
+
+| Compromiso | Qué se acepta | Cómo se mitiga |
+| --- | --- | --- |
+| Acoplamiento de disponibilidad | Una recuperación mediada necesita al mediador, al Authorization Server y al custodio a la vez | Un custodio caído degrada la respuesta, no la hace fallar. Cualquier custodio puede pasar a almacenamiento central sin que nadie lo note |
+| Contenido en tránsito por el centro | Todo byte clínico atraviesa el mediador, que lo ve en claro | El mediador no guarda ni registra contenido. El canal entre organizaciones va cifrado. El índice se gobierna como dato sensible |
+| Authorization Server en el camino crítico | Cada localización exige una introspección y cada recuperación, además, un intercambio de tokens | Se dimensiona con la misma disponibilidad que el mediador. Un token intercambiado vale para un solo destino y dura como mucho dos minutos, así que un token filtrado tiene una ventana de uso corta y conocida |
+| Apuesta por la operación del centro | La garantía de la comunidad vale lo que valga la operación de su infraestructura central. Un centro bien operado supera a una federación operada a medias, y un centro mal operado es peor que esa federación | Quién certifica miembros, quién responde al paciente y quién financia el centro se fija en la gobernanza de la comunidad, antes de construirla. Es su riesgo principal a largo plazo |
+{: .table .table-bordered}
+
+### Relación con MHDS
+{: #relacion-con-mhds}
+
+HIX sigue la forma de comunidad que describe [MHDS](https://profiles.ihe.net/ITI/MHDS/volume-1.html), con una infraestructura central de servicios compartidos y miembros que publican y consumen a través de ella, y toma de él buena parte de su vocabulario. No declara conformidad con MHDS. La declara con los perfiles que MHDS compone, que son los que se mantienen, se prueban y se distribuyen como paquetes versionados.
+
+Hay dos razones. La primera es que la última publicación de MHDS es de agosto de 2023 y está hecha sobre FHIR R4[^mhds-version], y los perfiles que compone siguieron cambiando después. [MHD se publicó sobre FHIR R5](https://profiles.ihe.net/ITI/MHD/5.0.0/index.html) y mCSD rehízo y renombró todos sus actores ([mCSD, Significant Changes](https://profiles.ihe.net/ITI/mCSD/issues.html#significant-changes))[^mcsd-rename], de modo que MHDS nombra hoy actores que mCSD ya no define.
+
+La segunda es que algunas de sus decisiones chocan con los perfiles que compone. MHDS agrupa el Document Registry con el Authorization Server ([MHDS Vol. 1, §1:50.2.1](https://profiles.ihe.net/ITI/MHDS/volume-1.html#15021-authorization-option))[^mhds-as-grouping] y deja en este la gestión del consentimiento ([MHDS Vol. 1, §1:50.2.2](https://profiles.ihe.net/ITI/MHDS/volume-1.html#15022-consent-manager-option))[^mhds-consent-as]. IUA, en cambio, se distingue precisamente por no atar el Authorization Server a los Resource Servers ([IUA, Relation to SMART-on-FHIR](https://profiles.ihe.net/ITI/IUA/index.html#relation-to-smart-on-fhir))[^iua-loose].
+
+De ahí salen dos reglas. Cuando MHDS y un perfil vigente dicen cosas distintas, prevalece el perfil vigente. Cuando MHDS y una decisión de HIX dicen cosas distintas, esta guía declara en qué se aparta y por qué. La [Tabla 2.1-3](volume-1-concepts.html#tabla-2-1-3) reúne lo que HIX toma de MHDS y lo que no.
+
+**Tabla 2.1-3:** Lo que HIX toma de MHDS y lo que no
+{: #tabla-2-1-3}
+
+| Asunto | En MHDS | En HIX |
+| --- | --- | --- |
+| Forma de la comunidad | Infraestructura central de servicios compartidos, con miembros que publican y consumen | La misma |
+| Document Registry | Actor propio de MHDS, con sus opciones | Actor de HIX con el mismo nombre y la misma función, definido por los actores que agrupa en la [sección 2.4](volume-1-groupings.html) |
+| Acceso de quien consulta | Directo al Document Registry y, si el contenido está fuera de él, al servicio que lo aloja | Siempre a través del Record Locator Service |
+| Identidad que aporta un miembro | El miembro crea y actualiza identidades en el registro de la comunidad, como Patient Identity Source de PMIR | El miembro declara sus identidades locales con ITI-104 de PIXm y nunca crea una persona |
+| Authorization Server | Agrupado con el Document Registry bajo la Authorization Option | Servicio central independiente y único emisor de la comunidad |
+| Consentimiento | Lo gestiona y decide el Authorization Server agrupado | La decisión de divulgación se toma en la infraestructura central, separada de la autorización |
+| Versiones | FHIR R4 y las versiones de los perfiles vigentes en 2023 | FHIR R5 y la versión vigente de cada perfil |
+{: .table .table-bordered}
+
+El apartamiento de más peso es el de la identidad. MHDS deja que los participantes creen y actualicen identidades en el registro de la comunidad ([MHDS Vol. 1, §1:50.1](https://profiles.ihe.net/ITI/MHDS/volume-1.html#1501-mhds-actors-transactions-and-content-modules))[^mhds-identity]. HIX reserva esa facultad a la fuente autoritativa, como explica el apartado sobre la [identidad del paciente](volume-1-concepts.html#identidad-del-paciente), para que ningún miembro pueda crear una persona.
+
+### Referencias
+
+Las citas reproducen el texto publicado por su fuente. Los recortes se marcan con "[...]" y la negrita es de esta guía.
+
+[^mhds-consent]: [MHDS Vol. 1, §1:50.2.2 Consent Manager Option](https://profiles.ihe.net/ITI/MHDS/volume-1.html#15022-consent-manager-option): "Note that this option **does not protect Binary content stored outside of the Document Registry** [...]. When documents are stored outside of the Document Registry, **the Document Source system takes on the burden of protecting the document**."
+[^mhds-storage]: [MHDS Vol. 1, §1:50.1.1.2 Storage of Binary](https://profiles.ihe.net/ITI/MHDS/volume-1.html#150112-storage-of-binary): "(1) The Document Source includes the Binary Resource in the [ITI-65] transaction, and the Document Registry is required to store it. (2) **The Community allows the Binary to be stored elsewhere in the Community.** [...] This might be other centralized infrastructure, distributed infrastructure, or **within the system implementing the Document Source**. [...] the service hosting the Binary shall: [...] **provide access to the community members**".
+[^hie-wp]: [IHE HIE Whitepaper, §2.8 Document Sharing Models](https://profiles.ihe.net/ITI/HIE-Whitepaper/index.html#28-document-sharing-models): "the centralized model **requires knowledge only of the centralized locator** [...]. For Push and Federated approaches **a detailed directory of participating entitles** [sic] is typically used". [§3.2 Centralized Discovery and Retrieve](https://profiles.ihe.net/ITI/HIE-Whitepaper/index.html#32-centralized-discovery-and-retrieve): "a centralized locator is used to discover the location of documents which enables **a retrieval of the document from a custodian** who has registered existence of the document with the centralized locator".
+[^mhds-implied]: [MHDS Vol. 1, §1:50.2.2 Consent Manager Option](https://profiles.ihe.net/ITI/MHDS/volume-1.html#15022-consent-manager-option): "The grouped IUA Authorization Server SHALL support consent configuration to enable Implied Consent and Explicit Consent environments. **Implied Consent environments allow disclosure when no Consent has been recorded for that patient**, Explicit Consent environments Deny disclosure when no Consent has been recorded for that patient."
+[^pcf]: [PCF Vol. 1, §1:53.4 PCF Overview](https://profiles.ihe.net/ITI/PCF/volume-1.html#1534-pcf-overview): "The PCF Profile enables authorized access to data according to terms agreed by the Patient and the Organization protecting the data." [§1:53.1.1.3 Consent Authorization Server](https://profiles.ihe.net/ITI/PCF/volume-1.html#153113-consent-authorization-server): "The Consent Authorization Server **makes authorization decisions based on a given access requested context** (e.g., oAuth, query/operation parameters), organizational policies, and **current active Consent resources**."
+[^atna-node]: [ITI TF-1, §9.1.1.1 Secure Node](https://profiles.ihe.net/ITI/TF/Volume1/ch-9.html#9.1.1.1): "Detect and report a Record Audit Event as specified in ITI TF-2: 3.20 for: **all of the activity-related events for the Secure Node** [...] **all transaction-related events for the Secure Node**".
+[^mhds-audit]: [MHDS Vol. 1, §1:50.1.1.1 Document Registry](https://profiles.ihe.net/ITI/MHDS/volume-1.html#150111-document-registry): "The Document Registry **SHALL record all security relevant events** to ATNA Audit Record Repository with the “ATX: FHIR Feed” Option."
+[^mhds-policy]: [MHDS Vol. 1, §1:50.5 MHDS Security Considerations](https://profiles.ihe.net/ITI/MHDS/volume-1.html#1505-mhds-security-considerations): "**The policy landscape that the community is built on needs to be defined well before the community is built.**" [§1:50.5.1 Policies and Risk Management](https://profiles.ihe.net/ITI/MHDS/volume-1.html#15051-policies-and-risk-management): "IHE solves interoperability problems via the implementation of technology standards. **It does not define Privacy or Security Policies**, Risk Management, Healthcare Application Functionality, Operating System Functionality, Physical Controls, or even general Network Controls."
+[^balp-corr]: [BALP, §3:5.7.3.1 X-Request-Id header](https://profiles.ihe.net/ITI/BALP/content.html#35731-x-request-id-header): "Where it is known that an http RESTful transaction included an X-Request-Id, that value should be recorded in an .entity dedicated to X-Request-Id. **This ID can be used to correlated AuditEvents from client and server**, and may aid with correlation on further activities recorded caused by the transaction."
+[^ch-epr-arch]: [eHealth Suisse, EPR architecture. A detailed description, §3.3.4 XDS Document Repositories](https://www.e-health-suisse.ch/payload/api/documents/file/EPD-Architektur_EN.pdf): "The Document Repository Service implements interfaces to **store and query the binary objects** of the XDS documents. **The data are captured by the connected systems of the (core) communities when documents are saved** and are registered via interfaces."
+[^estonia]: [e-Estonia, e-Health Record](https://e-estonia.com/solutions/healthcare/e-health-records/): "the e-Health Record actually **retrieves data as necessary from various providers**, who may be using different systems" and "presents it in a standard format".
+[^estonia-xroad]: [e-Estonia, X-Road](https://e-estonia.com/solutions/interoperability-services/x-road/): "X-Road®, an open-source software and ecosystem solution that provides unified and secure data exchange between private and public sector organisations, **is the backbone of e-Estonia**. Invisible yet crucial, it allows the nation’s various public and private sector e-service information systems to link up and function in harmony."
+[^mhds-version]: [MHDS, pie de la publicación vigente](https://profiles.ihe.net/ITI/MHDS/index.html): "Package ihe.iti.mhds#2.3.1 based on FHIR 4.0.1. Generated 2023-08-04"
+[^mcsd-rename]: [mCSD, Significant Changes](https://profiles.ihe.net/ITI/mCSD/issues.html#significant-changes): "**Reworked all Actors to improve clarity**", con la tabla de equivalencias "New Actor (with Option) | Old Actor", que incluye "Directory | Care Services Selective Supplier" y "Query Client | Care Services Selective Consumer".
+[^mhds-as-grouping]: [MHDS Vol. 1, §1:50.2.1 Authorization Option](https://profiles.ihe.net/ITI/MHDS/volume-1.html#15021-authorization-option): "**The Document Registry SHALL be grouped with an IUA Resource Server and the IUA Authorization Server Actors.** The IUA Authorization Server Metadata Option shall be supported."
+[^mhds-consent-as]: [MHDS Vol. 1, §1:50.2.2 Consent Manager Option](https://profiles.ihe.net/ITI/MHDS/volume-1.html#15022-consent-manager-option): "**The grouped IUA Authorization Server would be used to manage the consent status and make authorization decisions based on the consent status.** [...] The IUA Resource Server that is grouped with the MHDS Document Registry would enforce these decisions."
+[^iua-loose]: [IUA, Relation to SMART-on-FHIR](https://profiles.ihe.net/ITI/IUA/index.html#relation-to-smart-on-fhir): "**IUA promotes a loose coupling of Resource Server and Authorization Servers.** This allows for deployments with multiple Resource Servers per Authorization Server as well as deployments with several or even no Authorization Servers."
+[^mhds-identity]: [MHDS Vol. 1, §1:50.1 MHDS Actors, Transactions, and Content Modules](https://profiles.ihe.net/ITI/MHDS/volume-1.html#1501-mhds-actors-transactions-and-content-modules): "PMIR – Patient Identity Source and Patient Identity Registry – to provide patient identity lookup by demographics or identity, and **to receive create and update of patient identity from participants**"
+[^mhd-replace]: [MHD, §2:3.65.4.1.2.3 Replace, Transform, Signs, and Append Associations](https://profiles.ihe.net/ITI/MHD/5.0.0/ITI-65.html#23654123-replace-transform-signs-and-append-associations): "The relatesTo.target element in the provided DocumentReference points at the pre-existing DocumentReference that is being replaced, transformed, signed, or appended. [...] **If a DocumentReference is being replaced, that DocumentReference needs to have the status element updated to superseded within the transaction bundle** with the UpdateDocumentsRef slice".
+[^mcsd-endpoints]: [mCSD, §1:46.8.2 Endpoint Content](https://profiles.ihe.net/ITI/mCSD/volume-1.html#14682-endpoint-content): "The Endpoint.connectionType and specificType extension indicate the type of connectivity enabled by the Endpoint. As such, **Organization and OrganizationAffiliation Resources MAY have many Endpoints** for the various types of connectivity they support."
+[^pdqm-match]: [PDQm, §2:3.119.4.1.3 Expected Actions](https://profiles.ihe.net/ITI/PDQm/ITI-119.html#23119413-expected-actions): "The results are ordered from most likely to least likely." [§2:3.119.4.2.2.4 Quality of Match](https://profiles.ihe.net/ITI/PDQm/ITI-119.html#231194224-quality-of-match): "**The Patient Demographics Supplier SHALL convey the quality of each match** based on strength of the particular result to the supplied Patient Resource. [...] it SHALL represent the confidence of a particular match within the bundle as a score attribute."
+[^mhd-bundle]: [MHD, §2:3.65.4.1.2 Message Semantics](https://profiles.ihe.net/ITI/MHD/5.0.0/ITI-65.html#2365412-message-semantics): "The Document Source shall initiate a FHIR “transaction” using a “create” action by sending an HTTP POST request method composed of a FHIR Bundle Resource containing: **one SubmissionSet type List Resource; one or more DocumentReference Resources; zero or more Folder type List Resources; and zero or more Binary Resources** to the Document Recipient."
+[^mhd-xds-on-fhir]: [MHD, §1:33.2.2 XDS on FHIR Option](https://profiles.ihe.net/ITI/MHD/5.0.0/1332_actor_options.html#13322-xds-on-fhir-option): "**The Document Responder that supports this option shall be able to be grouped with an XDS Document Consumer** so that any query or retrieve requests can be passed on to, and responded to, by an XDS environment." [§1:33.2.3 UnContained Reference Option](https://profiles.ihe.net/ITI/MHD/5.0.0/1332_actor_options.html#13323-uncontained-reference-option): "The UnContained Reference Option is not compatible with the XDS on FHIR Option. A system may be able to support both options, but **only one will be able to be used at a given deployment**."
+
+*[PMIR]: Patient Master Identity Registry, perfil IHE que gestiona la identidad maestra del paciente
+*[PIXm]: Patient Identifier Cross-referencing for mobile, perfil IHE que enlaza los identificadores locales de un paciente con su identidad maestra
+*[PDQm]: Patient Demographics Query for Mobile, perfil IHE de búsqueda de pacientes por datos demográficos
+*[MHD]: Mobile access to Health Documents, perfil IHE para publicar, localizar y recuperar documentos sobre FHIR
+*[MHDS]: Mobile Health Document Sharing, perfil IHE que compone MHD, PMIR, mCSD, IUA y ATNA en una comunidad de intercambio de documentos
+*[mCSD]: Mobile Care Services Discovery, perfil IHE de directorio de organizaciones, servicios y endpoints
+*[IUA]: Internet User Authorization, perfil IHE que aplica OAuth 2.0 a las transacciones sobre FHIR
+*[ATNA]: Audit Trail and Node Authentication, perfil IHE de auditoría y seguridad de los nodos
+*[BALP]: Basic Audit Log Patterns, perfil IHE con los patrones de AuditEvent de FHIR
+*[PCF]: Privacy Consent on FHIR, perfil IHE de consentimiento del paciente
+*[XDS]: Cross-Enterprise Document Sharing, perfil IHE de intercambio de documentos sobre SOAP
+*[XCA]: Cross-Community Access, perfil IHE de acceso a documentos entre comunidades

@@ -1,0 +1,50 @@
+@startuml hix-actores-laboratorio
+!pragma layout smetana
+hide stereotype
+skinparam shadowing false
+skinparam defaultFontName Verdana
+skinparam defaultFontSize 11
+skinparam nodesep 12
+skinparam ranksep 18
+skinparam rectangle {
+  BorderColor #555555
+  RoundCorner 12
+  FontStyle bold
+}
+skinparam rectangle<<inner>> {
+  BackgroundColor white
+  BorderColor #444444
+  BorderStyle dashed
+  RoundCorner 0
+  FontStyle plain
+  FontSize 10
+}
+skinparam arrow {
+  Color #333333
+  FontSize 9
+}
+left to right direction
+rectangle "Laboratorio (custodio)" as LAB #DAE8FC {
+  rectangle "IUA Authorization Client" <<inner>> as L1
+  rectangle "PIXm Patient Identity Source" <<inner>> as L2
+  rectangle "MHD Document Source" <<inner>> as L3
+  rectangle "MHD Document Responder" <<inner>> as L4
+  rectangle "IUA Resource Server" <<inner>> as L5
+}
+rectangle "Authorization Server (STS)" as STS #F5F5F5 {
+  rectangle "IUA Authorization Server" <<inner>> as STS1
+  rectangle "OpenID Provider" <<inner>> as STS2
+  rectangle "PIXm Consumer" <<inner>> as STS3
+}
+rectangle "Record Locator Service (Mediador)" as RLS #D5E8D4 {
+  rectangle "IUA Authorization Client" <<inner>> as RLS0
+  rectangle "IUA Resource Server" <<inner>> as RLS1
+  rectangle "MHD Document Consumer (delegated)" <<inner>> as RLS3
+}
+L1 --> STS1 : [ITI-71] Get Access Token\npurpose_of_use = TREAT
+L2 --> RLS : [ITI-104] Patient Identity Feed\nidentidad local + identificador nacional
+L3 --> RLS : [ITI-65] Provide Document Bundle\npuntero con custodio y securityLabel
+STS1 <-u- RLS0 : [HIX-1] Custodian Token Exchange
+RLS3 --> L4 : [ITI-68] Retrieve Document\ntoken derivado, aud = laboratorio\ncuando otro miembro recupera
+L4 -[hidden]-> RLS1
+@enduml

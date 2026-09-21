@@ -1,10 +1,19 @@
 == Suppressed Messages ==
 
-# These fragments are produced by the template for guides that declare package
-# dependencies and IP statements. This guide is narrative-only and includes
-# neither, and the pages stay portable Markdown so pandoc can render the same
-# sources to PDF and Word -- which rules out Jekyll {% include %} tags.
+# These fragments are produced by the template for guides that carry IP
+# statements, global profiles and cross-version analysis. This guide is
+# narrative-only and includes none of them. The pages stay portable Markdown so
+# pandoc can render the same sources to PDF and Word; the one Jekyll
+# {% include %} in use, the dependency table on the index page, is replaced by
+# _scripts/assemble.py.
 The HTML fragment 'ip-statements.xhtml' is not included anywhere in the produced implementation guide
-An HTML fragment from the set [dependency-table.xhtml, dependency-table-short.xhtml, dependency-table-nontech.xhtml] is not included anywhere in the produced implementation guide
 The HTML fragment 'globals-table.xhtml' is not included anywhere in the produced implementation guide
 An HTML fragment from the set [cross-version-analysis.xhtml, cross-version-analysis-inline.xhtml] is not included anywhere in the produced implementation guide
+
+# Kramdown abbreviations (`*[PMIR]: ...` at the foot of a page) render as <abbr title="...">,
+# which the publisher's HTML whitelist does not include. Browsers render it as a plain tooltip.
+# The publisher reports only the first occurrence per page, naming that abbreviation.
+Illegal HTML: illegal html element: abbr (MHDS)
+Illegal HTML: illegal html element: abbr (PDQm)
+Illegal HTML: illegal html element: abbr (PMIR)
+Illegal HTML: illegal html element: abbr (IUA)
