@@ -67,12 +67,24 @@ jobs:
       - name: Build the site
         run: make site
 
+      # llms.txt is a plain-text index for LLMs, built from the same pages by
+      # the scripts the PDF uses. It needs Python only, no pandoc or typst.
+      - name: Build llms.txt
+        run: |
+          work=$(mktemp -d)
+          python3 _scripts/assemble.py "$work"
+          python3 _scripts/llms.py "$work"
+
       # The site lives under the canonical's path, so the canonical URL resolves;
       # the root redirects to it.
       - name: Bundle
         run: |
           mkdir -p dist/pages/fhir
           cp -R dist/site dist/pages/fhir/hix
+          # beside the site, where llms.txt links to the full text, and at the
+          # root of the domain, where the llms.txt convention looks for it
+          cp dist/llms.txt dist/llms-full.txt dist/pages/fhir/hix/
+          cp dist/llms.txt dist/pages/llms.txt
           echo "/ /fhir/hix/ 302" > dist/pages/_redirects
 
       - name: Deploy to Cloudflare Pages
