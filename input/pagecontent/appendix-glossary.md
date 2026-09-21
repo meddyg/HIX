@@ -79,7 +79,7 @@ Este glosario reúne, en una línea cada uno, los actores y términos que usa es
 **[Resource Server](https://profiles.ihe.net/ITI/IUA/index.html).** Actor de IUA que recibe un token con ITI-72, comprueba que está destinado a él y lo valida, en su caso con ITI-102.
 {: #resource-server}
 
-**[Secure Node y Secure Application](https://profiles.ihe.net/ITI/TF/Volume1/ch-9.html).** Actores de ATNA. Todo sistema que participa en una transacción, obligado a registrar sus eventos de auditoría con ITI-20 y a comunicarse por canales seguros.
+**[Secure Node y Secure Application](https://profiles.ihe.net/ITI/TF/Volume1/ch-9.html).** Actores de ATNA. Un sistema que se declara uno u otro autentica sus conexiones, las cifra y registra sus eventos de auditoría con ITI-20. El Secure Node aplica esos servicios de seguridad a todo el sistema. La Secure Application los aplica solo a la aplicación y a los actores que agrupa.
 {: #secure-node}
 
 **[Time Client](https://profiles.ihe.net/ITI/TF/Volume1/ch-7.html).** Actor de CT que sincroniza el reloj de su sistema con el Time Server de la comunidad mediante ITI-1.

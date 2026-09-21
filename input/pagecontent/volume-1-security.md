@@ -102,7 +102,7 @@ HIX especifica los siguientes controles. Cada uno remite a la sección que lo fi
 
 #### Seguridad básica
 
-Todo actor de HIX, salvo la aplicación del paciente, es un Secure Node o Secure Application de ATNA y un Time Client de CT, como fija la [sección 2.4](volume-1-groupings.html). Los actores centrales registran sus eventos en el Audit Record Repository de la comunidad y cada miembro en el suyo, con el contenido que BALP define para cada transacción.
+Todo actor de HIX, salvo la aplicación del paciente, es un Secure Node o Secure Application de ATNA y un Time Client de CT, como fija la [sección 2.4](volume-1-groupings.html). Los actores centrales registran sus eventos en el Audit Record Repository de la comunidad y cada miembro en el suyo, con el contenido que cada perfil define para su transacción a partir de los patrones de BALP.
 
 El Record Locator Service **SHALL** registrar tanto la solicitud que recibe como cada recuperación que origina hacia un custodio, bajo un identificador de correlación que él mismo acuña y transmite al custodio, y **SHALL NOT** transmitir hacia el custodio ninguno que el solicitante proponga. Ningún registro de auditoría **SHALL** contener valores de credenciales ni contenido clínico.
 

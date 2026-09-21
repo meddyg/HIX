@@ -7,6 +7,8 @@ Las tres pestañas siguientes muestran a los actores de miembro en su escenario 
 
 El propósito de uso no depende del actor sino del caso de uso. Es un código del conjunto [PurposeOfUse](https://terminology.hl7.org/ValueSet-v3-PurposeOfUse.html) de HL7, tomado del sistema [v3-ActReason](https://terminology.hl7.org/CodeSystem-v3-ActReason.html), que el Authorization Server incluye en el token de cada solicitante y que la decisión de divulgación evalúa. No decide qué transacciones puede pedir un solicitante. Eso lo fija el scope de su token. Un mismo hospital consulta con `TREAT`, tratamiento, en la atención habitual y con `ETREAT`, tratamiento de emergencia, en una urgencia. Una aplicación entra a un expediente a petición del paciente, `PATRQT`, de un familiar autorizado por él, `FAMRQT`, o de su representante legal, `PWATRNY`. Un laboratorio publica con `TREAT`. HIX usa el conjunto completo de HL7 y no lo restringe. Qué propósitos acepta una comunidad, y con qué condiciones, es política de implementación. La [Tabla 2.2-3](volume-1-actors.html#tabla-2-2-3) solo orienta al lector con los más frecuentes y el caso en el que aparece cada uno[^pou].
 
+> **TODO.** Estos 3 diagramas son un MOCK en pantUML y se DEBEN pasar los tres diagramas de estas pestañas a draw.io, como la [Figura 2-1](volume-1.html#figura-2-1).
+
 <ul class="nav nav-tabs" role="tablist">
   <li class="active"><a href="#tab-actores-paciente" data-toggle="tab">Aplicación del paciente</a></li>
   <li><a href="#tab-actores-hospital" data-toggle="tab">Hospital que consulta</a></li>
@@ -102,7 +104,7 @@ Notas:
 
 1. No requerido si el custodio declara la Opción de Almacenamiento Central.
 2. Requerido si el actor declara la Opción de Demografía.
-3. El Document Registry responde [ITI-68] solo para el contenido almacenado centralmente.
+3. La exige el Document Responder de MHD. El Document Registry solo tiene contenido que servir cuando declara la Opción de Almacenamiento Central.
 
 **Tabla 2.2-3:** Propósitos de uso más frecuentes en HIX
 {: #tabla-2-2-3}
