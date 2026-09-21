@@ -12,7 +12,6 @@
 ![Idioma: español](https://img.shields.io/badge/idioma-espa%C3%B1ol-34799a)
 
 [Sitio](https://hix.meddyg.com/fhir/hix/) ·
-[ci-build](https://main.hix-ig.pages.dev/fhir/hix/) ·
 [dev](https://dev.hix-ig.pages.dev/fhir/hix/) ·
 [llms.txt](https://hix.meddyg.com/fhir/hix/llms.txt) ·
 [PDF y Word](https://github.com/meddyg/Health-Information-Exchange/releases/latest) ·
