@@ -5,7 +5,7 @@ name: Pages
 #   pull request  -> https://pr-N.hix-ig.pages.dev/fhir/hix/            preview
 #   push to main  -> https://main.hix-ig.pages.dev/fhir/hix/            ci-build
 #   push to dev   -> https://dev.hix-ig.pages.dev/fhir/hix/             dev
-#   tag vX.Y.Z    -> https://hl7.meddyg.com/fhir/hix/                   production
+#   tag vX.Y.Z    -> https://hix.meddyg.com/fhir/hix/                   production
 #                    https://vX-Y-Z.hix-ig-versions.pages.dev/fhir/hix/  frozen copy
 #
 # Closing a pull request deletes its preview deployments.
@@ -83,7 +83,7 @@ jobs:
           cp -R dist/site dist/pages/fhir/hix
           # beside the site, where llms.txt links to the full text, and at the
           # root of the domain, where the llms.txt convention looks for it
-          cp dist/llms.txt dist/llms-full.txt dist/pages/fhir/hix/
+          cp dist/llms.txt dist/llms-full.txt dist/md/*.md dist/pages/fhir/hix/
           cp dist/llms.txt dist/pages/llms.txt
           echo "/ /fhir/hix/ 302" > dist/pages/_redirects
 
