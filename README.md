@@ -27,6 +27,10 @@ make clean     # remove everything generated
 Write against `make preview` (0.16s per page, reloads on save); verify with
 `make site` (~30s), which is the build that counts.
 
+The preview also marks what the page has gained, lost or had rewritten since
+HEAD, word by word. The banner switches the marks off to go back to writing, and
+switches the comparison to `main` to review the whole branch.
+
 ## Layout
 
 ```
