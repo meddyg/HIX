@@ -8,7 +8,7 @@ Los casos siguen las tres historias de las figuras de la [sección 2.2](volume-1
 
 Una persona existe en la comunidad desde que la fuente autoritativa de identidad la alimenta al registro de identidad maestra. El custodio que la atiende declara a la comunidad qué [identidad local](appendix-glossary.html#identidad-local) le corresponde. El registro vincula esa identidad con la [identidad maestra](appendix-glossary.html#identidad-maestra) y, desde entonces, los documentos que ese custodio publique con su identificador local quedan asociados a la misma persona que los publicados por los demás miembros.
 
-Un miembro que solo conoce su propio identificador de una persona, o el nacional, pregunta con él y obtiene la identidad maestra enlazada, que es como la comunidad la nombra. No obtiene los identificadores de los demás miembros. Un miembro que no dispone de ningún identificador conocido por la comunidad puede, si declara la Opción de Demografía, buscar por datos demográficos entre las identidades maestras y, si declara la Opción de Coincidencia Demográfica, pedir las que más se parecen a unos datos incompletos.
+Un miembro que declaró sus identidades locales pregunta con su propio identificador de la persona y obtiene la identidad maestra enlazada, que es como la comunidad la nombra. Un miembro que solo consume no declara ninguna, y pregunta con el identificador nacional de la persona, cuyo dominio la comunidad siempre reconoce. No obtiene los identificadores de los demás miembros. Un miembro que no dispone de ningún identificador conocido por la comunidad puede, si declara la Opción de Demografía, buscar por datos demográficos entre las identidades maestras y, si declara la Opción de Coincidencia Demográfica, pedir las que más se parecen a unos datos incompletos.
 
 Lo que un miembro declara vincula. Nunca crea una persona, nunca fusiona dos y nunca modifica lo que la identidad maestra dice de ella.
 
@@ -39,7 +39,7 @@ El laboratorio nombra al paciente con su identificador local, se nombra a sí mi
 {: #figura-2-5-2}
 
 1. El custodio conserva el documento en su repositorio y obtiene del Authorization Server un token para publicar.
-2. El custodio publica los metadatos mediante [ITI-65](https://profiles.ihe.net/ITI/MHD/5.0.0/ITI-65.html) ante la infraestructura central. Bajo la Opción de Almacenamiento Central, incluye el contenido.
+2. El custodio publica los metadatos, agrupados en un SubmissionSet, mediante [ITI-65](https://profiles.ihe.net/ITI/MHD/5.0.0/ITI-65.html) ante la infraestructura central. Bajo la Opción de Almacenamiento Central, incluye el contenido.
 3. El Document Registry comprueba que el custodio del puntero es la organización que el token declara y que esa organización es un miembro activo según el directorio, que la URL de contenido es relativa y que el puntero lleva etiqueta de confidencialidad. Rechaza la publicación que no cumpla alguna de esas condiciones e indica el motivo.
 4. La infraestructura central resuelve a la identidad maestra, mediante [ITI-83](https://profiles.ihe.net/ITI/PIXm/ITI-83.html), la identidad local con la que el custodio nombró al paciente, y la escribe como sujeto del puntero, que conserva también la identidad local. El Document Registry lo registra a nombre del custodio y responde. Si el paciente no resuelve a una identidad maestra, la publicación se rechaza.
 

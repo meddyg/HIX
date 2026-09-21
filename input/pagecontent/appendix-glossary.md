@@ -82,7 +82,7 @@ Este glosario reúne, en una línea cada uno, los actores y términos que usa es
 **[Secure Node y Secure Application](https://profiles.ihe.net/ITI/TF/Volume1/ch-9.html).** Actores de ATNA. Un sistema que se declara uno u otro autentica sus conexiones, las cifra y registra sus eventos de auditoría con ITI-20. El Secure Node aplica esos servicios de seguridad a todo el sistema. La Secure Application los aplica solo a la aplicación y a los actores que agrupa.
 {: #secure-node}
 
-**[Time Client](https://profiles.ihe.net/ITI/TF/Volume1/ch-7.html).** Actor de CT que sincroniza el reloj de su sistema con el Time Server de la comunidad mediante ITI-1.
+**[Time Client](https://profiles.ihe.net/ITI/TF/Volume1/ch-7.html).** Actor de CT que sincroniza el reloj de su sistema mediante ITI-1 con el Time Server que la comunidad designa, propio o una fuente de tiempo externa.
 {: #time-client}
 
 ### Términos de esta guía
@@ -95,6 +95,9 @@ Este glosario reúne, en una línea cada uno, los actores y términos que usa es
 
 **Puntero.** El `DocumentReference` que describe un documento sin contenerlo. Sobre él se toma toda decisión de la comunidad antes de mover contenido.
 {: #puntero}
+
+**SubmissionSet.** Recurso `List` de MHD que agrupa los punteros de una misma publicación y dice quién los publicó y cuándo. Toda publicación ITI-65 lleva uno, e ITI-66 los devuelve.
+{: #submissionset}
 
 **Decisión de divulgación.** La evaluación que hace la infraestructura central, en el mediador o en el Document Registry, puntero por puntero y antes de recuperar, de si un documento puede entregarse a quien lo pide.
 {: #decision-de-divulgacion}

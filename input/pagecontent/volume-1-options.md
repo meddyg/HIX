@@ -36,7 +36,7 @@ El canal y la arquitectura son capas separadas que no se afectan entre sí. El c
 
 Habilita la evaluación de una decisión de divulgación por paciente antes de responder una localización o una recuperación.
 
-El actor que declara esta opción, sea el Record Locator Service o el Document Registry, **SHALL** consultar la decisión aplicable al paciente, al solicitante, a su organización, al propósito de uso que lleva su token y a la etiqueta de confidencialidad de cada puntero, **SHALL** omitir de la respuesta los documentos cuya divulgación no esté permitida, y **SHALL** registrar la omisión en la auditoría. La omisión **SHALL NOT** ser distinguible, para el solicitante, de la ausencia del documento.
+El actor que declara esta opción, sea el Record Locator Service o el Document Registry, **SHALL** consultar la decisión aplicable al paciente, al solicitante, a su organización, al propósito de uso que lleva su token y a la etiqueta de confidencialidad de cada puntero, y **SHALL** omitir de la respuesta los documentos cuya divulgación no esté permitida, con las garantías que la [sección 2.2](volume-1-actors.html#record-locator-service) exige a toda omisión, que no se distinga de la ausencia del documento y que quede registrada en la auditoría.
 
 El modelo de consentimiento, su ciclo de vida, su representación y sus políticas se especificarán en una versión posterior de esta guía a partir de [PCF](https://profiles.ihe.net/ITI/PCF/index.html). Esta opción declara el punto en el que esa decisión se aplica y la información que necesita. Hasta entonces, la comunidad opera bajo la política de divulgación única que haya acordado, aplicada en el mismo punto.
 
