@@ -1,4 +1,24 @@
-# Health Information Exchange (HIX) Integration Guide
+<div align="center">
+
+<img src="template-local/content/assets/images/logos/hix-logo.svg" alt="HIX" height="96">
+
+# Health Information Exchange
+
+**Guía de implementación FHIR de HIX, una comunidad de intercambio de documentos clínicos que compone perfiles de IHE y toma MHDS como arquitectura de referencia.**
+
+[![Pages](https://github.com/meddyg/Health-Information-Exchange/actions/workflows/pages.yml/badge.svg)](https://github.com/meddyg/Health-Information-Exchange/actions/workflows/pages.yml)
+![FHIR 5.0.0](https://img.shields.io/badge/FHIR-5.0.0-e8412d)
+![Licencia CC0-1.0](https://img.shields.io/badge/licencia-CC0--1.0-34799a)
+![Idioma: español](https://img.shields.io/badge/idioma-espa%C3%B1ol-34799a)
+
+[Sitio](https://hix.meddyg.com/fhir/hix/) ·
+[ci-build](https://main.hix-ig.pages.dev/fhir/hix/) ·
+[dev](https://dev.hix-ig.pages.dev/fhir/hix/) ·
+[llms.txt](https://hix.meddyg.com/fhir/hix/llms.txt) ·
+[PDF y Word](https://github.com/meddyg/Health-Information-Exchange/releases/latest) ·
+[Versiones](https://github.com/meddyg/Health-Information-Exchange/releases)
+
+</div>
 
 The HIX specification as a FHIR Implementation Guide: the HL7 IG Publisher
 builds the site, and pandoc turns the same Markdown into PDF, Word and llms.txt.
