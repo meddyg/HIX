@@ -8,7 +8,7 @@
 
 id: meddyg.hix
 packageId: meddyg.hix
-canonical: https://hl7.meddyg.com/fhir/hix
+canonical: https://hix.meddyg.com/fhir/hix
 name: HixHealthInformationExchange
 title: Health Information Exchange
 description: >-
