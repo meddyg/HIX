@@ -19,6 +19,15 @@ names = []
 for name, title, depth in pageorder.pages(cfg):
     body = (ROOT / "input" / "pagecontent" / name).read_text()
     body = re.sub(r"^\{:.*\}$", "", body, flags=re.M)
+    # A heading's explicit id (`### Title {#id}`) is kramdown too; gfm has no
+    # header attributes and would print the braces in the heading.
+    body = re.sub(r"^(#+ .*?)\s*\{#[^}]*\}\s*$", r"\1", body, flags=re.M)
+    # The site shows some figures in Bootstrap tabs and opens one in a new tab.
+    # Off the site that markup is noise: the tab list repeats the captions, and
+    # the wrappers carry nothing. The figures and captions inside stay.
+    body = re.sub(r'(?s)<ul class="nav nav-tabs".*?</ul>\n?', "", body)
+    body = re.sub(r"^</?div\b[^>]*>[ \t]*\n?", "", body, flags=re.M)
+    body = re.sub(r"<a\b[^>]*>(!\[[^\]]*\]\([^)]*\))</a>", r"\1", body)
     # kramdown abbreviations (`*[PMIR]: ...`) become tooltips on the site; pandoc has no equivalent
     body = re.sub(r"^\*\[[^\]]+\]: .*$", "", body, flags=re.M)
     # The dependency table is a fragment the publisher generates and Jekyll

@@ -25,9 +25,9 @@ index = [
     "",
     f"> {pageorder.folded('description', cfg)}",
     "",
-    f"Version {version} ({status}). This specification implements the IHE MHDS "
-    "profile and the profiles it builds on. It is not an IHE publication and is "
-    "not endorsed by IHE.",
+    f"Version {version} ({status}). This specification takes IHE MHDS as its "
+    "reference architecture and does not claim conformance to it. It is not an "
+    "IHE publication and is not endorsed by IHE.",
     "",
     "## Pages",
     "",
