@@ -1,0 +1,41 @@
+name: Contenido por escribir
+description: Una sección, un capítulo o una capacidad que la guía aún no especifica.
+labels: ["Type: Content", "Type: Enhancement"]
+body:
+  - type: dropdown
+    id: parte
+    attributes:
+      label: Qué parte de la guía
+      options:
+        - Volumen 1. Arquitectura
+        - Volumen 2. Transacciones
+        - Volumen 3. Contenido y semántica
+        - Conformidad
+        - Apéndices
+        - Otra
+    validations:
+      required: true
+  - type: textarea
+    id: alcance
+    attributes:
+      label: Qué debe especificar
+      description: Qué tiene que quedar definido al terminar, y qué queda explícitamente fuera.
+    validations:
+      required: true
+  - type: textarea
+    id: fuentes
+    attributes:
+      label: Perfiles y transacciones implicados
+      description: Los perfiles IHE, transacciones o recursos FHIR de los que depende, con enlaces si los tiene.
+  - type: input
+    id: todo
+    attributes:
+      label: Entrada de TODO.md
+      description: Opcional. Si ya figura en la lista de pendientes, indique cuál.
+  - type: checkboxes
+    id: conducta
+    attributes:
+      label: Antes de enviar
+      options:
+        - label: He leído el [Código de Conducta](https://github.com/meddyg/Health-Information-Exchange/blob/main/CODE_OF_CONDUCT.md).
+          required: true
