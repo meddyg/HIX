@@ -1,0 +1,28 @@
+name: Problema al construir el sitio
+description: Un comando del Makefile, el pipeline de publicación o la vista previa que no funcionan.
+labels: ["Type: Bug"]
+body:
+  - type: input
+    id: comando
+    attributes:
+      label: Comando
+      description: Por ejemplo, make site, make preview, make docs o make diagrams.
+    validations:
+      required: true
+  - type: textarea
+    id: esperado
+    attributes:
+      label: Qué esperaba y qué pasó
+    validations:
+      required: true
+  - type: textarea
+    id: salida
+    attributes:
+      label: Salida del comando
+      description: El error tal cual, sin recortar la línea que lo provoca.
+      render: shell
+  - type: textarea
+    id: entorno
+    attributes:
+      label: Entorno
+      description: Sistema operativo y versiones de Java, Ruby, SUSHI, pandoc y Typst, si vienen al caso.
