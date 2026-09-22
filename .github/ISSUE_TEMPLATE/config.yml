@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Preguntar en Discussions
+    url: https://github.com/meddyg/Health-Information-Exchange/discussions
+    about: Las dudas sobre la guía o sobre los perfiles en que se apoya se preguntan ahí. Los issues son para trabajo concreto.
+  - name: Reportar una vulnerabilidad
+    url: https://github.com/meddyg/Health-Information-Exchange/security/advisories/new
+    about: Los hallazgos de seguridad se reportan en privado, nunca en un issue público. Ver SECURITY.md.
+  - name: Leer la guía publicada
+    url: https://hix.meddyg.com/fhir/hix/
+    about: El sitio con la especificación, por si la duda se resuelve ahí.
