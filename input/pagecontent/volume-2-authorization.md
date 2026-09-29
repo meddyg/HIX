@@ -16,17 +16,17 @@ Todo [Authorization Client](appendix-glossary.html#authorization-client) de IUA 
 
 La petición es la de [IUA](https://profiles.ihe.net/ITI/IUA/index.html#3714121-client-credential-grant-type). HIX exige el parámetro `resource` que define RFC 8707 ([RFC 8707, §2](https://www.rfc-editor.org/rfc/rfc8707.html#section-2))[^rfc8707-resource], para limitar dónde se puede usar un access token. El `resource` nombra siempre a la arquitectura central, así que el token vale solo ante sus Resource Servers y nunca ante un custodio ni ante otro Resource Server fuera de ella.
 
-> **Ejemplo.** Un laboratorio quiere declarar a un paciente local y publicar un resultado de laboratorio. Para ello pide al Authorization Server, con el grant `client_credentials`, un token para la arquitectura central con los scopes `ITI-104` e `ITI-65`.
->
-> ```http
-> POST /token HTTP/1.1
-> Authorization: Basic Base64(<client_id>:<client_secret>)
-> Content-Type: application/x-www-form-urlencoded
->
-> grant_type=client_credentials
-> &resource=<central_resource>
-> &scope=ITI-104 ITI-65
-> ```
+**Ejemplo.** Un laboratorio quiere declarar a un paciente local y publicar un resultado de laboratorio. Para ello pide al Authorization Server, con el grant `client_credentials`, un token para la arquitectura central con los scopes `ITI-104` e `ITI-65`.
+
+```http
+POST /token HTTP/1.1
+Authorization: Basic Base64(<client_id>:<client_secret>)
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=client_credentials
+&resource=<central_resource>
+&scope=ITI-104 ITI-65
+```
 
 El Authorization Server pone en `aud` la lista de Resource Servers centrales que la comunidad define para ese `resource`, como prevé IUA ([IUA, §3.71.4.1.3](https://profiles.ihe.net/ITI/IUA/index.html#371413-expected-actions))[^iua-71-actions]. Cuáles son depende de cómo despliegue la comunidad sus componentes centrales. Si el Record Locator Service es el único punto de entrada, como una fachada ante los demás, el `aud` lo nombra solo a él. Si el registro de identidad maestra atiende directamente a los miembros, separado del Record Locator Service, el `aud` nombra a los dos. En cualquier caso, el miembro pide el token de la misma forma.
 
@@ -79,49 +79,49 @@ La respuesta es la de [IUA](https://profiles.ihe.net/ITI/IUA/index.html#3102422-
 
 De la respuesta, el Resource Server toma la organización, el propósito de uso y, si lo hay, el contexto de paciente, y comprueba `aud` y `scope`, como fijan las reglas 1 a 3 para las [peticiones a un Resource Server](volume-2.html#peticiones-a-un-resource-server). Si el token está inactivo o no cumple esas reglas, rechaza la petición con el código HTTP 401, como pide IUA ([IUA, §3.72.4.3](https://profiles.ihe.net/ITI/IUA/index.html#37243-expected-actions))[^iua-72-actions], y con el OperationOutcome que exigen las [respuestas de error FHIR](volume-2.html#respuestas-de-error-fhir). Si el Authorization Server no responde, rechaza la petición con el código HTTP 503, porque no tiene cómo comprobar el token, como fija la [sección 2.2](volume-1-actors.html#descripcion-de-actores-y-requisitos).
 
-> **Ejemplo.** Con el token del ejemplo anterior, el laboratorio publica el resultado. Al recibir la publicación, el Record Locator Service introspecciona el token ante el Authorization Server con sus propias credenciales. Como en este despliegue el registro de identidad maestra atiende directamente a los miembros, separado del Record Locator Service, `aud` nombra a los dos. La extensión `ihe_iua` lleva la organización y el propósito de uso del laboratorio.
->
-> ```http
-> POST /introspect HTTP/1.1
-> Authorization: Basic Base64(<client_id>:<client_secret>)
-> Accept: application/json
-> Content-Type: application/x-www-form-urlencoded
->
-> token=<access_token>
-> ```
->
-> ```http
-> HTTP/1.1 200 OK
-> Content-Type: application/json
->
-> {
->   "active": true,
->   "iss": "<issuer>",
->   "sub": "<lab_client_id>",
->   "client_id": "<lab_client_id>",
->   "aud": [
->     "<RLS_audience>",
->     "<MPI_audience>"
->   ],
->   "jti": "<jti>",
->   "iat": 1790204262,
->   "exp": 1790204562,
->   "scope": "ITI-104 ITI-65",
->   "token_type": "Bearer",
->   "extensions": {
->     "ihe_iua": {
->       "subject_organization_id": "<identificador-de-la-organización>",
->       "purpose_of_use": [
->         {
->           "system": "http://terminology.hl7.org/CodeSystem/v3-ActReason",
->           "code": "TREAT",
->           "display": "treatment"
->         }
->       ]
->     }
->   }
-> }
-> ```
+**Ejemplo.** Con el token del ejemplo anterior, el laboratorio publica el resultado. Al recibir la publicación, el Record Locator Service introspecciona el token ante el Authorization Server con sus propias credenciales. Como en este despliegue el registro de identidad maestra atiende directamente a los miembros, separado del Record Locator Service, `aud` nombra a los dos. La extensión `ihe_iua` lleva la organización y el propósito de uso del laboratorio.
+
+```http
+POST /introspect HTTP/1.1
+Authorization: Basic Base64(<client_id>:<client_secret>)
+Accept: application/json
+Content-Type: application/x-www-form-urlencoded
+
+token=<access_token>
+```
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "active": true,
+  "iss": "<issuer>",
+  "sub": "<lab_client_id>",
+  "client_id": "<lab_client_id>",
+  "aud": [
+    "<RLS_audience>",
+    "<MPI_audience>"
+  ],
+  "jti": "<jti>",
+  "iat": 1790204262,
+  "exp": 1790204562,
+  "scope": "ITI-104 ITI-65",
+  "token_type": "Bearer",
+  "extensions": {
+    "ihe_iua": {
+      "subject_organization_id": "<identificador-de-la-organización>",
+      "purpose_of_use": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActReason",
+          "code": "TREAT",
+          "display": "treatment"
+        }
+      ]
+    }
+  }
+}
+```
 
 #### Auditoría
 
