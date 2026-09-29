@@ -14,7 +14,7 @@ Las opciones definen capacidades que un actor puede implementar sin dejar de ser
 | | Opción de Coincidencia Demográfica |
 {: .table .table-bordered}
 
-### Opción de Almacenamiento Central
+### Opción de Almacenamiento Central {#opcion-de-almacenamiento-central}
 
 Un [custodio](appendix-glossary.html#custodio) que no puede conservar sus documentos delega el almacenamiento del contenido en la infraestructura central. El documento sigue siendo suyo. Figura como custodio en los metadatos y conserva la responsabilidad sobre su contenido, pero deja de participar en la recuperación.
 
@@ -24,7 +24,7 @@ Esta opción corresponde a la primera de las dos ubicaciones del contenido que d
 
 Suiza opera todas sus comunidades con esta ubicación, como cuenta la [sección 2.1](volume-1-concepts.html#custodia-distribuida-y-almacenamiento-central). Lo que en HIX es una opción por custodio es allí la regla.
 
-### Opción de Transporte Mediado
+### Opción de Transporte Mediado {#opcion-de-transporte-mediado}
 
 El tramo entre la infraestructura central y el custodio puede recorrer un canal de interconexión distinto de HTTPS directo, cuando la comunidad opera sobre una red de intercambio ya establecida, como X-Road.
 
@@ -46,13 +46,13 @@ El modelo de consentimiento, su ciclo de vida, su representación y sus polític
 
 En qué punto se aplica, en el Record Locator Service o en el Document Registry, es decisión de la implementación, como explica la [sección 2.1](volume-1-concepts.html). MHDS resuelve este mismo problema de otro modo, con un Authorization Server agrupado con su Document Registry que gestiona el consentimiento. HIX no sigue ese camino, por las razones que da la [misma sección](volume-1-concepts.html#relacion-con-mhds).
 
-### Opción de Demografía
+### Opción de Demografía {#opcion-de-demografia}
 
 Permite a un [consumidor](appendix-glossary.html#consumidor) localizar a un paciente por sus datos demográficos cuando no dispone de un identificador conocido por la comunidad. Corresponde a la [Patient Search Option](https://profiles.ihe.net/ITI/PDQm/volume-1.html#13821-patient-search-option) de PDQm.
 
-El consumidor que declara esta opción **SHALL** presentar al menos un criterio demográfico en cada consulta [ITI-78](https://profiles.ihe.net/ITI/PDQm/ITI-78.html). La infraestructura central **SHALL** responder sobre las identidades maestras, nunca sobre las identidades locales de los miembros, **SHALL** limitar la respuesta a los pacientes que la política de la comunidad permita revelar por esta vía y **SHALL** rechazar una consulta sin criterio. Es una búsqueda determinista. Cada criterio filtra, y ningún resultado lleva grado de coincidencia.
+El consumidor que declara esta opción **SHALL** presentar al menos un criterio que nombre o describa a la persona en cada consulta [ITI-78](https://profiles.ihe.net/ITI/PDQm/ITI-78.html). Qué parámetros cuentan como criterio lo fija la [sección 3.4](volume-2-identity.html#iti-78). La infraestructura central **SHALL** responder sobre las identidades maestras, nunca sobre las identidades locales de los miembros, **SHALL** limitar la respuesta a los pacientes que la política de la comunidad permita revelar por esta vía y **SHALL** rechazar una consulta sin criterio. Es una búsqueda determinista. Cada criterio filtra, y ningún resultado lleva grado de coincidencia.
 
-### Opción de Coincidencia Demográfica
+### Opción de Coincidencia Demográfica {#opcion-de-coincidencia-demografica}
 
 Permite a un [consumidor](appendix-glossary.html#consumidor) encontrar a un paciente a partir de datos demográficos incompletos o inexactos, con la coincidencia probabilística del registro de identidad maestra. Corresponde a la [Match Operation Option](https://profiles.ihe.net/ITI/PDQm/volume-1.html#13822-match-operation-option) de PDQm.
 

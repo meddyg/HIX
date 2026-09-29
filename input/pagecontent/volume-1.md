@@ -45,7 +45,7 @@ Dicho en seis afirmaciones.
 - **Casos de uso y flujos** recorre los escenarios que la arquitectura soporta, con el flujo de cada uno.
 - **Consideraciones de seguridad** especifica el modelo de confianza, los dos regímenes de token y los controles de seguridad y privacidad.
 
-El Volumen 2 especifica cada transacción. Este volumen describe qué hace cada actor y por qué, y el siguiente, cómo.
+El [Volumen 2](volume-2.html) detalla las transacciones. Este volumen describe qué hace cada actor y por qué, y el siguiente, cómo.
 
 ### Referencias
 

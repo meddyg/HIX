@@ -66,28 +66,20 @@ pages:
       title: Consideraciones de seguridad
     # volume-1-cross-profile.md:
     #   title: Consideraciones entre perfiles y despliegue
-  # volume-2.md:
-  #   title: Volume 2 — Transactions
-  #   volume-2-index.md:
-  #     title: Transaction Index
-  #   volume-2-iti-65.md:
-  #     title: Provide Document Bundle [ITI-65]
-  #   volume-2-iti-67.md:
-  #     title: Find Document References [ITI-67]
-  #   volume-2-iti-68.md:
-  #     title: Retrieve Document [ITI-68]
-  #   volume-2-iti-83.md:
-  #     title: Mobile Patient Identifier Cross-reference Query [ITI-83]
-  #   volume-2-iti-104.md:
-  #     title: Patient Identity Feed FHIR [ITI-104]
-  #   volume-2-iti-90.md:
-  #     title: Care Services Discovery [ITI-90]
-  #   volume-2-hix-1.md:
-  #     title: Custodian Token Exchange [HIX-1]
-  #   volume-2-hix-2.md:
-  #     title: Patient Application Launch [HIX-2]
-  #   volume-2-hix-3.md:
-  #     title: Member Onboarding [HIX-3]
+  volume-2.md:
+    title: Volumen 2. Transacciones
+    volume-2-authorization.md:
+      title: Autorización
+    volume-2-hix-1.md:
+      title: Custodian Token Exchange [HIX-1]
+    volume-2-hix-2.md:
+      title: Patient Application Launch [HIX-2]
+    volume-2-identity.md:
+      title: Identidad del paciente
+    volume-2-publication.md:
+      title: Publicación
+    volume-2-retrieval.md:
+      title: Localización y recuperación
   # volume-3.md:
   #   title: Volume 3 — Content and Semantics
   #   volume-3-metadata.md:
@@ -140,18 +132,14 @@ menu:
     Casos de uso y flujos: volume-1-usecases.html
     Consideraciones de seguridad: volume-1-security.html
     # Entre perfiles y despliegue: volume-1-cross-profile.html
-  # Volume 2:
-  #   Volume 2 — Transactions: volume-2.html
-  #   Transaction Index: volume-2-index.html
-  #   Provide Document Bundle [ITI-65]: volume-2-iti-65.html
-  #   Find Document References [ITI-67]: volume-2-iti-67.html
-  #   Retrieve Document [ITI-68]: volume-2-iti-68.html
-  #   Mobile Patient Identifier Cross-reference Query [ITI-83]: volume-2-iti-83.html
-  #   Patient Identity Feed FHIR [ITI-104]: volume-2-iti-104.html
-  #   Care Services Discovery [ITI-90]: volume-2-iti-90.html
-  #   Custodian Token Exchange [HIX-1]: volume-2-hix-1.html
-  #   Patient Application Launch [HIX-2]: volume-2-hix-2.html
-  #   Member Onboarding [HIX-3]: volume-2-hix-3.html
+  Volumen 2:
+    Transacciones: volume-2.html
+    Autorización: volume-2-authorization.html
+    Custodian Token Exchange [HIX-1]: volume-2-hix-1.html
+    Patient Application Launch [HIX-2]: volume-2-hix-2.html
+    Identidad del paciente: volume-2-identity.html
+    Publicación: volume-2-publication.html
+    Localización y recuperación: volume-2-retrieval.html
   # Volume 3:
   #   Volume 3 — Content and Semantics: volume-3.html
   #   Document Metadata: volume-3-metadata.html

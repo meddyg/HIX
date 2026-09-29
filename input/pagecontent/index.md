@@ -76,7 +76,7 @@ Los siguientes términos relacionados con OAuth 2.0 y la arquitectura de autoriz
 HIX organiza sus requisitos en diferentes niveles de abstracción. Los volúmenes de esta guía deben leerse de forma complementaria y no como especificaciones independientes.
 
 - El **Volumen 1** describe la arquitectura, es decir, qué hace cada actor y por qué.
-- El **Volumen 2** especifica cada transacción, incluidas las propias de HIX.
+- El **Volumen 2** detalla las transacciones. Especifica completas las propias de HIX y, de las demás, dice lo que HIX les añade.
 - Los **apéndices** reúnen el material de apoyo, por ahora el glosario.
 
 ### Otros formatos

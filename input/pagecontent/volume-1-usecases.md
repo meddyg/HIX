@@ -2,11 +2,11 @@ Esta sección recorre los casos de uso que la arquitectura soporta. Cada uno se 
 
 Los casos siguen las tres historias de las figuras de la [sección 2.2](volume-1-actors.html), el laboratorio que publica, el hospital que consulta y la persona que accede a lo suyo, precedidas por la identidad del paciente, que es condición de todas. La publicación, la consulta y el acceso del paciente son independientes entre sí y ocurren en cualquier orden y con cualquier frecuencia. La incorporación de un miembro, que precede a todo, es un procedimiento administrativo y no un caso de uso de esta guía.
 
-### Identidad del paciente
+### Identidad del paciente {#identidad-del-paciente}
 
 #### Descripción del caso de uso
 
-Una persona existe en la comunidad desde que la fuente autoritativa de identidad la alimenta al registro de identidad maestra. El custodio que la atiende declara a la comunidad qué [identidad local](appendix-glossary.html#identidad-local) le corresponde. El registro vincula esa identidad con la [identidad maestra](appendix-glossary.html#identidad-maestra) y, desde entonces, los documentos que ese custodio publique con su identificador local quedan asociados a la misma persona que los publicados por los demás miembros.
+Una persona existe en la comunidad desde que la fuente autoritativa de identidad la alimenta al registro de identidad maestra. El custodio que la atiende declara a la comunidad qué [identidad local](appendix-glossary.html#identidad-local) le corresponde. El registro vincula esa identidad con la [identidad maestra](appendix-glossary.html#identidad-maestra) y, desde entonces, los documentos que ese custodio publique sobre esa persona quedan asociados a la misma identidad maestra que los publicados por los demás miembros.
 
 Un miembro que declaró sus identidades locales pregunta con su propio identificador de la persona y obtiene la identidad maestra enlazada, que es como la comunidad la nombra. Un miembro que solo consume no declara ninguna, y pregunta con el identificador nacional de la persona, cuyo dominio la comunidad siempre reconoce. Ninguno de los dos obtiene los identificadores de los demás miembros. Un miembro que no dispone de ningún identificador conocido por la comunidad puede, si declara la Opción de Demografía, buscar por datos demográficos entre las identidades maestras y, si declara la Opción de Coincidencia Demográfica, pedir las que más se parecen a unos datos incompletos.
 
@@ -23,13 +23,13 @@ Lo que un miembro declara vincula. Nunca crea una persona, nunca fusiona dos y n
 2. El custodio declara su identidad local mediante [ITI-104](https://profiles.ihe.net/ITI/PIXm/ITI-104.html) ante la infraestructura central, en su propio dominio de identificadores y con el identificador nacional de la persona. La infraestructura central comprueba que el dominio corresponde a la organización del token, y el registro de identidad maestra vincula la identidad local con la maestra. Si la persona no existe en la comunidad, rechaza la declaración e indica el motivo.
 3. Un consumidor resuelve su identificador a la identidad maestra mediante [ITI-83](https://profiles.ihe.net/ITI/PIXm/ITI-83.html) ante la infraestructura central y, si declara la Opción de Demografía, busca por datos demográficos mediante [ITI-78](https://profiles.ihe.net/ITI/PDQm/ITI-78.html) o, con la Opción de Coincidencia Demográfica, mediante [ITI-119](https://profiles.ihe.net/ITI/PDQm/ITI-119.html).
 
-### Publicación de un documento
+### Publicación de un documento {#publicacion-de-un-documento}
 
 #### Descripción del caso de uso
 
 Un laboratorio termina un resultado y lo publica en la comunidad. Envía los metadatos y conserva el documento. Desde ese momento el resultado es localizable por cualquier miembro autorizado, sin que el laboratorio deba anticipar quién lo buscará ni conocer a nadie más que a la comunidad. Lo publica con el [propósito de uso](appendix-glossary.html#proposito-de-uso) de la atención, `TREAT`.
 
-El laboratorio nombra al paciente con su identificador local, se nombra a sí mismo como [custodio](appendix-glossary.html#custodio), indica dónde está el documento con una ruta relativa a su propio endpoint y etiqueta su confidencialidad. La comunidad comprueba que el laboratorio publica solo por sí mismo y solo sobre pacientes que él mismo declaró, resuelve la identidad maestra y registra el [puntero](appendix-glossary.html#puntero). Si rechaza la publicación, dice por qué. Conviene que el laboratorio no dé por publicado un documento hasta recibir la confirmación.
+El laboratorio nombra al paciente con el identificador nacional de la persona y con el identificador local que él mismo declaró, se nombra a sí mismo como [custodio](appendix-glossary.html#custodio), indica dónde está el documento con una ruta relativa a su propio endpoint y etiqueta su confidencialidad. La comunidad comprueba que el laboratorio publica solo por sí mismo y solo sobre pacientes que él mismo declaró, resuelve la identidad maestra y registra el [puntero](appendix-glossary.html#puntero). Si rechaza la publicación, dice por qué. Conviene que el laboratorio no dé por publicado un documento hasta recibir la confirmación.
 
 #### Flujo del proceso
 
@@ -41,9 +41,9 @@ El laboratorio nombra al paciente con su identificador local, se nombra a sí mi
 1. El custodio conserva el documento en su repositorio y obtiene del Authorization Server un token para publicar.
 2. El custodio publica los metadatos, agrupados en un SubmissionSet, mediante [ITI-65](https://profiles.ihe.net/ITI/MHD/5.0.0/ITI-65.html) ante la infraestructura central. Bajo la Opción de Almacenamiento Central, incluye el contenido.
 3. El Document Registry comprueba que el custodio del puntero es la organización que el token declara y que esa organización es un miembro activo según el directorio, que la URL de contenido es relativa y que el puntero lleva etiqueta de confidencialidad. Rechaza la publicación que no cumpla alguna de esas condiciones e indica el motivo.
-4. La infraestructura central resuelve a la identidad maestra, mediante [ITI-83](https://profiles.ihe.net/ITI/PIXm/ITI-83.html), la identidad local con la que el custodio nombró al paciente, y la escribe como sujeto del puntero, que conserva también la identidad local. El Document Registry lo registra a nombre del custodio y responde. Si el paciente no resuelve a una identidad maestra, la publicación se rechaza.
+4. La infraestructura central resuelve a la identidad maestra, mediante [ITI-83](https://profiles.ihe.net/ITI/PIXm/ITI-83.html), el identificador nacional con el que el custodio nombró al paciente, y la escribe como sujeto del puntero, que conserva también la identidad local. El Document Registry lo registra a nombre del custodio y responde. Si el paciente no resuelve a una identidad maestra, o el custodio no declaró esa identidad local, la publicación se rechaza.
 
-### Consulta del expediente por un profesional
+### Consulta del expediente por un profesional {#consulta-del-expediente-por-un-profesional}
 
 #### Descripción del caso de uso
 
@@ -62,13 +62,13 @@ En una urgencia la historia cambia en dos puntos. El profesional consulta con el
 **Figura 2.5-3:** Localización y recuperación mediada
 {: #figura-2-5-3}
 
-1. El [consumidor](appendix-glossary.html#consumidor) obtiene del Authorization Server un token destinado al Record Locator Service y localiza mediante [ITI-67](https://profiles.ihe.net/ITI/MHD/5.0.0/ITI-67.html). En una urgencia sin identificador conocido, busca antes a la persona por datos demográficos mediante ITI-78 o ITI-119 ante la infraestructura central.
+1. El [consumidor](appendix-glossary.html#consumidor) obtiene del Authorization Server un token cuya audiencia incluye al Record Locator Service y localiza mediante [ITI-67](https://profiles.ihe.net/ITI/MHD/5.0.0/ITI-67.html). En una urgencia sin identificador conocido, busca antes a la persona por datos demográficos mediante ITI-78 o ITI-119 ante la infraestructura central.
 2. El Record Locator Service comprueba el token mediante [ITI-102](https://profiles.ihe.net/ITI/IUA/index.html#3102-introspect-token-iti-102), resuelve la identidad maestra mediante ITI-83, consulta el Document Registry mediante ITI-67, evalúa la decisión de divulgación sobre cada puntero y devuelve los divulgados, con URL de contenido que apuntan a sí mismo.
 3. El consumidor recupera mediante [ITI-68](https://profiles.ihe.net/ITI/MHD/5.0.0/ITI-68.html) sobre una de esas URL.
-4. El Record Locator Service relee el puntero, vuelve a evaluar la divulgación, resuelve el endpoint del custodio en el directorio mediante [ITI-90](https://profiles.ihe.net/ITI/mCSD/ITI-90.html) y obtiene mediante [HIX-1](volume-1-actors.html#hix-1) un token para ese custodio.
+4. El Record Locator Service relee el puntero y vuelve a evaluar la divulgación. Cuando el contenido queda en el custodio, resuelve su endpoint en el directorio mediante [ITI-90](https://profiles.ihe.net/ITI/mCSD/ITI-90.html) y obtiene mediante [HIX-1](volume-2-hix-1.html) un token para ese custodio.
 5. El Record Locator Service recupera el documento del custodio mediante ITI-68. El custodio valida el token con las claves públicas del Authorization Server y entrega el documento, que el Record Locator Service entrega al consumidor. Bajo la Opción de Almacenamiento Central, lo recupera del Document Registry en lugar del custodio, con un token intercambiado para él.
 
-### Acceso del paciente a su expediente
+### Acceso del paciente a su expediente {#acceso-del-paciente-a-su-expediente}
 
 #### Descripción del caso de uso
 
@@ -85,7 +85,7 @@ Este caso es el que permite a HIX servir a la persona lo que es suyo, y no solo 
 **Figura 2.5-4:** Acceso del paciente a su expediente
 {: #figura-2-5-4}
 
-1. La [aplicación del paciente](appendix-glossary.html#aplicacion-del-paciente) inicia [HIX-2](volume-1-actors.html#hix-2). El Authorization Server autentica a la persona, obtiene su autorización para la aplicación, resuelve su identidad verificada a la identidad maestra mediante ITI-83 y emite el token con ese contexto de paciente y el propósito de uso que corresponde a quien actúa.
+1. La [aplicación del paciente](appendix-glossary.html#aplicacion-del-paciente) inicia [HIX-2](volume-2-hix-2.html). El Authorization Server autentica a la persona, obtiene su autorización para la aplicación, resuelve su identidad verificada a la identidad maestra mediante ITI-83 y emite el token con ese contexto de paciente y el propósito de uso que corresponde a quien actúa.
 2. La aplicación localiza y recupera mediante ITI-67 e ITI-68 a través del Record Locator Service, que confina cada operación al paciente del contexto.
 
 ### Casos previstos

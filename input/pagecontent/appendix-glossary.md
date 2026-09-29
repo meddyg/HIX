@@ -111,10 +111,10 @@ Este glosario reúne, en una línea cada uno, los actores y términos que usa es
 **[OpenID Provider](https://openid.net/specs/openid-connect-core-1_0.html#Terminology).** Authorization Server de OAuth 2.0 que además autentica a la persona y acredita esa autenticación con un `id_token`, según OpenID Connect. En HIX lo es el Authorization Server de la comunidad.
 {: #openid-provider}
 
-**Token del solicitante.** El token que un miembro obtiene con ITI-71, o la aplicación del paciente con [HIX-2](volume-1-actors.html#hix-2), destinado al Record Locator Service. Lleva el sujeto, la organización, el propósito de uso, el alcance y, en el caso de la aplicación del paciente, el contexto de paciente.
+**Token del solicitante.** El token que un miembro obtiene con ITI-71, o la aplicación del paciente con [HIX-2](volume-2-hix-2.html). El de un miembro está destinado a los Resource Servers centrales que define la comunidad, y el de la aplicación solo al Record Locator Service. Lleva el sujeto, la organización, el propósito de uso, el alcance y, en el caso de la aplicación del paciente, el contexto de paciente.
 {: #token-del-solicitante}
 
-**Token intercambiado.** El token que el mediador obtiene con [HIX-1](volume-1-actors.html#hix-1) para un único destino y una sola transacción, con el solicitante original como sujeto y el mediador como actor.
+**Token intercambiado.** El token que el mediador obtiene con [HIX-1](volume-2-hix-1.html) para un único destino y una sola transacción, con el solicitante original como sujeto y el mediador como actor.
 {: #token-intercambiado}
 
 **PEP.** Punto de aplicación de política. El lugar donde se comprueba que una petición cumple las reglas de la comunidad. En HIX, el primero es el mediador.
