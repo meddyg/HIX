@@ -17,7 +17,7 @@ MHDS admite que un consumidor alcance directamente al servicio que aloja un docu
 
 El precio es que la infraestructura central se vuelve indispensable para operar, y se dimensiona y protege como tal. Todo byte clínico atraviesa el mediador. La [sección 2.6](volume-1-security.html) especifica lo que eso exige.
 
-Mediar no es lo mismo que enrutar. El mediador es imprescindible donde hay que alcanzar a un custodio en nombre de un miembro, es decir, al recuperar, porque es quien obtiene el [token intercambiado](appendix-glossary.html#token-intercambiado) para ese custodio y recorre el canal que el directorio declara.
+Mediar no es lo mismo que enrutar. El mediador es imprescindible donde hay que alcanzar a un custodio en nombre de un miembro, es decir, al recuperar, porque es quien obtiene el [token mediado](appendix-glossary.html#token-mediado) para ese custodio y recorre el canal que el directorio declara.
 
 La decisión de divulgación sobre los punteros es otra cosa. La toma la infraestructura central antes de mover contenido alguno, y puede tomarla el mediador o un Document Registry que conozca la política de la comunidad, como admite la Opción de Consentimiento de la [sección 2.3](volume-1-options.html).
 
@@ -95,7 +95,7 @@ Cuando una operación exige llegar a un custodio, el mediador no reutiliza el [t
 
 El custodio valida ese token por su cuenta, con las claves públicas del Authorization Server, sin tener que preguntarle. Así sabe quién pregunta, en nombre de quién actúa la comunidad y para qué.
 
-Lo mismo vale hacia los componentes centrales. El mediador no tiene acceso propio al Document Registry ni al registro de identidad maestra. Actúa ante ellos con tokens intercambiados de la misma forma, a nombre del miembro que lo pidió. Un puntero queda registrado a nombre de su custodio, no del mediador. El mediador es el primer punto de aplicación de la política de la comunidad, no un participante con autoridad propia.
+Lo mismo vale hacia los componentes centrales. El mediador no tiene acceso propio al Document Registry ni al registro de identidad maestra. Actúa ante ellos con tokens mediados de la misma forma, a nombre del miembro que lo pidió. Un puntero queda registrado a nombre de su custodio, no del mediador. El mediador es el primer punto de aplicación de la política de la comunidad, no un participante con autoridad propia.
 
 La [Figura 2.1-2](volume-1-concepts.html#figura-2-1-2) resume el recorrido de los tokens. Un solo token entra por la izquierda, el del miembro, y de él derivan tantos tokens de un solo destino como custodios y componentes centrales haga falta alcanzar.
 
@@ -106,9 +106,9 @@ La [Figura 2.1-2](volume-1-concepts.html#figura-2-1-2) resume el recorrido de lo
 
 Tres reglas hacen que el mínimo privilegio sea estructural, en lugar de depender de la buena conducta de cada parte.
 
-- **Un token, el destino mínimo.** Cada token vale solo ante quien tiene que recibirlo. El intercambiado vale ante un único destino, porque uno que valiera en dos custodios permitiría a uno de ellos usarlo contra el otro.
+- **Un token, el destino mínimo.** Cada token vale solo ante quien tiene que recibirlo. El mediado vale ante un único destino, porque uno que valiera en dos custodios permitiría a uno de ellos usarlo contra el otro.
 - **Solo el mediador puede intercambiar.** Ningún otro participante puede pedir un token a nombre de un tercero, y los custodios no aceptan tokens llegados por otro camino.
-- **La autoridad nunca crece.** El token intercambiado solo permite lo que el miembro ya podía, lo que la comunidad delega al mediador y lo que el custodio ofrece. Poder localizar un documento nunca da poder para recuperarlo.
+- **La autoridad nunca crece.** El token mediado solo permite lo que el miembro ya podía, lo que la comunidad delega al mediador y lo que el custodio ofrece. Poder localizar un documento nunca da poder para recuperarlo.
 
 Un token dice quién pide, qué puede pedir, ante quién y hasta cuándo. El token de un miembro **no nombra a ningún paciente**. Solo lo hace el de una persona que entra a su propio expediente con [SMART App Launch](https://hl7.org/fhir/smart-app-launch/scopes-and-launch-context.html), y ahí el paciente en contexto sirve para confinar el token a ese expediente. La cuenta con la que esa persona entra no es un identificador de paciente. El Authorization Server resuelve el paciente en contexto contra la identidad maestra con la consulta por identificador. En ambos casos, **tener un token da derecho a preguntar, no a ver**. Qué documentos se entregan lo decide la infraestructura central, puntero por puntero. Esa separación es la idea más importante de este volumen.
 
@@ -126,7 +126,7 @@ Cada participante registra lo que hace. Es lo que [ATNA](https://profiles.ihe.ne
 
 Los registros de una misma divulgación comparten un identificador de correlación. El mediador lo genera al recibir la solicitud y lo transmite al custodio en cada llamada. BALP prevé este uso y reserva un elemento del `AuditEvent` para guardar el identificador de la petición y correlacionar los registros de cliente y servidor ([BALP, §3:5.7.3.1](https://profiles.ihe.net/ITI/BALP/content.html#35731-x-request-id-header))[^balp-corr]. Así una divulgación se puede reconstruir completa desde sus dos lados.
 
-El token intercambiado nombra al solicitante original y al mediador como actor. Por eso el custodio registra quién pidió el documento y en nombre de quién actuó la comunidad, y no solo que lo pidió la comunidad.
+El token mediado nombra al solicitante original y al mediador como actor. Por eso el custodio registra quién pidió el documento y en nombre de quién actuó la comunidad, y no solo que lo pidió la comunidad.
 
 Ningún registro contiene un token completo ni contenido clínico. Basta un identificador del token, como su `jti`, para atar el evento a él. Todos los componentes centrales registran en el mismo [Audit Record Repository](appendix-glossary.html#audit-record-repository) de ATNA, el repositorio de auditoría de la comunidad. Como además toda divulgación pasa por el mediador, la pregunta "quién accedió al expediente de esta persona" se responde desde un solo lugar, ese repositorio. Cómo se consulta se especificará más adelante, como señala la [descripción general](index.html). Eso no exime a ningún custodio de registrar su lado.
 
@@ -134,7 +134,7 @@ Ningún registro contiene un token completo ni contenido clínico. Basta un iden
 
 La dirección física de un custodio vive únicamente en el directorio. El puntero lleva una organización y una ruta relativa. Cuando el contenido queda en el custodio, el mediador resuelve la dirección en cada recuperación y llega al custodio por el canal que el directorio declara para él. Ese canal puede ser una conexión directa o una red de intercambio ya establecida, como [X-Road](https://x-road.global/). En ambos casos el puntero, la API que ven los miembros y el modelo de tokens son los mismos. Cambiar de canal es cambiar un dato del directorio.
 
-Una red de intercambio resuelve cómo se conectan las organizaciones y cómo se identifican entre sí. No dice nada de documentos, punteros ni consentimiento. Por eso HIX la usa solo por debajo del mediador. Si los miembros la usaran para hablar entre sí, volverían a la malla de pares que HIX descarta. Estonia sigue este mismo patrón. Su registro nacional de salud recupera los datos de cada proveedor cuando se necesitan y los presenta en un formato común ([e-Estonia](https://e-estonia.com/solutions/healthcare/e-health-records/))[^estonia], y los sistemas de información del país se conectan entre sí sobre X-Road ([e-Estonia](https://e-estonia.com/solutions/interoperability-services/x-road/))[^estonia-xroad]. El token intercambiado sigue viajando por ese canal y el custodio sigue validándolo. La identidad que la red asigna a cada organización no lo sustituye.
+Una red de intercambio resuelve cómo se conectan las organizaciones y cómo se identifican entre sí. No dice nada de documentos, punteros ni consentimiento. Por eso HIX la usa solo por debajo del mediador. Si los miembros la usaran para hablar entre sí, volverían a la malla de pares que HIX descarta. Estonia sigue este mismo patrón. Su registro nacional de salud recupera los datos de cada proveedor cuando se necesitan y los presenta en un formato común ([e-Estonia](https://e-estonia.com/solutions/healthcare/e-health-records/))[^estonia], y los sistemas de información del país se conectan entre sí sobre X-Road ([e-Estonia](https://e-estonia.com/solutions/interoperability-services/x-road/))[^estonia-xroad]. El token mediado sigue viajando por ese canal y el custodio sigue validándolo. La identidad que la red asigna a cada organización no lo sustituye.
 
 ### Comunidades vecinas
 
@@ -153,7 +153,7 @@ IHE deja la gobernanza fuera de su alcance. Declara que no define políticas de 
 | --- | --- | --- |
 | Acoplamiento de disponibilidad | Una recuperación mediada necesita al mediador, al Authorization Server y al custodio a la vez | Un custodio caído degrada la respuesta, no la hace fallar. Cualquier custodio puede pasar a almacenamiento central sin que nadie lo note |
 | Contenido en tránsito por el centro | Todo byte clínico atraviesa el mediador, que lo ve en claro | El mediador no guarda ni registra contenido. El canal entre organizaciones va cifrado. El índice se gobierna como dato sensible |
-| Authorization Server en el camino crítico | Cada localización exige una introspección y cada recuperación, además, un intercambio de tokens | Se dimensiona con la misma disponibilidad que el mediador. Un token intercambiado vale para un solo destino y dura como mucho dos minutos, así que un token filtrado tiene una ventana de uso corta y conocida |
+| Authorization Server en el camino crítico | Cada localización exige una introspección y cada recuperación, además, un intercambio de tokens | Se dimensiona con la misma disponibilidad que el mediador. Un token mediado vale para un solo destino y dura como mucho dos minutos, así que un token filtrado tiene una ventana de uso corta y conocida |
 | Apuesta por la operación del centro | La garantía de la comunidad vale lo que valga la operación de su infraestructura central. Un centro bien operado supera a una federación operada a medias, y un centro mal operado es peor que esa federación | Quién certifica miembros, quién responde al paciente y quién financia el centro se fija en la gobernanza de la comunidad, antes de construirla. Es su riesgo principal a largo plazo |
 {: .table .table-bordered}
 

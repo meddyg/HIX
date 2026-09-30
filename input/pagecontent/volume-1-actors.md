@@ -139,7 +139,7 @@ El custodio es el miembro que produce documentos. Los conserva, declara las iden
 
 El custodio **SHALL** declarar mediante [ITI-104](https://profiles.ihe.net/ITI/PIXm/ITI-104.html) la identidad local de todo paciente sobre el que publique, en su propio dominio de identificadores y con el identificador nacional de la persona. **SHALL** publicar mediante [ITI-65](https://profiles.ihe.net/ITI/MHD/5.0.0/ITI-65.html) punteros que lo nombren a él como custodio y lleven etiqueta de confidencialidad, con URL de contenido relativa cuando el contenido queda en él.
 
-El custodio **SHALL** conservar el contenido y responder [ITI-68](https://profiles.ihe.net/ITI/MHD/5.0.0/ITI-68.html), salvo que declare la Opción de Almacenamiento Central. **SHALL** validar localmente el token de cada solicitud con las claves que publica el Authorization Server, conforme a la [sección 2.6](volume-1-security.html). **SHALL** rechazar toda solicitud cuyo token no haya sido intercambiado por el Record Locator Service y **SHALL NOT** atender recuperaciones originadas directamente en otro miembro.
+El custodio **SHALL** conservar el contenido y responder [ITI-68](https://profiles.ihe.net/ITI/MHD/5.0.0/ITI-68.html), salvo que declare la Opción de Almacenamiento Central. **SHALL** validar localmente el token de cada solicitud con las claves que publica el Authorization Server, conforme a la [sección 2.6](volume-1-security.html). **SHALL** rechazar toda solicitud que no llegue con un token mediado obtenido por el Record Locator Service y **SHALL NOT** atender recuperaciones originadas directamente en otro miembro.
 
 #### Sistema que consume documentos {#sistema-que-consume-documentos}
 
@@ -185,11 +185,11 @@ El Document Registry **SHALL** rechazar la publicación que carezca de etiqueta 
 
 El Authorization Server emite, comprueba e intercambia los tokens que circulan por la comunidad. Es el Authorization Server de IUA. Es el único actor que decide sobre la autorización y el único que conoce a la vez al solicitante, su organización y el alcance que se le concede. No decide sobre consentimiento, relación terapéutica ni identidad de paciente.
 
-El Authorization Server **SHALL** restringir la audiencia de todo token que emite a destinatarios identificados explícitamente, como recomienda RFC 9700 ([RFC 9700, §2.3](https://www.rfc-editor.org/rfc/rfc9700.html#section-2.3))[^rfc9700-aud]. El token de un miembro nombra a los Resource Servers centrales que define la comunidad, y el token intercambiado a un único destino, como fija la [sección 2.6](volume-1-security.html#modelo-de-confianza).
+El Authorization Server **SHALL** restringir la audiencia de todo token que emite a destinatarios identificados explícitamente, como recomienda RFC 9700 ([RFC 9700, §2.3](https://www.rfc-editor.org/rfc/rfc9700.html#section-2.3))[^rfc9700-aud]. El token de un miembro nombra a los Resource Servers centrales que define la comunidad, y el token mediado a un único destino, como fija la [sección 2.6](volume-1-security.html#modelo-de-confianza).
 
-El Authorization Server **SHALL** atender [HIX-1](volume-2-hix-1.html) únicamente para el Record Locator Service. El token intercambiado **SHALL** llevar como audiencia el único destino indicado en la petición de intercambio, el mismo sujeto, las mismas extensiones de IUA y, si lo hay, el mismo contexto de paciente que el token presentado, y como actor al Record Locator Service, en el claim `act` con el que OAuth 2.0 Token Exchange expresa la delegación ([RFC 8693, §4.1](https://www.rfc-editor.org/rfc/rfc8693.html#section-4.1))[^rfc8693-act].
+El Authorization Server **SHALL** atender [HIX-1](volume-2-hix-1.html) únicamente para el Record Locator Service. El token mediado **SHALL** llevar como audiencia el único destino indicado en la petición de intercambio, el mismo sujeto, las mismas extensiones de IUA y, si lo hay, el mismo contexto de paciente que el token presentado, y como actor al Record Locator Service, en el claim `act` con el que OAuth 2.0 Token Exchange expresa la delegación ([RFC 8693, §4.1](https://www.rfc-editor.org/rfc/rfc8693.html#section-4.1))[^rfc8693-act].
 
-El alcance del token intercambiado **SHALL** ser el pedido en el intercambio y **SHALL NOT** exceder el del token del solicitante ni el de la delegación registrada, y su vida **SHALL NOT** superar los dos minutos ni la vida restante del token del solicitante. El Authorization Server **SHALL NOT** emitir por ningún otro camino un token cuya audiencia sea un custodio.
+El alcance del token mediado **SHALL** ser el pedido en el intercambio y **SHALL NOT** exceder el del token del solicitante ni el de la delegación registrada, y su vida **SHALL NOT** superar los dos minutos ni la vida restante del token del solicitante. El Authorization Server **SHALL NOT** emitir por ningún otro camino un token cuya audiencia sea un custodio.
 
 El Authorization Server **SHALL** fijar la organización y el propósito de uso del solicitante desde su propio registro y **SHALL NOT** aceptarlos de la solicitud. Cuando una persona se autentica, **SHALL** resolver su identidad verificada a la identidad maestra mediante [ITI-83](https://profiles.ihe.net/ITI/PIXm/ITI-83.html) y **SHALL** fijar ese resultado como contexto de paciente del token, conforme a [HIX-2](volume-2-hix-2.html). **SHALL NOT** emitir un token con contexto de paciente cuando esa identidad no resuelva a una identidad maestra.
 
@@ -219,7 +219,7 @@ La fuente autoritativa **SHALL** alimentar el registro de identidad maestra medi
 
 ### Transacciones propias de HIX
 
-**Custodian Token Exchange [HIX-1].** El Record Locator Service presenta al Authorization Server el token del solicitante y recibe a cambio un [token intercambiado](appendix-glossary.html#token-intercambiado) para un único destino y una sola transacción, como especifica la [sección 3.2](volume-2-hix-1.html).
+**Custodian Token Exchange [HIX-1].** El Record Locator Service presenta al Authorization Server el token del solicitante y recibe a cambio un [token mediado](appendix-glossary.html#token-mediado) para un único destino y una sola transacción, como especifica la [sección 3.2](volume-2-hix-1.html).
 {: #hix-1}
 
 **Patient Application Launch [HIX-2].** Una aplicación elegida por una persona obtiene del Authorization Server un token destinado al Record Locator Service cuyo contexto de paciente es la identidad maestra de esa persona, como especifica la [sección 3.3](volume-2-hix-2.html).

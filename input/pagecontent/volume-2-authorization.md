@@ -63,7 +63,7 @@ La petición se registra con el evento que IUA define para ITI-71, según la [Ta
 
 #### Alcance en HIX
 
-Con ITI-102 comprueban el token del solicitante los actores centrales que lo reciben directamente. El Record Locator Service lo hace siempre. Los demás, como el registro de identidad maestra cuando atiende directamente a los miembros, pueden en cambio validarlo por sí mismos si es un JWT, como fija la [sección 2.2](volume-1-actors.html#descripcion-de-actores-y-requisitos). Un custodio también puede introspeccionar el token intercambiado, además de validarlo con las claves del Authorization Server, si la comunidad lo admite, como fija la [sección 2.6](volume-1-security.html#validacion-en-el-custodio).
+Con ITI-102 comprueban el token del solicitante los actores centrales que lo reciben directamente. El Record Locator Service lo hace siempre. Los demás, como el registro de identidad maestra cuando atiende directamente a los miembros, pueden en cambio validarlo por sí mismos si es un JWT, como fija la [sección 2.2](volume-1-actors.html#descripcion-de-actores-y-requisitos). Un custodio también puede introspeccionar el token mediado, además de validarlo con las claves del Authorization Server, si la comunidad lo admite, como fija la [sección 2.6](volume-1-security.html#validacion-en-el-custodio).
 
 #### Petición
 

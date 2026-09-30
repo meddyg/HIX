@@ -49,7 +49,7 @@ El laboratorio nombra al paciente con el identificador nacional de la persona y 
 
 Un profesional de un hospital atiende a la misma persona y necesita su historial. Consulta la comunidad con el identificador que su propio sistema conoce de la persona, o con su identificador nacional, y con el propósito de uso de la atención habitual, `TREAT`. Obtiene la lista de documentos que la política le permite ver y recupera el que le interesa. No sabe, ni necesita saber, qué organización lo custodia.
 
-La recuperación atraviesa dos tramos autorizados. El profesional llega a la comunidad con un [token del solicitante](appendix-glossary.html#token-del-solicitante), y la comunidad llega al custodio con un [token intercambiado](appendix-glossary.html#token-intercambiado) para ese único custodio, que el custodio valida por sí mismo. La [sección 2.6](volume-1-security.html#modelo-de-confianza) compara los dos tokens y dice qué lleva cada uno.
+La recuperación atraviesa dos tramos autorizados. El profesional llega a la comunidad con un [token del solicitante](appendix-glossary.html#token-del-solicitante), y la comunidad llega al custodio con un [token mediado](appendix-glossary.html#token-mediado) para ese único custodio, que el custodio valida por sí mismo. La [sección 2.6](volume-1-security.html#modelo-de-confianza) compara los dos tokens y dice qué lleva cada uno.
 
 Si un custodio no responde, el profesional recibe un resultado que lo dice, junto con todo lo demás que pidió. Un custodio caído degrada la respuesta y nunca la hace fallar.
 
@@ -66,7 +66,7 @@ En una urgencia la historia cambia en dos puntos. El profesional consulta con el
 2. El Record Locator Service comprueba el token mediante [ITI-102](https://profiles.ihe.net/ITI/IUA/index.html#3102-introspect-token-iti-102), resuelve la identidad maestra mediante ITI-83, consulta el Document Registry mediante ITI-67, evalúa la decisión de divulgación sobre cada puntero y devuelve los divulgados, con URL de contenido que apuntan a sí mismo.
 3. El consumidor recupera mediante [ITI-68](https://profiles.ihe.net/ITI/MHD/5.0.0/ITI-68.html) sobre una de esas URL.
 4. El Record Locator Service relee el puntero y vuelve a evaluar la divulgación. Cuando el contenido queda en el custodio, resuelve su endpoint en el directorio mediante [ITI-90](https://profiles.ihe.net/ITI/mCSD/ITI-90.html) y obtiene mediante [HIX-1](volume-2-hix-1.html) un token para ese custodio.
-5. El Record Locator Service recupera el documento del custodio mediante ITI-68. El custodio valida el token con las claves públicas del Authorization Server y entrega el documento, que el Record Locator Service entrega al consumidor. Bajo la Opción de Almacenamiento Central, lo recupera del Document Registry en lugar del custodio, con un token intercambiado para él.
+5. El Record Locator Service recupera el documento del custodio mediante ITI-68. El custodio valida el token con las claves públicas del Authorization Server y entrega el documento, que el Record Locator Service entrega al consumidor. Bajo la Opción de Almacenamiento Central, lo recupera del Document Registry en lugar del custodio, con un token mediado para él.
 
 ### Acceso del paciente a su expediente {#acceso-del-paciente-a-su-expediente}
 

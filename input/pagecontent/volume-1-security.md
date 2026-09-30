@@ -18,12 +18,12 @@ MHDS advierte que el marco de políticas de una comunidad debe definirse antes d
 
 ### Modelo de confianza {#modelo-de-confianza}
 
-El límite de confianza pasa entre cada miembro y la infraestructura central, como establece la [sección 2.1](volume-1-concepts.html). Una recuperación cruza ese límite dos veces, del solicitante a la comunidad y de la comunidad al custodio, y cada cruce lleva un token de un régimen distinto. El primero es el token que el solicitante obtiene del Authorization Server, destinado a los Resource Servers centrales, que el Record Locator Service comprueba por introspección. El segundo es el [token intercambiado](appendix-glossary.html#token-intercambiado) que el Record Locator Service obtiene con [HIX-1](volume-2-hix-1.html) para cada destino que alcanza, sea un custodio o un actor central, y que el destino valida por sí mismo. La [Tabla 2.6-1](volume-1-security.html#tabla-2-6-1) los compara.
+El límite de confianza pasa entre cada miembro y la infraestructura central, como establece la [sección 2.1](volume-1-concepts.html). Una recuperación cruza ese límite dos veces, del solicitante a la comunidad y de la comunidad al custodio, y cada cruce lleva un token de un régimen distinto. El primero es el token que el solicitante obtiene del Authorization Server, destinado a los Resource Servers centrales, que el Record Locator Service comprueba por introspección. El segundo es el [token mediado](appendix-glossary.html#token-mediado) que el Record Locator Service obtiene con [HIX-1](volume-2-hix-1.html) para cada destino que alcanza, sea un custodio o un actor central, y que el destino valida por sí mismo. La [Tabla 2.6-1](volume-1-security.html#tabla-2-6-1) los compara.
 
 **Tabla 2.6-1:** Los dos regímenes de token
 {: #tabla-2-6-1}
 
-| | Token del solicitante | Token intercambiado |
+| | Token del solicitante | Token mediado |
 | --- | --- | --- |
 | Quién lo obtiene | El miembro con ITI-71, o la aplicación del paciente con [HIX-2](volume-2-hix-2.html) | El Record Locator Service con [HIX-1](volume-2-hix-1.html) |
 | Audiencia | Los Resource Servers centrales que define la comunidad, o solo el Record Locator Service si lo obtiene la aplicación del paciente | Un único destino, custodio o actor central |
@@ -40,17 +40,17 @@ El sujeto del token del solicitante es el sistema del miembro, porque el Authori
 
 De la tabla se siguen cuatro reglas. De cada una conviene decir qué fija HIX, de qué depende y qué queda en manos de la comunidad.
 
-**Un token intercambiado vale ante un solo destino.** El formato no lo impone. El claim `aud` de un JWT admite una lista de audiencias ([RFC 7519, §4.1.3](https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.3))[^rfc7519-aud], y RFC 9068 recomienda rellenarlo con el recurso que el cliente indicó al pedir el token ([RFC 9068, §3](https://www.rfc-editor.org/rfc/rfc9068.html#section-3))[^rfc9068-aud]. HIX lo restringe para el token intercambiado, porque de eso depende que un custodio no pueda reutilizarlo ante otro. El token de un miembro, en cambio, nombra en `aud` a los Resource Servers centrales que la comunidad define, y nunca a un custodio. Lo pide con un único `resource` que nombra a la arquitectura central, como fija [ITI-71](volume-2-authorization.html#iti-71), y el Authorization Server pone en `aud` la lista de Resource Servers necesarios para ese recurso, como prevé IUA ([IUA, §3.71.4.1.3](https://profiles.ihe.net/ITI/IUA/index.html#371413-expected-actions))[^iua-audience]. Cuáles son depende del despliegue. Puede ser solo el Record Locator Service, si hace de único punto de entrada ante los demás componentes, o también el registro de identidad maestra, si atiende directamente a los miembros. En los dos casos el miembro pide el token de la misma forma. El token de la aplicación del paciente nombra solo al Record Locator Service, como fija [HIX-2](volume-2-hix-2.html#peticion-de-autorizacion).
+**Un token mediado vale ante un solo destino.** El formato no lo impone. El claim `aud` de un JWT admite una lista de audiencias ([RFC 7519, §4.1.3](https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.3))[^rfc7519-aud], y RFC 9068 recomienda rellenarlo con el recurso que el cliente indicó al pedir el token ([RFC 9068, §3](https://www.rfc-editor.org/rfc/rfc9068.html#section-3))[^rfc9068-aud]. HIX lo restringe para el token mediado, porque de eso depende que un custodio no pueda reutilizarlo ante otro. El token de un miembro, en cambio, nombra en `aud` a los Resource Servers centrales que la comunidad define, y nunca a un custodio. Lo pide con un único `resource` que nombra a la arquitectura central, como fija [ITI-71](volume-2-authorization.html#iti-71), y el Authorization Server pone en `aud` la lista de Resource Servers necesarios para ese recurso, como prevé IUA ([IUA, §3.71.4.1.3](https://profiles.ihe.net/ITI/IUA/index.html#371413-expected-actions))[^iua-audience]. Cuáles son depende del despliegue. Puede ser solo el Record Locator Service, si hace de único punto de entrada ante los demás componentes, o también el registro de identidad maestra, si atiende directamente a los miembros. En los dos casos el miembro pide el token de la misma forma. El token de la aplicación del paciente nombra solo al Record Locator Service, como fija [HIX-2](volume-2-hix-2.html#peticion-de-autorizacion).
 
-**El token del solicitante no sale de la infraestructura central.** El Record Locator Service no lo reenvía a ningún custodio ni actor central. Ante cada destino presenta un token intercambiado para ese destino, como fija la [sección 2.2](volume-1-actors.html). Así el solicitante nunca tiene una credencial que valga ante un custodio, y un custodio nunca recibe una que valga ante otro.
+**El token del solicitante no sale de la infraestructura central.** El Record Locator Service no lo reenvía a ningún custodio ni actor central. Ante cada destino presenta un token mediado para ese destino, como fija la [sección 2.2](volume-1-actors.html). Así el solicitante nunca tiene una credencial que valga ante un custodio, y un custodio nunca recibe una que valga ante otro.
 
 **El custodio puede validar el token sin preguntar al Authorization Server.** Todo lo que necesita está en el token y en las claves que el Authorization Server publica. Esa publicación es su única dependencia, y la resuelve por adelantado, conservando las claves y renovándolas cuando aparece un identificador de clave que no conoce. La subsección siguiente detalla la validación y dice cuándo una comunidad puede añadirle la introspección.
 
-**El Record Locator Service no actúa por cuenta propia ante los actores centrales.** No tiene credenciales permanentes hacia el Document Registry ni hacia el registro de identidad maestra. Cada acceso lo hace a nombre de un solicitante, con el token intercambiado para ese destino, y así queda auditado. De esta forma se evita el acceso arbitrario entre los componentes centrales. Ninguno puede consultar a otro sin una petición de un solicitante que lo justifique, y una credencial del mediador comprometida no da acceso a nada por sí sola, porque no existe ninguna que valga sin ese intercambio.
+**El Record Locator Service no actúa por cuenta propia ante los actores centrales.** No tiene credenciales permanentes hacia el Document Registry ni hacia el registro de identidad maestra. Cada acceso lo hace a nombre de un solicitante, con el token mediado para ese destino, y así queda auditado. De esta forma se evita el acceso arbitrario entre los componentes centrales. Ninguno puede consultar a otro sin una petición de un solicitante que lo justifique, y una credencial del mediador comprometida no da acceso a nada por sí sola, porque no existe ninguna que valga sin ese intercambio.
 
 #### Validación en el custodio {#validacion-en-el-custodio}
 
-El custodio recibe el token intercambiado y lo valida como RFC 9068 pide a todo Resource Server que recibe un access token en forma de JWT ([RFC 9068, §4](https://www.rfc-editor.org/rfc/rfc9068.html#section-4))[^rfc9068-validate], más las comprobaciones que HIX añade sobre la delegación. El custodio **SHALL** comprobar, como mínimo, lo siguiente.
+El custodio recibe el token mediado y lo valida como RFC 9068 pide a todo Resource Server que recibe un access token en forma de JWT ([RFC 9068, §4](https://www.rfc-editor.org/rfc/rfc9068.html#section-4))[^rfc9068-validate], más las comprobaciones que HIX añade sobre la delegación. El custodio **SHALL** comprobar, como mínimo, lo siguiente.
 
 1. La firma, con las claves que publica el Authorization Server, y que el algoritmo es uno de los que la comunidad admite.
 2. Que el emisor es exactamente el Authorization Server de la comunidad.
@@ -64,11 +64,11 @@ El custodio recibe el token intercambiado y lo valida como RFC 9068 pide a todo 
 
 Las tres comprobaciones que más pesan son la audiencia, el cliente y el actor. La audiencia sola no basta, porque un token emitido directamente a otro cliente para esa misma audiencia la pasaría. El cliente y el actor son lo que vuelve estructural que solo el Record Locator Service pueda alcanzar a un custodio en nombre de alguien, porque el claim `act` es la forma en que OAuth 2.0 Token Exchange declara que hubo delegación y quién actúa ([RFC 8693, §4.1](https://www.rfc-editor.org/rfc/rfc8693.html#section-4.1))[^rfc8693-act].
 
-El custodio **SHALL** validar el token intercambiado con las claves que publica el Authorization Server, y esa validación basta para aceptarlo. HIX no exige introspección en el custodio. El custodio **MAY** comprobarlo además por introspección, con la [Token Introspection Option](https://profiles.ihe.net/ITI/IUA/index.html#3424-token-introspection-option) de IUA y [ITI-102](https://profiles.ihe.net/ITI/IUA/index.html#3102-introspect-token-iti-102), si la comunidad lo admite. Entonces cada recuperación depende del Authorization Server en el momento de atenderla, y esa dependencia se asume a sabiendas.
+El custodio **SHALL** validar el token mediado con las claves que publica el Authorization Server, y esa validación basta para aceptarlo. HIX no exige introspección en el custodio. El custodio **MAY** comprobarlo además por introspección, con la [Token Introspection Option](https://profiles.ihe.net/ITI/IUA/index.html#3424-token-introspection-option) de IUA y [ITI-102](https://profiles.ihe.net/ITI/IUA/index.html#3102-introspect-token-iti-102), si la comunidad lo admite. Entonces cada recuperación depende del Authorization Server en el momento de atenderla, y esa dependencia se asume a sabiendas.
 
 #### Lo que un token prueba y lo que no {#lo-que-un-token-prueba-y-lo-que-no}
 
-Un custodio que recibe un token intercambiado puede comprobar por sí mismo cinco cosas.
+Un custodio que recibe un token mediado puede comprobar por sí mismo cinco cosas.
 
 - Que lo emitió el Authorization Server de la comunidad.
 - Que el Record Locator Service lo pidió en nombre de un solicitante concreto.
@@ -86,7 +86,7 @@ Lo que el token sí aporta es el contexto con el que se decide, en las extension
 
 #### Contención de una credencial comprometida {#contencion-de-una-credencial-comprometida}
 
-Deshabilitar un cliente en el Authorization Server **SHALL** revocar sus tokens vigentes, de modo que la siguiente introspección los declare inactivos, que es el estado que RFC 7662 prevé para un token revocado ([RFC 7662, §2.2](https://www.rfc-editor.org/rfc/rfc7662.html#section-2.2))[^rfc7662-active], y ningún intercambio pueda partir de ellos. Un token ya intercambiado no tiene ciclo de vida propio. El Record Locator Service lo usa una sola vez, en la transacción que lo motivó, y expira en dos minutos como máximo, así que una transacción ya en curso termina.
+Deshabilitar un cliente en el Authorization Server **SHALL** revocar sus tokens vigentes, de modo que la siguiente introspección los declare inactivos, que es el estado que RFC 7662 prevé para un token revocado ([RFC 7662, §2.2](https://www.rfc-editor.org/rfc/rfc7662.html#section-2.2))[^rfc7662-active], y ningún intercambio pueda partir de ellos. Un token mediado ya emitido no tiene ciclo de vida propio. El Record Locator Service lo usa una sola vez, en la transacción que lo motivó, y expira en dos minutos como máximo, así que una transacción ya en curso termina.
 
 Lo que contiene una credencial comprometida es que los tokens obtenidos con ella dejen de valer, no que cambie la credencial. Si el Authorization Server los revoca también al rotar el secreto o la clave de un cliente es decisión de su implementación. Si no lo hace, hay que revocarlos aparte.
 
@@ -97,7 +97,7 @@ HIX especifica los siguientes controles. Cada uno remite a la sección que lo fi
 - **Autenticación de sistemas.** Toda conexión entre dos participantes se autentica en ambos extremos con ATNA, como fija la [sección 2.4](volume-1-groupings.html). Ningún participante acepta tráfico anónimo. Bajo la Opción de Transporte Mediado, la autenticación mutua del tramo entre organizaciones la aporta la red de intercambio.
 - **Autorización.** Toda transacción presenta un token emitido por el Authorization Server de la comunidad y destinado a quien la recibe, como fija la [sección 2.2](volume-1-actors.html).
 - **Delegación acotada.** El token con el que la comunidad alcanza a un custodio se emite para esa recuperación, a nombre del solicitante original y con el Record Locator Service como actor, como fija la [sección 2.2](volume-1-actors.html#authorization-server).
-- **Mínimo privilegio.** El alcance de un token intercambiado se limita a la transacción que motivó el intercambio, como fija la [sección 2.2](volume-1-actors.html#authorization-server). Poder localizar un documento nunca da poder para recuperarlo.
+- **Mínimo privilegio.** El alcance de un token mediado se limita a la transacción que motivó el intercambio, como fija la [sección 2.2](volume-1-actors.html#authorization-server). Poder localizar un documento nunca da poder para recuperarlo.
 - **Confidencialidad en tránsito.** Todo tramo entre participantes viaja cifrado, incluido el que atraviesa un canal de interconexión bajo la Opción de Transporte Mediado. El tramo entre un custodio y su propio servidor de seguridad es responsabilidad del custodio, como fija la [sección 2.3](volume-1-options.html).
 - **Divulgación decidida sobre los punteros.** La política se evalúa en la infraestructura central, una vez por consulta, sobre los metadatos del índice y antes de que se mueva contenido, como fija la [sección 2.1](volume-1-concepts.html).
 - **Auditoría en ambos extremos.** El miembro que solicita y la infraestructura central registran la localización. Infraestructura central y custodio registran la recuperación. Ningún tramo queda sin testigo.
@@ -156,7 +156,7 @@ MHDS cierra sus consideraciones de seguridad con la relación entre sus controle
 | Autenticación de sistemas | ATNA |
 | Autorización y alcance | IUA, OAuth 2.0 |
 | Delegación acotada y mínimo privilegio | RFC 8693, RFC 8707 |
-| Validación local del token intercambiado | RFC 9068 |
+| Validación local del token mediado | RFC 9068 |
 | Introspección de tokens | IUA, RFC 7662 |
 | Autorización con participación de la persona | SMART App Launch, OpenID Connect |
 | Confidencialidad en tránsito | ATNA |
