@@ -1,0 +1,118 @@
+@startuml hix-2-hix-1-recorrido
+skinparam shadowing false
+skinparam backgroundColor white
+skinparam defaultFontName Verdana
+skinparam defaultFontSize 12
+skinparam defaultFontColor #222222
+skinparam sequenceMessageAlign center
+skinparam sequenceArrowThickness 1.75
+skinparam ParticipantPadding 4
+skinparam BoxPadding 4
+skinparam RoundCorner 8
+
+skinparam sequence {
+  ArrowColor #333333
+  LifeLineBorderColor #B5B5B5
+  ParticipantBorderColor #666666
+  ParticipantBackgroundColor white
+  ParticipantFontSize 12
+  BoxBorderColor #D6D6D6
+  BoxBackgroundColor #F6F7F8
+  BoxFontColor #555555
+  BoxFontSize 11
+  GroupBorderColor #B5B5B5
+  GroupBorderThickness 1
+  GroupHeaderFontColor #555555
+  GroupHeaderFontStyle plain
+  GroupFontColor #555555
+  GroupFontStyle plain
+  GroupFontSize 11
+  DividerBackgroundColor white
+  DividerBorderColor #C62828
+  DividerFontColor #C62828
+  DividerFontSize 11
+}
+
+skinparam legend {
+  FontSize 11
+  BackgroundColor white
+  BorderColor #D6D6D6
+}
+
+skinparam note {
+  BackgroundColor #EAF5EC
+  BorderColor #9CC9A6
+}
+
+hide footbox
+
+' Colores de los tokens
+!$SOL = "<color:#2E6DB4><b>token del solicitante</b></color>"
+!$ACT = "<color:#6B6B6B><b>token de actor</b></color>"
+!$INT = "<color:#2E8540><b>token mediado</b></color>"
+!$NO = "#C62828"
+
+' La audiencia de cada token, dicha en claro
+!$AUD_SOL = "<color:#2E6DB4><size:11>audiencia: la infraestructura central</size></color>"
+!$AUD_ACT = "<color:#6B6B6B><size:11>audiencia: el Authorization Server</size></color>"
+!$AUD_INT = "<color:#2E8540><size:11><b>audiencia: solo el Laboratorio</b></size></color>"
+
+box "Miembro solicitante"
+  participant "Hospital" as H
+end box
+
+box "Infraestructura central"
+  participant "Record Locator\nService (RLS)" as RLS
+  participant "Authorization\nServer" as AS
+end box
+
+box "Custodio"
+  participant "Laboratorio" as LAB
+end box
+
+box "Otro custodio"
+  participant "Clínica" as CLI
+end box
+
+H -[#2E6DB4]> RLS : (1) pide el documento [ITI-68]\ncon el $SOL\n$AUD_SOL
+
+RLS -[#2E6DB4]> AS : (2) comprueba [ITI-102]\nel $SOL
+AS --> RLS : sigue vigente
+
+group Opcional [si no tiene un token de actor vigente]
+  RLS -[#6B6B6B]> AS : (3) pide su $ACT [ITI-71]
+  AS -[#6B6B6B]-> RLS : $ACT\n$AUD_ACT
+end
+
+group Intercambio de tokens [HIX-1]
+  RLS -> AS : (4) pide un token para acceder al Laboratorio\n<b>en nombre del solicitante</b>\n<b>presenta</b>: el $SOL y el $ACT
+
+  AS -[#2E8540]-> RLS : $INT\n<color:#2E8540><size:11>permite al RLS actuar en nombre del solicitante</size></color>\n$AUD_INT
+end
+
+RLS -[#2E8540]> LAB : (5) pide el documento [ITI-68]\ncon el $INT
+
+note left of LAB
+  (6) valida el token con las JWKs
+  y lo acepta: su audiencia
+  es el Laboratorio
+end note
+
+LAB --> RLS : documento
+RLS --> H : (7) documento
+
+== Lo que nunca ocurre ==
+
+H -[$NO]->x LAB : <color:$NO>el solicitante no llega a ningún custodio por su cuenta:</color>\n<color:$NO>solo a través del RLS, que es quien usa un</color> $INT
+
+RLS -[$NO]->x H : <color:$NO>el</color> $INT\n<color:$NO>nunca llega al solicitante</color>
+
+RLS -[$NO]->x LAB : <color:$NO>el</color> $SOL <color:$NO>y el</color> $ACT\n<color:$NO>nunca llegan a un custodio:</color>\n<color:$NO>su audiencia no es ningún custodio</color>
+
+RLS -[$NO]->x CLI : <color:$NO>el</color> $INT <color:$NO>no vale ante la Clínica:</color>\n<color:$NO>su audiencia es solo el Laboratorio</color>
+
+legend bottom
+  La <b>audiencia</b> de un token dice ante quién vale. Cualquier otro lo rechaza.
+endlegend
+
+@enduml
