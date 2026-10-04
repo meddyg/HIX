@@ -50,6 +50,7 @@ Además de las validaciones que define IUA, el Authorization Server **SHALL** re
 | La petición no lleva `resource`, lleva más de uno o nombra uno que el Authorization Server no tiene registrado | `invalid_target` |
 | El `resource` nombra a un custodio | `invalid_target`, igual que ante un `resource` no registrado |
 | El scope pide una transacción que el registro del Authorization Server no concede a ese cliente | `invalid_scope` |
+| El scope pide `launch/patient`, que solo admite la autorización de una persona en [HIX-2](volume-2-hix-2.html) | `invalid_scope` |
 | El cliente está deshabilitado | `invalid_client`, con el código HTTP 401 |
 {: .table .table-bordered}
 
