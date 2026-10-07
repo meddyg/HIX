@@ -20,8 +20,8 @@ Lo que un miembro declara vincula. Nunca crea una persona, nunca fusiona dos y n
 {: #figura-2-5-1}
 
 1. La fuente autoritativa de identidad alimenta la identidad maestra de la persona mediante [ITI-93](https://profiles.ihe.net/ITI/PMIR/ITI-93.html).
-2. El custodio declara su identidad local mediante [ITI-104](https://profiles.ihe.net/ITI/PIXm/ITI-104.html) ante la infraestructura central, en su propio dominio de identificadores y con el identificador nacional de la persona. La infraestructura central comprueba que el dominio corresponde a la organización del token, y el registro de identidad maestra vincula la identidad local con la maestra. Si la persona no existe en la comunidad, rechaza la declaración e indica el motivo.
-3. Un consumidor resuelve su identificador a la identidad maestra mediante [ITI-83](https://profiles.ihe.net/ITI/PIXm/ITI-83.html) ante la infraestructura central y, si declara la Opción de Demografía, busca por datos demográficos mediante [ITI-78](https://profiles.ihe.net/ITI/PDQm/ITI-78.html) o, con la Opción de Coincidencia Demográfica, mediante [ITI-119](https://profiles.ihe.net/ITI/PDQm/ITI-119.html).
+2. El custodio declara su identidad local mediante [ITI-104](https://profiles.ihe.net/ITI/PIXm/ITI-104.html) ante el registro de identidad maestra, en su propio dominio de identificadores y con el identificador nacional de la persona. El registro comprueba que el dominio corresponde a la organización del token y vincula la identidad local con la maestra. Por defecto, si la persona no tiene identidad maestra, rechaza la declaración e indica el motivo, como explica la [sección 2.2](volume-1-actors.html#regla-de-identidad).
+3. Un consumidor resuelve su identificador a la identidad maestra mediante [ITI-83](https://profiles.ihe.net/ITI/PIXm/ITI-83.html) ante el registro de identidad maestra y, si declara la Opción de Demografía, busca por datos demográficos mediante [ITI-78](https://profiles.ihe.net/ITI/PDQm/ITI-78.html) o, con la Opción de Coincidencia Demográfica, mediante [ITI-119](https://profiles.ihe.net/ITI/PDQm/ITI-119.html).
 
 ### Publicación de un documento {#publicacion-de-un-documento}
 
@@ -39,9 +39,9 @@ El laboratorio nombra al paciente con el identificador nacional de la persona y 
 {: #figura-2-5-2}
 
 1. El custodio conserva el documento en su repositorio y obtiene del Authorization Server un token para publicar.
-2. El custodio publica los metadatos, agrupados en un SubmissionSet, mediante [ITI-65](https://profiles.ihe.net/ITI/MHD/5.0.0/ITI-65.html) ante la infraestructura central. Bajo la Opción de Almacenamiento Central, incluye el contenido.
+2. El custodio publica los metadatos, agrupados en un SubmissionSet, mediante [ITI-65](https://profiles.ihe.net/ITI/MHD/5.0.0/ITI-65.html) ante el Document Registry. Bajo la Opción de Almacenamiento Central, incluye el contenido.
 3. El Document Registry comprueba que el custodio del puntero es la organización que el token declara y que esa organización es un miembro activo según el directorio, que la URL de contenido es relativa y que el puntero lleva etiqueta de confidencialidad. Rechaza la publicación que no cumpla alguna de esas condiciones e indica el motivo.
-4. La infraestructura central resuelve a la identidad maestra, mediante [ITI-83](https://profiles.ihe.net/ITI/PIXm/ITI-83.html), el identificador nacional con el que el custodio nombró al paciente, y la escribe como sujeto del puntero, que conserva también la identidad local. El Document Registry lo registra a nombre del custodio y responde. Si el paciente no resuelve a una identidad maestra, o el custodio no declaró esa identidad local, la publicación se rechaza.
+4. El Document Registry resuelve a la identidad maestra, mediante [ITI-83](https://profiles.ihe.net/ITI/PIXm/ITI-83.html), el identificador nacional con el que el custodio nombró al paciente, y la escribe como sujeto del puntero, que conserva también la identidad local. El Document Registry lo registra a nombre del custodio y responde. Si el paciente no resuelve a una identidad maestra, o el custodio no declaró esa identidad local, la publicación se rechaza.
 
 ### Consulta del expediente por un profesional {#consulta-del-expediente-por-un-profesional}
 
@@ -51,7 +51,7 @@ Un profesional de un hospital atiende a la misma persona y necesita su historial
 
 La recuperación atraviesa dos tramos autorizados. El profesional llega a la comunidad con un [token del solicitante](appendix-glossary.html#token-del-solicitante), y la comunidad llega al custodio con un [token mediado](appendix-glossary.html#token-mediado) para ese único custodio, que el custodio valida por sí mismo. La [sección 2.6](volume-1-security.html#modelo-de-confianza) compara los dos tokens y dice qué lleva cada uno.
 
-Si un custodio no responde, el profesional recibe un resultado que lo dice, junto con todo lo demás que pidió. Un custodio caído degrada la respuesta y nunca la hace fallar.
+Si el custodio de un documento no responde, esa recuperación lo indica, sin que se confunda con un documento inexistente. La localización y las demás recuperaciones no se ven afectadas.
 
 En una urgencia la historia cambia en dos puntos. El profesional consulta con el propósito de uso `ETREAT`, y qué permite frente a `TREAT` lo fija la política de la comunidad, por ejemplo divulgar documentos que en atención habitual exigirían un consentimiento. Y si la persona llega sin un identificador fiable, el hospital puede buscarla por sus datos demográficos bajo la Opción de Demografía o la Opción de Coincidencia Demográfica, como en la [Figura 2.2-2](volume-1-actors.html#figuras-2-2). La búsqueda la habilita el scope del token, no el propósito. El propósito se evalúa después, en la [decisión de divulgación](appendix-glossary.html#decision-de-divulgacion).
 
@@ -62,7 +62,7 @@ En una urgencia la historia cambia en dos puntos. El profesional consulta con el
 **Figura 2.5-3:** Localización y recuperación mediada
 {: #figura-2-5-3}
 
-1. El [consumidor](appendix-glossary.html#consumidor) obtiene del Authorization Server un token cuya audiencia incluye al Record Locator Service y localiza mediante [ITI-67](https://profiles.ihe.net/ITI/MHD/5.0.0/ITI-67.html). En una urgencia sin identificador conocido, busca antes a la persona por datos demográficos mediante ITI-78 o ITI-119 ante la infraestructura central.
+1. El [consumidor](appendix-glossary.html#consumidor) obtiene del Authorization Server un token cuya audiencia incluye al Record Locator Service y localiza mediante [ITI-67](https://profiles.ihe.net/ITI/MHD/5.0.0/ITI-67.html). En una urgencia sin identificador conocido, busca antes a la persona por datos demográficos mediante ITI-78 o ITI-119 ante el registro de identidad maestra.
 2. El Record Locator Service comprueba el token mediante [ITI-102](https://profiles.ihe.net/ITI/IUA/index.html#3102-introspect-token-iti-102), resuelve la identidad maestra mediante ITI-83, consulta el Document Registry mediante ITI-67, evalúa la decisión de divulgación sobre cada puntero y devuelve los divulgados, con URL de contenido que apuntan a sí mismo.
 3. El consumidor recupera mediante [ITI-68](https://profiles.ihe.net/ITI/MHD/5.0.0/ITI-68.html) sobre una de esas URL.
 4. El Record Locator Service relee el puntero y vuelve a evaluar la divulgación. Cuando el contenido queda en el custodio, resuelve su endpoint en el directorio mediante [ITI-90](https://profiles.ihe.net/ITI/mCSD/ITI-90.html) y obtiene mediante [HIX-1](volume-2-hix-1.html) un token para ese custodio.
@@ -95,10 +95,8 @@ Los siguientes casos forman parte de la arquitectura y se especificarán en vers
 - **Consentimiento anticipado del paciente.** La persona registra una directiva que permite o restringe la divulgación de sus documentos por clase de solicitante, propósito de uso, categoría de documento y ventana de validez. Se evalúa en cada operación bajo la Opción de Consentimiento.
 - **Administración del consentimiento desde una aplicación.** La persona concede a una aplicación de su elección permiso para leer y escribir sus directivas.
 - **Acceso solicitado por un miembro cuando no hay directiva.** Un miembro dirige a la persona al Authorization Server, que autoriza ese acceso específico. El token resultante lleva el contexto de paciente y la divulgación avanza bajo una autoridad que un momento antes no existía.
-- **Acceso con anulación de la política.** Un profesional accede a documentos que la política ordinaria no le permitiría, declarando el propósito de uso `BTG`. Cómo se admite y cómo se audita lo fija cada comunidad, como indica la [Tabla 2.2-3](volume-1-actors.html#tabla-2-2-3).
+- **Acceso con anulación de la política.** Un profesional accede a documentos que la política ordinaria no le permitiría, declarando el propósito de uso `BTG`. Cómo se admite lo fija cada comunidad, como indica la [Tabla 2.2-3](volume-1-actors.html#tabla-2-2-3). HIX ya exige que quede registrado en la auditoría, como fija la [sección 2.6](volume-1-security.html#acceso-de-emergencia).
 - **Identidad del personal sanitario.** El Authorization Server federa hacia el proveedor de identidad de cada institución en lugar de alojar cuentas de profesionales.
-
-Las citas reproducen el texto publicado por su fuente. Los recortes se marcan con "[...]" y la negrita es de esta guía.
 
 
 *[PMIR]: Patient Master Identity Registry, perfil IHE que gestiona la identidad maestra del paciente
