@@ -44,7 +44,7 @@ rectangle "Record Locator Service (Mediador)" as RLS #D5E8D4 {
 L1 --> STS1 : [ITI-71] Get Access Token\npurpose_of_use = TREAT
 L2 --> RLS : [ITI-104] Patient Identity Feed\nidentidad local + identificador nacional
 L3 --> RLS : [ITI-65] Provide Document Bundle\npuntero con custodio y securityLabel
-STS1 <-u- RLS0 : [HIX-1] Custodian Token Exchange
+STS1 <-u- RLS0 : [HIX-1] Mediated Token Exchange
 RLS3 --> L4 : [ITI-68] Retrieve Document\ntoken derivado, aud = laboratorio\ncuando otro miembro recupera
 L4 -[hidden]-> RLS1
 @enduml

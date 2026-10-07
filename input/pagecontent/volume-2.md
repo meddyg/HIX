@@ -1,6 +1,6 @@
 El [Volumen 1](volume-1.html) fija la arquitectura de HIX, es decir, qué actores tiene la comunidad, qué hace cada uno y por qué. Este volumen entra en el detalle de las transacciones entre esos actores. De cada una dice qué lleva la petición, qué se responde, cuándo se rechaza y qué se registra. Cuando una regla ya está en el Volumen 1, aquí se enlaza en lugar de repetirla.
 
-Solo dos transacciones se especifican completas, [Custodian Token Exchange \[HIX-1\]](volume-2-hix-1.html) y [Patient Application Launch \[HIX-2\]](volume-2-hix-2.html), porque son propias de HIX y ningún perfil las define. Las demás vienen de perfiles IHE, y de ellas este volumen solo dice lo que HIX les añade. Lo que este volumen no dice se aplica tal como lo publican IHE y OAuth 2.0.
+Solo dos transacciones se especifican completas, [Mediated Token Exchange \[HIX-1\]](volume-2-hix-1.html) y [Patient Application Launch \[HIX-2\]](volume-2-hix-2.html), porque son propias de HIX y ningún perfil las define. Las demás vienen de perfiles IHE, y de ellas este volumen solo dice lo que HIX les añade. Lo que este volumen no dice se aplica tal como lo publican IHE y OAuth 2.0.
 
 ### Reglas comunes {#reglas-comunes}
 
@@ -38,7 +38,7 @@ La [Tabla 3-1](volume-2.html#tabla-3-1) reúne las diecinueve transacciones de H
 | **Tokens y autorización** | | | |
 | [Get Access Token \[ITI-71\]](volume-2-authorization.html#iti-71) | IUA | Custodio, consumidor, fuente autoritativa de identidad y Record Locator Service | Authorization Server |
 | [Introspect Token \[ITI-102\]](volume-2-authorization.html#iti-102) | IUA | Record Locator Service y registro de identidad maestra, y el custodio cuando la comunidad admite la introspección | Authorization Server |
-| [Custodian Token Exchange \[HIX-1\]](volume-2-hix-1.html) | HIX | Record Locator Service | Authorization Server |
+| [Mediated Token Exchange \[HIX-1\]](volume-2-hix-1.html) | HIX | Record Locator Service | Authorization Server |
 | [Patient Application Launch \[HIX-2\]](volume-2-hix-2.html) | HIX | Aplicación del paciente | Authorization Server |
 | **Identidad del paciente** | | | |
 | [Mobile Patient Identity Feed \[ITI-93\]](volume-2-identity.html#iti-93) | PMIR | Fuente autoritativa de identidad, y el registro de identidad maestra hacia el Document Registry | Registro de identidad maestra y Document Registry |
@@ -84,7 +84,7 @@ El contenido de cada evento es el que el perfil de la transacción define en su 
 | ITI-71 | Ninguno. IUA define su propio evento, User Authentication con el subtipo ITI-71 ([IUA, §3.71.5.1](https://profiles.ihe.net/ITI/IUA/index.html#37151-security-audit-considerations))[^iua-audit] | El Authorization Server y el cliente que pide el token |
 | ITI-72 | Ninguno propio. El Resource Server registra la identidad del token en el evento de la transacción que lo lleva ([IUA, §3.72.5.1](https://profiles.ihe.net/ITI/IUA/index.html#37251-security-audit-considerations))[^iua-audit], y en un AuditEvent la añade con uno de los patrones OAuth Security Token de BALP ([BALP, §3:5.7.5](https://profiles.ihe.net/ITI/BALP/content.html#3575-oauth-security-token))[^balp-token] | El cliente y el Resource Server |
 | ITI-102 | Ninguno propio. El Resource Server usa el resultado de la introspección como atributos del evento ([IUA, §3.102.5.1](https://profiles.ihe.net/ITI/IUA/index.html#310251-security-audit-considerations))[^iua-audit] | El Record Locator Service, y el registro de identidad maestra y el custodio cuando la usan |
-| HIX-1 | IHE no define ningún evento para un intercambio de tokens. Lo especifica [Custodian Token Exchange \[HIX-1\]](volume-2-hix-1.html#consideraciones-de-auditoria) | El Authorization Server |
+| HIX-1 | IHE no define ningún evento para un intercambio de tokens. Lo especifica [Mediated Token Exchange \[HIX-1\]](volume-2-hix-1.html#consideraciones-de-auditoria) | El Authorization Server |
 | HIX-2 | El evento de ITI-71 ([IUA, §3.71.5.1](https://profiles.ihe.net/ITI/IUA/index.html#37151-security-audit-considerations))[^iua-audit]. Lo detalla [Patient Application Launch \[HIX-2\]](volume-2-hix-2.html#consideraciones-de-auditoria) | El Authorization Server |
 | ITI-93 | Ninguno. PMIR define su propio evento, un Patient Record de ITI-20 que registran igual quien lo envía y quien lo recibe ([PMIR, §2:3.93.5.1](https://profiles.ihe.net/ITI/PMIR/ITI-93.html#239351-security-audit-considerations))[^pmir-audit] | La fuente autoritativa de identidad, el registro de identidad maestra y el Document Registry |
 | ITI-104 | PatientCreate o PatientUpdate, según la operación ([PIXm, §2:3.104.5.1](https://profiles.ihe.net/ITI/PIXm/ITI-104.html#2310451-security-audit-considerations))[^pixm-audit] | El custodio y el registro de identidad maestra |
@@ -105,7 +105,7 @@ ITI-103, ITI-1 e ITI-19 no tienen fila, porque su especificación no define un e
 ### Cómo leer este volumen
 
 - **[Autorización](volume-2-authorization.html)** especifica lo que HIX añade a ITI-71 e ITI-102, con los que el Authorization Server emite y comprueba los tokens.
-- **[Custodian Token Exchange \[HIX-1\]](volume-2-hix-1.html)** especifica completo el intercambio con el que el Record Locator Service obtiene un token para cada destino.
+- **[Mediated Token Exchange \[HIX-1\]](volume-2-hix-1.html)** especifica completo el intercambio con el que el Record Locator Service obtiene un token para cada destino.
 - **[Patient Application Launch \[HIX-2\]](volume-2-hix-2.html)** especifica completo el lanzamiento con el que la aplicación del paciente obtiene su token.
 - **[Identidad del paciente](volume-2-identity.html)** especifica lo que HIX añade a ITI-93, ITI-104, ITI-83, ITI-78 e ITI-119.
 - **[Publicación](volume-2-publication.html)** especifica lo que HIX añade a ITI-65.

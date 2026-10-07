@@ -1,4 +1,4 @@
-Custodian Token Exchange [HIX-1] es la transacción con la que el Record Locator Service obtiene un token para llamar a un custodio o a un actor central en nombre de un solicitante. Ningún perfil IHE define esta transacción; esta página la especifica.
+Mediated Token Exchange [HIX-1] es la transacción con la que el Record Locator Service obtiene un token para llamar a un custodio o a un actor central en nombre de un solicitante. Ningún perfil IHE define esta transacción; esta página la especifica.
 
 ### Alcance
 
@@ -40,9 +40,9 @@ HIX-1 se apoya en los documentos siguientes.
 
 La [Figura 3.2-2](volume-2-hix-1.html#figura-3-2-2) muestra los mensajes de la transacción. Los dos primeros corresponden a [ITI-71](volume-2-authorization.html#iti-71): el Record Locator Service usa el grant Client Credentials para obtener su token de actor si no tiene uno vigente. Los dos últimos corresponden a HIX-1.
 
-![Custodian Token Exchange](hix-2-hix-1.svg)
+![Mediated Token Exchange](hix-2-hix-1.svg)
 
-**Figura 3.2-2:** Custodian Token Exchange
+**Figura 3.2-2:** Mediated Token Exchange
 {: #figura-3-2-2}
 
 #### Petición de intercambio {#peticion-de-intercambio}

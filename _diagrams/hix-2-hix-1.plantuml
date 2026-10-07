@@ -19,6 +19,6 @@ opt sin token de actor vigente
   RLS -> AS : [ITI-71] Get Access Token\n(client_credentials, token propio del RLS)
   AS --> RLS : token de actor (aud = Authorization Server)
 end
-RLS -> AS : [HIX-1] Custodian Token Exchange\n(subject_token, actor_token, resource, scope)
+RLS -> AS : [HIX-1] Mediated Token Exchange\n(subject_token, actor_token, resource, scope)
 AS --> RLS : JWT (aud = destino, sub = solicitante,\nact = RLS, vida ≤ 120 s)
 @enduml

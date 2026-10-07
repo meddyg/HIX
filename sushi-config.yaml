@@ -71,7 +71,7 @@ pages:
     volume-2-authorization.md:
       title: Autorización
     volume-2-hix-1.md:
-      title: Custodian Token Exchange [HIX-1]
+      title: Mediated Token Exchange [HIX-1]
     volume-2-hix-2.md:
       title: Patient Application Launch [HIX-2]
     volume-2-identity.md:
@@ -135,7 +135,7 @@ menu:
   Volumen 2:
     Transacciones: volume-2.html
     Autorización: volume-2-authorization.html
-    Custodian Token Exchange [HIX-1]: volume-2-hix-1.html
+    Mediated Token Exchange [HIX-1]: volume-2-hix-1.html
     Patient Application Launch [HIX-2]: volume-2-hix-2.html
     Identidad del paciente: volume-2-identity.html
     Publicación: volume-2-publication.html

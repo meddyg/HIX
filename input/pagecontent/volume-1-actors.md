@@ -76,7 +76,7 @@ Las dos tablas siguientes listan las transacciones que definen a cada actor. R s
 | | Retrieve Document [ITI-68] | R | MHD |
 | | Mobile Patient Identifier Cross-reference Query [ITI-83] | R | PIXm |
 | | Find Matching Care Services [ITI-90] | R | mCSD |
-| | Custodian Token Exchange \[[HIX-1](volume-2-hix-1.html)\] | R | Vol. 2 |
+| | Mediated Token Exchange \[[HIX-1](volume-2-hix-1.html)\] | R | Vol. 2 |
 | Document Registry | Provide Document Bundle [ITI-65] | R | MHD |
 | | Find Document Lists [ITI-66] | R | MHD |
 | | Find Document References [ITI-67] | R | MHD |
@@ -87,7 +87,7 @@ Las dos tablas siguientes listan las transacciones que definen a cada actor. R s
 | Authorization Server | Get Access Token [ITI-71] | R | IUA |
 | | Introspect Token [ITI-102] | R | IUA |
 | | Get Authorization Server Metadata [ITI-103] | R | IUA |
-| | Custodian Token Exchange \[[HIX-1](volume-2-hix-1.html)\] | R | Vol. 2 |
+| | Mediated Token Exchange \[[HIX-1](volume-2-hix-1.html)\] | R | Vol. 2 |
 | | Patient Application Launch \[[HIX-2](volume-2-hix-2.html)\] | R | Vol. 2 |
 | | Mobile Patient Identifier Cross-reference Query [ITI-83] | R | PIXm |
 | Directorio de la comunidad | Find Matching Care Services [ITI-90] | R | mCSD |
@@ -219,7 +219,7 @@ La fuente autoritativa **SHALL** alimentar el registro de identidad maestra medi
 
 ### Transacciones propias de HIX
 
-**Custodian Token Exchange [HIX-1].** El Record Locator Service presenta al Authorization Server el token del solicitante y recibe a cambio un [token mediado](appendix-glossary.html#token-mediado) para un único destino y una sola transacción, como especifica la [sección 3.2](volume-2-hix-1.html).
+**Mediated Token Exchange [HIX-1].** El Record Locator Service presenta al Authorization Server el token del solicitante y recibe a cambio un [token mediado](appendix-glossary.html#token-mediado) para un único destino y una sola transacción, como especifica la [sección 3.2](volume-2-hix-1.html).
 {: #hix-1}
 
 **Patient Application Launch [HIX-2].** Una aplicación elegida por una persona obtiene del Authorization Server un token destinado al Record Locator Service cuyo contexto de paciente es la identidad maestra de esa persona, como especifica la [sección 3.3](volume-2-hix-2.html).
