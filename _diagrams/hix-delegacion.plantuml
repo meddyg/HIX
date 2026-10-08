@@ -34,9 +34,9 @@ rectangle "Custodios" as CUSTODIOS #F4F4F4 {
   rectangle "Custodio B" as B
 }
 
-M --> RLS : token del miembro\naud = RLS
+M --> RLS : token del miembro\naud = Resource Servers centrales
 RLS --> AS : intercambio [HIX-1]\nresource = custodio X
-AS --> RLS : token derivado\naud = custodio X\nsub = miembro\nact = RLS
+AS --> RLS : token mediado\naud = custodio X\nsub = miembro\nact = RLS
 RLS --> REG : token\naud = Document Registry
 RLS --> A : token\naud = Custodio A
 RLS --> B : token\naud = Custodio B

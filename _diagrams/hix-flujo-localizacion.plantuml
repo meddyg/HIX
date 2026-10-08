@@ -15,14 +15,14 @@ skinparam sequence {
 participant "Consumidor" as C
 participant "Authorization\nServer" as AS
 participant "Record Locator\nService" as RLS
-participant "Registro de\nidentidad maestra" as PMIR
+participant "Master Patient\nIndex" as PMIR
 participant "Document\nRegistry" as REG
 participant "Directorio" as DIR
 participant "Custodio" as K
 
 == Localización ==
 C -> AS : [ITI-71] Get Access Token
-AS --> C : token (audiencia: RLS)
+AS --> C : token (audiencia: Resource Servers centrales)
 C -> RLS : [ITI-67] Find Document References\n(patient) [ITI-72]
 RLS -> AS : [ITI-102] Introspect Token
 AS --> RLS : activo, organización, propósito
@@ -51,5 +51,5 @@ alt el custodio responde
 else el custodio no responde
   RLS --> C : OperationOutcome (transitorio)
 end
-note over C, K : Cada llamada del RLS a un servicio central o a un custodio va precedida de un intercambio [HIX-1] a nombre del solicitante; se muestra solo donde importa.\nCada actor registra sus eventos [ITI-20] bajo el identificador de correlación de la operación.
+note over C, K : Cada llamada del RLS a un custodio, o a un actor central desplegado como sistema distinto, va precedida de un intercambio [HIX-1] a nombre del solicitante. Se muestra solo donde importa.\nCada actor registra sus eventos [ITI-20] bajo el identificador de correlación de la operación.
 @enduml

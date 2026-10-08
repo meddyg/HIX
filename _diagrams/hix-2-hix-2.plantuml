@@ -17,7 +17,7 @@ skinparam sequence {
 actor "Persona" as P
 participant "Aplicación\ndel paciente" as APP
 participant "Authorization\nServer" as AS
-participant "Registro de\nidentidad maestra" as PMIR
+participant "Master Patient\nIndex" as PMIR
 
 APP -> AS : [HIX-2] Petición de autorización\n(response_type = code, resource = RLS,\nlaunch/patient, PKCE S256)
 AS <-> P : autenticación y consentimiento

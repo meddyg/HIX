@@ -17,7 +17,7 @@ rectangle "Hospital A" as A #F4F4F4
 rectangle "Fuente autoritativa de identidad\n(p. ej. EDUS)" as SRC #F8F8F8
 rectangle "Clínica B" as B #F4F4F4
 
-rectangle "Registro de identidad maestra" as MPI #EEF5EE {
+rectangle "Master Patient Index" as MPI #EEF5EE {
   rectangle "<b>Identidad local</b>\n\nDominio del Hospital A\nPatient/349832" as LA
   rectangle "<b>Identidad maestra</b>\n<size:9>una por persona</size>\n\nDominio verificado cédula 1-0234-0567" as MASTER
   rectangle "<b>Identidad local</b>\n\nDominio de la Clínica B\nPatient/123e4567" as LB
