@@ -32,6 +32,8 @@ Estas palabras expresan requisitos normativos de **HIX**. El resto del lenguaje 
 
 Cuando HIX incorpora o referencia requisitos definidos por un perfil IHE, una especificación HL7 FHIR o un RFC, dichos requisitos conservan la fuerza normativa establecida por su especificación de origen.
 
+Un requisito que empieza con la etiqueta **Experimental.** es una propuesta de esta versión para un punto en el que los estándares no dan una respuesta única. Es normativo como cualquier otro, pero puede cambiar con la experiencia de implementación.
+
 #### Terminología y abreviaturas
 
 HIX utiliza terminología definida por IHE, HL7 FHIR y OAuth 2.0. Salvo que se
@@ -66,7 +68,7 @@ Los demás términos, como los de OAuth 2.0 y los propios de HIX, se definen en 
 HIX organiza sus requisitos en diferentes niveles de abstracción. Los volúmenes de esta guía deben leerse de forma complementaria y no como especificaciones independientes.
 
 - El **[Volumen 1](volume-1.html)** describe la arquitectura, es decir, qué hace cada actor y por qué. Sus secciones se numeran 2.x.
-- El **[Volumen 2](volume-2.html)** detalla las transacciones. Especifica completas las propias de HIX y, de las demás, dice lo que HIX les añade. Sus secciones se numeran 3.x.
+- El **[Volumen 2](volume-2.html)** detalla las transacciones. Especifica completas las propias de HIX y, de las demás, dice con qué restricciones las usa. Sus secciones se numeran 3.x.
 - Los **apéndices** reúnen el material de apoyo, por ahora el [glosario](appendix-glossary.html).
 
 Quien quiere entender la arquitectura puede leer la [sección 2](volume-1.html), la [2.1](volume-1-concepts.html) y la [2.6](volume-1-security.html), y después la [sección 3](volume-2.html), la [3.2](volume-2-hix-1.html) y la [3.3](volume-2-hix-2.html). Quien implementa un miembro puede empezar por la [sección 2.2](volume-1-actors.html) y la [2.4](volume-1-groupings.html), y seguir con la página del Volumen 2 de cada transacción que implementa.

@@ -16,6 +16,8 @@ Las opciones definen capacidades que un actor puede añadir a las que se le exig
 | | Opción de Canal de Interconexión |
 | Sistema que consume documentos | Opción de Demografía |
 | | Opción de Coincidencia Demográfica |
+| | Opción de Canal de Interconexión |
+| Aplicación del paciente | Opción de Canal de Interconexión, solo con backend propio |
 {: .table .table-bordered}
 
 ### Opción de Almacenamiento Central {#opcion-de-almacenamiento-central}
@@ -28,15 +30,13 @@ Esta opción corresponde a la primera de las dos ubicaciones del contenido que d
 
 ### Opción de Canal de Interconexión {#opcion-de-canal-de-interconexion}
 
-Las transacciones de la comunidad pueden recorrer un canal de interconexión distinto de HTTPS directo, cuando la comunidad opera sobre una red de intercambio ya establecida, como X-Road. Todo actor que la comunidad expone a otros participantes queda entonces bajo ese canal, sea un actor central o un custodio que responde recuperaciones.
+Las transacciones de la comunidad pueden recorrer un canal de interconexión distinto de HTTPS directo, cuando la comunidad opera sobre una red de intercambio ya establecida, como X-Road. Todo actor que la comunidad expone a otros participantes queda entonces bajo ese canal, sea un actor central o un custodio que responde recuperaciones, y lo mismo los miembros que llaman a esos actores. La excepción es la aplicación del paciente que es un cliente público, porque funciona en el navegador de la persona y solo puede usar HTTPS. Una aplicación con backend propio, que es un cliente confidencial, **MAY** declarar la opción para sus llamadas al Record Locator Service, aunque la autorización de [HIX-2](volume-2-hix-2.html) siga pasando por el navegador.
 
-El actor que declara esta opción **SHALL** atender y originar a través del canal las mismas transacciones, con el mismo contenido y los mismos requisitos de autorización. El custodio que la declara **SHALL** publicar en el directorio el endpoint que describe ese canal. El token sigue viajando en la solicitud y quien la recibe sigue validándolo. La identidad que el canal aporta **SHALL NOT** sustituir la validación del token.
+El actor que declara esta opción **SHALL** atender y originar a través del canal las mismas transacciones, con el mismo contenido y los mismos requisitos de autorización. El directorio **SHALL** declarar, para el custodio que la declara, el endpoint que describe ese canal. El token sigue viajando en la solicitud y quien la recibe sigue validándolo. La identidad que el canal aporta **SHALL NOT** sustituir la validación del token.
 
 El canal no cambia nada de la arquitectura. Resuelve cómo se conectan, se identifican y cifran su tramo las organizaciones, y las transacciones, los punteros, los tokens, la decisión de divulgación y la auditoría siguen siendo los mismos, como explica la [sección 2.1](volume-1-concepts.html). La representación del canal en el directorio se especificará más adelante en esta guía.
 
 Una red como X-Road autentica y cifra el tramo entre los servidores de seguridad de las dos organizaciones ([X-Road, Arquitectura §3.3](https://docs.x-road.global/Architecture/arc-g_x-road_arhitecture.html#33-message-transport-protocol))[^xroad-transport]. El tramo entre el sistema del custodio y su propio servidor de seguridad queda dentro de su organización, y protegerlo es responsabilidad del custodio. Esta guía no lo especifica.
-
-> **TODO.** Comprobar con pruebas sobre X-Road qué guarda su registro de mensajes, para ver si guarda los mensajes completos, y cómo se configura. Reflejar el resultado en esta opción y en las decisiones de política de la [sección 2.6](volume-1-security.html).
 
 ### Opción de Consentimiento {#opcion-de-consentimiento}
 
@@ -46,7 +46,7 @@ El actor que declara esta opción, sea el Record Locator Service o el Document R
 
 El modelo de consentimiento, su ciclo de vida, su representación y sus políticas se especificarán en una versión posterior de esta guía a partir de [PCF](https://profiles.ihe.net/ITI/PCF/index.html). Esta opción declara el punto en el que esa decisión se aplica y la información que necesita. Hasta entonces, la comunidad opera bajo la política de divulgación única que haya acordado, aplicada en el mismo punto.
 
-En qué punto se aplica, en el Record Locator Service o en el Document Registry, lo decide la comunidad, como explica la [sección 2.1](volume-1-concepts.html). MHDS resuelve este mismo problema de otro modo, con un Authorization Server agrupado con su Document Registry que gestiona el consentimiento. HIX no sigue ese camino, por las razones que da la [misma sección](volume-1-concepts.html#relacion-con-mhds).
+En qué punto se aplica, en el Record Locator Service o en el Document Registry, lo decide la comunidad, como explica la [sección 2.1](volume-1-concepts.html#divulgacion). MHDS resuelve este mismo problema de otro modo, con un Authorization Server agrupado con su Document Registry que gestiona el consentimiento. HIX no sigue ese camino, por las razones que da la [misma sección](volume-1-concepts.html#relacion-con-mhds).
 
 ### Opción de Demografía {#opcion-de-demografia}
 
@@ -68,7 +68,7 @@ Las citas reproducen el texto publicado por su fuente. Los recortes se marcan co
 [^xroad-transport]: [X-Road, Arquitectura §3.3 Message Transport Protocol](https://docs.x-road.global/Architecture/arc-g_x-road_arhitecture.html#33-message-transport-protocol): "The X-Road Message Transport Protocol is used by security server to exchange service requests and service responses. [...] The protocol is based on HTTPS and **uses mutual certificate-based TLS authentication**."
 
 *[PMIR]: Patient Master Identity Registry, perfil IHE que gestiona la identidad maestra del paciente
-*[PIXm]: Patient Identifier Cross-referencing for mobile, perfil IHE que enlaza los identificadores locales de un paciente con su identidad maestra
+*[PIXm]: Patient Identifier Cross-referencing for mobile, perfil IHE que enlaza los MRN de un paciente con su identidad maestra
 *[PDQm]: Patient Demographics Query for Mobile, perfil IHE de búsqueda de pacientes por datos demográficos
 *[MHD]: Mobile access to Health Documents, perfil IHE para publicar, localizar y recuperar documentos sobre FHIR
 *[MHDS]: Mobile Health Document Sharing, perfil IHE que compone MHD, PMIR, mCSD, IUA y ATNA en una comunidad de intercambio de documentos

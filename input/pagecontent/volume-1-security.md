@@ -21,7 +21,7 @@ MHDS advierte que el marco de políticas de una comunidad debe definirse antes d
 
 ### Modelo de confianza {#modelo-de-confianza}
 
-El límite de confianza pasa entre cada miembro y la infraestructura central, como establece la [sección 2.1](volume-1-concepts.html). Una recuperación cruza ese límite dos veces, del solicitante a la comunidad y de la comunidad al custodio, y cada cruce lleva un token de un régimen distinto. El primero es el token que el solicitante obtiene del Authorization Server, destinado a los Resource Servers centrales, que el Record Locator Service comprueba por introspección. El segundo es el [token mediado](appendix-glossary.html#token-mediado) que el Record Locator Service obtiene con [HIX-1](volume-2-hix-1.html) para cada destino que alcanza, sea un custodio o un actor central, y que el destino valida por sí mismo. La [Tabla 2.6-1](volume-1-security.html#tabla-2-6-1) los compara.
+El límite de confianza pasa entre cada miembro y la infraestructura central, como establece la [sección 2.1](volume-1-concepts.html). Una recuperación cruza ese límite dos veces, del solicitante a la comunidad y de la comunidad al custodio, y cada cruce lleva un token de un régimen distinto. El primero es el token que el solicitante obtiene del Authorization Server, destinado a los Resource Servers centrales, que el Record Locator Service comprueba por introspección. El segundo es el [token mediado](appendix-glossary.html#token-mediado) que el Record Locator Service obtiene con [HIX-1](volume-2-hix-1.html) para cada custodio y cada actor central desplegado como un sistema distinto que alcanza, y que el destino valida por sí mismo. La [Tabla 2.6-1](volume-1-security.html#tabla-2-6-1) los compara.
 
 **Tabla 2.6-1:** Los dos regímenes de token
 {: #tabla-2-6-1}
@@ -30,12 +30,12 @@ El límite de confianza pasa entre cada miembro y la infraestructura central, co
 | --- | --- | --- |
 | Quién lo obtiene | El miembro con ITI-71, o la aplicación del paciente con [HIX-2](volume-2-hix-2.html) | El Record Locator Service con [HIX-1](volume-2-hix-1.html) |
 | Audiencia | Los Resource Servers centrales que define la comunidad, o solo el Record Locator Service si lo obtiene la aplicación del paciente | Un único custodio, o los actores centrales que el Authorization Server asocia al `resource` del intercambio |
-| Vida | La que fije el Authorization Server | Dos minutos como máximo, y nunca más que la vida restante del token del solicitante |
+| Vida | La que fije el Authorization Server | Dos minutos como máximo, y nunca más que la vida restante del token del solicitante ni la del token de actor |
 | Cómo se valida | El Record Locator Service, por introspección con ITI-102 una vez por operación. Otro Resource Server central, preferiblemente también por introspección, o por sí mismo con la JWT Token Option | En el destino, con las claves que publica el Authorization Server ([JWKs](https://www.rfc-editor.org/info/rfc7517/)), sin necesidad de introspección |
 | Sujeto | El sistema del miembro, o la persona que lanzó la aplicación | El mismo |
-| Extensiones de IUA | Del miembro, la organización y el propósito de uso. De la aplicación del paciente, solo el propósito de uso | Las mismas |
+| Extensiones de IUA | Del miembro, la organización y el propósito de uso. De la aplicación del paciente, el propósito de uso, y la organización si la aplicación tiene una registrada | Las mismas |
 | Scope | El concedido al solicitante | Solo el de la transacción que motivó el intercambio |
-| Contexto de paciente | Solo si lo obtuvo una aplicación del paciente | El mismo, si lo hay |
+| Contexto de paciente | Solo si lo obtuvo una aplicación del paciente | El mismo, en el claim `patient`, si lo hay |
 | Actor | Ninguno | El Record Locator Service, en el claim `act` |
 {: .table .table-bordered}
 
@@ -49,11 +49,11 @@ De la tabla se siguen cuatro reglas. De cada una conviene decir qué fija HIX, d
 
 > **Nota.** Cómo pide cada cliente su token y qué Resource Servers quedan en su `aud` según el despliegue lo detallan [ITI-71](volume-2-authorization.html#iti-71) y [HIX-2](volume-2-hix-2.html#peticion-de-autorizacion) en el Volumen 2.
 
-**El token del solicitante no sale de la infraestructura central.** El Record Locator Service no lo reenvía a ningún custodio ni actor central. Ante cada destino presenta un token mediado para ese destino, como fija la [sección 2.2](volume-1-actors.html). Así el solicitante nunca tiene una credencial que valga ante un custodio, y un custodio nunca recibe una que valga ante otro.
+**El token del solicitante no sale de la infraestructura central.** El Record Locator Service no lo reenvía a ningún custodio ni actor central. Ante cada custodio y cada actor central desplegado como un sistema distinto presenta un token mediado para ese destino, como fija la [sección 2.2](volume-1-actors.html). Así el solicitante nunca tiene una credencial que valga ante un custodio, y un custodio nunca recibe una que valga ante otro.
 
 **El custodio puede validar el token sin preguntar al Authorization Server.** Todo lo que necesita está en el token y en las claves que el Authorization Server publica. Esa publicación es su única dependencia, y la resuelve por adelantado, conservando las claves y renovándolas cuando aparece un identificador de clave que no conoce. La subsección siguiente detalla la validación y dice cuándo una comunidad puede añadirle la introspección.
 
-**El Record Locator Service no actúa por cuenta propia ante los actores centrales.** No tiene credenciales permanentes hacia el Document Registry ni hacia el Master Patient Index. Cada acceso lo hace a nombre de un solicitante, con el token mediado para ese destino, y así queda auditado. De esta forma el Record Locator Service no puede consultar a otro componente central sin una petición de un solicitante que lo justifique, y una credencial suya comprometida no da acceso a nada por sí sola, porque no existe ninguna que valga sin ese intercambio. Las llamadas que otros actores centrales hacen por su cuenta, como las del Document Registry al indexar o la del Authorization Server al lanzar una aplicación del paciente, se autentican como decida la implementación.
+**El Record Locator Service no actúa por cuenta propia ante los actores centrales.** No tiene credenciales permanentes hacia el Document Registry ni hacia el Master Patient Index. Cuando son sistemas distintos, cada acceso lo hace a nombre de un solicitante, con el token mediado para ese destino, y así queda auditado. De esta forma el Record Locator Service no puede consultar a otro componente central sin una petición de un solicitante que lo justifique, y una credencial suya comprometida no da acceso a nada por sí sola, porque no existe ninguna que valga sin ese intercambio. Las llamadas que otros actores centrales hacen por su cuenta, como las del Document Registry al indexar, se autentican como decida la implementación. El Authorization Server usa para su consulta ITI-83 un token propio que obtiene con el grant Client Credentials, como fija la [sección 2.2](volume-1-actors.html#authorization-server).
 
 #### Validación en el custodio {#validacion-en-el-custodio}
 
@@ -94,7 +94,7 @@ Lo que el token sí aporta es el contexto con el que se decide, en las extension
 
 #### Contención de una credencial comprometida {#contencion-de-una-credencial-comprometida}
 
-Deshabilitar un cliente en el Authorization Server **SHALL** revocar sus tokens vigentes, de modo que la siguiente introspección los declare inactivos, que es el estado que RFC 7662 prevé para un token revocado ([RFC 7662, §2.2](https://www.rfc-editor.org/rfc/rfc7662.html#section-2.2))[^rfc7662-active], y ningún intercambio pueda partir de ellos. Un token mediado ya emitido no tiene ciclo de vida propio. El Record Locator Service lo usa una sola vez, en la transacción que lo motivó, y expira en dos minutos como máximo, así que una transacción ya en curso termina.
+El Authorization Server **SHALL** revocar los tokens vigentes de un cliente al deshabilitarlo, de modo que la siguiente introspección los declare inactivos, que es el estado que RFC 7662 prevé para un token revocado ([RFC 7662, §2.2](https://www.rfc-editor.org/rfc/rfc7662.html#section-2.2))[^rfc7662-active], y ningún intercambio pueda partir de ellos. Un token mediado ya emitido no tiene ciclo de vida propio. El Record Locator Service lo usa una sola vez, en la transacción que lo motivó, y expira en dos minutos como máximo, así que una transacción ya en curso termina.
 
 Lo que contiene una credencial comprometida es que los tokens obtenidos con ella dejen de valer, no que cambie la credencial. Si el Authorization Server los revoca también al rotar el secreto o la clave de un cliente es decisión de su implementación. Si no lo hace, hay que revocarlos aparte.
 
@@ -150,26 +150,26 @@ Las transacciones de identidad también divulgan. ITI-83 revela que un identific
 
 MHDS pide reconocer los modos de emergencia desde el diseño, y advierte que anular una restricción del paciente por peligro inminente no es romper la política sino una condición explícita dentro de ella ([MHDS Vol. 1, §1:50.5.1](https://profiles.ihe.net/ITI/MHDS/volume-1.html#15051-policies-and-risk-management))[^mhds-emergency]. HIX distingue dos casos con los propósitos de uso de la [Tabla 2.2-3](volume-1-actors.html#tabla-2-2-3). Con `ETREAT`, un profesional autorizado atiende una urgencia y la política de la comunidad decide qué le permite frente a `TREAT`. Con `BTG`, accede quien no está autorizado para ese acceso, con anulación de la política, que es lo que HL7 define para ese código[^btg].
 
-HIX no define cuándo procede ninguno de los dos ni cómo los pide el solicitante, porque IUA no define ningún mecanismo para ello. Exige que sean declarados y no inferidos. El Authorization Server **SHALL** emitirlos como propósito de uso solo cuando su registro los admita para ese cliente, y el actor que aplica la decisión de divulgación **SHALL** registrar en la auditoría el propósito de emergencia con el que divulgó.
+HIX no define cuándo procede ninguno de los dos ni cómo los pide el solicitante, porque IUA no define ningún mecanismo para ello. El Authorization Server **SHALL** emitirlos como propósito de uso solo cuando su registro los admita para ese cliente, y el actor que aplica la decisión de divulgación **SHALL** registrar en la auditoría el propósito de emergencia con el que divulgó.
 
 ### Riesgos residuales {#riesgos-residuales}
 
-La arquitectura no impide que un componente se vea comprometido. Eso depende de cómo se construye, despliega y opera cada sistema, y queda fuera de esta guía, como también queda fuera de IHE y hasta OAuth2. Las causas son las de cualquier sistema, como un supply chain attack sobre una dependencia o una imagen, el robo de credenciales o de claves de firma, una misconfiguration, una vulnerabilidad sin parchar o un insider. 
+La arquitectura no impide que un componente se vea comprometido. Eso depende de cómo se construye, despliega y opera cada sistema, y queda fuera de esta guía, como también queda fuera de IHE y hasta OAuth 2.0. Las causas son las de cualquier sistema, como un supply chain attack sobre una dependencia o una imagen, el robo de credenciales o de claves de firma, una misconfiguration, una vulnerabilidad sin parchar o un insider.
 
-Lo que busca HIX es minimizar la superficie de ataque aplicando least privilege a cada acceso, de modo que un componente comprometido alcance lo menos posible. De ahí salen el token mediado de [HIX-1](volume-2-hix-1.html), que nunca vale ante dos custodios y autoriza un solo tipo de transacción, y las decisiones que esta guía deja a la comunidad. Las decisiones que estos riesgos dejan a la comunidad están en la [sección 2.6.1](volume-1-security.html#politicas-y-gestion-de-riesgo).
+Lo que busca HIX es minimizar la superficie de ataque aplicando least privilege a cada acceso, de modo que un componente comprometido alcance lo menos posible. De ahí salen el token mediado de [HIX-1](volume-2-hix-1.html), que nunca vale ante dos custodios y autoriza un solo tipo de transacción, y las decisiones que esta guía deja a la comunidad, reunidas en la [sección 2.6.1](volume-1-security.html#politicas-y-gestion-de-riesgo).
 
 **Si un componente se ve comprometido**
 
 - **Record Locator Service.** No tiene acceso arbitrario a nada. Solo ve el tráfico que transita por él y los tokens de los solicitantes, y solo alcanza lo que esos tokens permiten mientras están vigentes.
 - **Authorization Server.** Puede emitir cualquier token, porque es la raíz de confianza. Nada dentro de HIX lo acota, y proteger sus claves es la primera responsabilidad de la comunidad.
-- **Document Registry.** Solo posee metadatos. Expone qué documentos existen de cada persona, pero no su contenido ni la dirección de los custodios.
+- **Document Registry.** Solo posee metadatos, salvo el contenido que conserva bajo la [Opción de Almacenamiento Central](volume-1-options.html#opcion-de-almacenamiento-central). Expone qué documentos existen de cada persona, pero no la dirección de los custodios.
 - **Credenciales robadas de un miembro.** Con ellas se obtienen tokens como ese miembro, con el scope, la organización y los propósitos que su registro admite. Solo se puede afectar a los pacientes y documentos de su propio dominio, y fuera de él solo hacer las consultas que la decisión de divulgación le permita. Ningún token suyo vale ante un custodio. Deshabilitar el cliente revoca sus tokens vigentes, como fija la [sección 2.6.2](volume-1-security.html#contencion-de-una-credencial-comprometida).
 - **Credenciales robadas del Record Locator Service.** Con ellas no se alcanza a nadie, porque cada intercambio exige además el token de un solicitante. Por eso el Record Locator Service no puede hacer casi nada sin un miembro que interactúe con él. Cuando el despliegue reúne en un mismo sistema al Record Locator Service y a otros actores centrales, comprometer ese sistema compromete todo lo que reúne, y esa es la contrapartida que acepta quien elige ese despliegue. Deshabilitar el cliente revoca sus tokens vigentes.
-- **Un token mediado robado.** Vale ante un solo custodio, para un solo tipo de transacción y durante dos minutos como máximo. El custodio **MAY** rechazar un `jti` que ya vio.
+- **Un token mediado robado.** Vale ante el destino que nombra su `resource`, nunca ante dos custodios, para un solo tipo de transacción y durante dos minutos como máximo. El custodio **MAY** rechazar un `jti` que ya vio.
 
 **Límites que acota la política de la comunidad**
 
-- **Revocación.** Quien valida el token por sí mismo mediante JWKs, no ve una revocación hasta que el token expira.
+- **Revocación.** Quien valida el token por sí mismo mediante JWKs no ve una revocación hasta que el token expira.
 - **Enumeración.** La búsqueda por datos demográficos permite enumerar pacientes dentro de lo que la política revela.
 - **Etiquetado.** Un custodio puede etiquetar mal la confidencialidad de un documento.
 
@@ -183,7 +183,7 @@ MHDS cierra sus consideraciones de seguridad con la relación entre sus controle
 | Control | Perfil o especificación que lo aporta |
 | --- | --- |
 | Autenticación de sistemas | ATNA |
-| Autorización y alcance | IUA, OAuth 2.0 |
+| Autorización y scope | IUA, OAuth 2.0 |
 | Delegación acotada y mínimo privilegio | RFC 8693, RFC 8707 |
 | Validación local del token mediado | RFC 9068 |
 | Introspección de tokens | IUA, RFC 7662 |
@@ -216,7 +216,7 @@ Las citas reproducen el texto publicado por su fuente. Los recortes se marcan co
 [^iua-sub]: [IUA, §3.71.4.2.2.1 JSON Web Token Option](https://profiles.ihe.net/ITI/IUA/index.html#3714221-json-web-token-option): "sub (required): **If known, unique identifier of the user; the client_id otherwise** [JWT, Section 4.1]. client_id (required): identifier of the client for which the token is issued." Y en §3.71.4.2.2.1.1 JWT IUA extension: "The Authorization Server and Resource Server shall support the following extensions to the JWT access token: **subject_name** (optional): The user's name as String. **subject_organization_id** (optional): Unique identifier of the user's organization. [...] **subject_role** (optional): Coded values indicating the user's roles. [...] **purpose_of_use** (optional): Purpose of use for the request. [...] The above claims shall be wrapped in an "extensions" object with key 'ihe_iua'".
 
 *[PMIR]: Patient Master Identity Registry, perfil IHE que gestiona la identidad maestra del paciente
-*[PIXm]: Patient Identifier Cross-referencing for mobile, perfil IHE que enlaza los identificadores locales de un paciente con su identidad maestra
+*[PIXm]: Patient Identifier Cross-referencing for mobile, perfil IHE que enlaza los MRN de un paciente con su identidad maestra
 *[PDQm]: Patient Demographics Query for Mobile, perfil IHE de búsqueda de pacientes por datos demográficos
 *[MHD]: Mobile access to Health Documents, perfil IHE para publicar, localizar y recuperar documentos sobre FHIR
 *[MHDS]: Mobile Health Document Sharing, perfil IHE que compone MHD, PMIR, mCSD, IUA y ATNA en una comunidad de intercambio de documentos

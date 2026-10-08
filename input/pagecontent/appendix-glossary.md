@@ -108,7 +108,10 @@ Este glosario reúne, en una línea cada uno, los actores y términos que usa es
 **Identidad maestra.** La identidad verificada de una persona, única en la comunidad, creada por la fuente autoritativa de identidad. Lleva un identificador de la persona que la fuente autoritativa reconoce, como la cédula, y los enlaces a las identidades locales.
 {: #identidad-maestra}
 
-**Identidad local.** El paciente tal como lo conoce un miembro, con el identificador de su propio dominio. Cada miembro la declara y la enlaza con la identidad maestra.
+**MRN.** Medical Record Number, el identificador que un miembro asigna a un paciente en su propio dominio, como su número de expediente. Solo tiene sentido dentro de ese dominio, y el Master Patient Index lo enlaza con la identidad maestra.
+{: #mrn}
+
+**Identidad local.** El paciente tal como lo conoce un miembro, con su MRN. Cada miembro la declara y la enlaza con la identidad maestra.
 {: #identidad-local}
 
 **Puntero.** El `DocumentReference` que describe un documento sin contenerlo. Sobre él se toma toda decisión de la comunidad antes de mover contenido.
@@ -123,13 +126,13 @@ Este glosario reúne, en una línea cada uno, los actores y términos que usa es
 **Propósito de uso.** Código del conjunto PurposeOfUse de HL7 que dice para qué se accede. Viaja en el token y lo evalúa la decisión de divulgación.
 {: #proposito-de-uso}
 
-**Scope.** El alcance de un token en OAuth 2.0. Fija qué transacciones puede pedir su portador.
+**Scope.** Lo que autoriza un token en OAuth 2.0. Fija qué transacciones puede pedir su portador.
 {: #scope}
 
 **[OpenID Provider](https://openid.net/specs/openid-connect-core-1_0.html#Terminology).** Authorization Server de OAuth 2.0 que además autentica a la persona y acredita esa autenticación con un `id_token`, según OpenID Connect. En HIX lo es el Authorization Server de la comunidad.
 {: #openid-provider}
 
-**Token del solicitante.** El token que un miembro obtiene con ITI-71, o la aplicación del paciente con [HIX-2](volume-2-hix-2.html). El de un miembro está destinado a los Resource Servers centrales que define la comunidad, y el de la aplicación solo al Record Locator Service. Lleva el sujeto, la organización, el propósito de uso, el alcance y, en el caso de la aplicación del paciente, el contexto de paciente.
+**Token del solicitante.** El token que un miembro obtiene con ITI-71, o la aplicación del paciente con [HIX-2](volume-2-hix-2.html). El de un miembro está destinado a los Resource Servers centrales que define la comunidad, y el de la aplicación solo al Record Locator Service. Lleva el sujeto, el propósito de uso y el scope. El de un miembro lleva además su organización, y el de la aplicación del paciente el contexto de paciente y la organización solo si la aplicación tiene una registrada.
 {: #token-del-solicitante}
 
 **Token mediado.** El token que el mediador obtiene con [HIX-1](volume-2-hix-1.html) para el destino que nombra su `resource`, nunca para dos custodios, y un solo tipo de transacción, con el solicitante original como sujeto y el mediador como actor. Se emite para el custodio y para cada Resource Server central que la comunidad despliegue como un sistema distinto.
@@ -142,7 +145,7 @@ Este glosario reúne, en una línea cada uno, los actores y términos que usa es
 {: #pdp}
 
 *[PMIR]: Patient Master Identity Registry, perfil IHE que gestiona la identidad maestra del paciente
-*[PIXm]: Patient Identifier Cross-referencing for mobile, perfil IHE que enlaza los identificadores locales de un paciente con su identidad maestra
+*[PIXm]: Patient Identifier Cross-referencing for mobile, perfil IHE que enlaza los MRN de un paciente con su identidad maestra
 *[PDQm]: Patient Demographics Query for Mobile, perfil IHE de búsqueda de pacientes por datos demográficos
 *[MHD]: Mobile access to Health Documents, perfil IHE para publicar, localizar y recuperar documentos sobre FHIR
 *[MHDS]: Mobile Health Document Sharing, perfil IHE que compone MHD, PMIR, mCSD, IUA y ATNA en una comunidad de intercambio de documentos
@@ -153,3 +156,4 @@ Este glosario reúne, en una línea cada uno, los actores y términos que usa es
 *[CT]: Consistent Time, perfil IHE que sincroniza los relojes de los sistemas
 *[PCF]: Privacy Consent on FHIR, perfil IHE de consentimiento del paciente
 *[MPI]: Master Patient Index, el actor de HIX que conserva las identidades maestras de los pacientes
+*[MRN]: Medical Record Number, el identificador que un miembro asigna a un paciente en su propio dominio

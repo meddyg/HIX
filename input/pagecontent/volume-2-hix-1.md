@@ -35,7 +35,7 @@ HIX-1 se apoya en los documentos siguientes.
 - [RFC 8707](https://www.rfc-editor.org/rfc/rfc8707), Resource Indicators for OAuth 2.0, febrero de 2020. Aporta el parámetro `resource` y el error `invalid_target`.
 - [RFC 9068](https://www.rfc-editor.org/rfc/rfc9068), JSON Web Token (JWT) Profile for OAuth 2.0 Access Tokens, octubre de 2021. Aporta la forma del token mediado y su validación en el destino.
 - [RFC 7519](https://www.rfc-editor.org/rfc/rfc7519), JSON Web Token (JWT), mayo de 2015. Aporta los claims del token, entre ellos `aud` y `jti`.
-- [IUA](https://profiles.ihe.net/ITI/IUA/index.html), Internet User Authorization. Aporta ITI-71, con el que el Record Locator Service obtiene su token de actor, ITI-72, con el que presenta el token mediado, y las extensiones `ihe_iua` que el token mediado copia del token del solicitante.
+- [IUA](https://profiles.ihe.net/ITI/IUA/index.html), Internet User Authorization, revisión 2.5, junio de 2026. Aporta ITI-71, con el que el Record Locator Service obtiene su token de actor, ITI-72, con el que presenta el token mediado, y las extensiones `ihe_iua` que el token mediado copia del token del solicitante.
 
 > **Nota.** HIX-1 se apoya en ITI-71. El Record Locator Service obtiene con ITI-71 su token de actor, y el intercambio usa el mismo token endpoint del Authorization Server con otro grant. IUA limita [ITI-71](https://profiles.ihe.net/ITI/IUA/index.html#371-get-access-token-iti-71) a los grants Authorization Code y Client Credentials, y de RFC 8693 solo toma el parámetro `requested_token_type` ([IUA, §3.71.4.1.2.1](https://profiles.ihe.net/ITI/IUA/index.html#3714121-client-credential-grant-type)). Admite que sus actores soporten otros grants ([IUA, §34.4.1.1](https://profiles.ihe.net/ITI/IUA/index.html#34411-authorization-grant-types))[^iua-grants], y HIX-1 especifica uno de ellos, el grant Token Exchange de RFC 8693 con un resource indicator de RFC 8707.
 
@@ -52,9 +52,9 @@ La [Figura 3.2-2](volume-2-hix-1.html#figura-3-2-2) muestra los mensajes de la t
 
 ##### Evento desencadenante
 
-El Record Locator Service no puede llamar por sí mismo a un custodio ni a un actor central, como fija la [sección 2.6](volume-1-security.html#modelo-de-confianza). Para llamar a uno de estos destinos, presenta al Authorization Server su token de actor y el token del solicitante, y solicita un token mediado para actuar en nombre del solicitante ante ese destino.
+El Record Locator Service no puede llamar por sí mismo a un custodio ni a un actor central desplegado como un sistema distinto, como fija la [sección 2.6](volume-1-security.html#modelo-de-confianza). Para llamar a uno de estos destinos, presenta al Authorization Server su token de actor y el token del solicitante, y solicita un token mediado para actuar en nombre del solicitante ante ese destino.
 
-El Record Locator Service solicita un token mediado para cada llamada a un destino mientras atiende a un solicitante. Si el destino es un custodio, primero aplica la decisión de divulgación: un puntero cuya divulgación se niega no origina ningún intercambio, como fija la [sección 2.2](volume-1-actors.html#record-locator-service). En todos los casos, comprueba antes el token del solicitante con ITI-102.
+El Record Locator Service solicita un token mediado para cada llamada a un custodio o a un actor central desplegado como un sistema distinto mientras atiende a un solicitante. Las llamadas internas a un mismo sistema no pasan por HIX-1, como fija la [sección 2.2](volume-1-actors.html#record-locator-service). Si el destino es un custodio, primero aplica la decisión de divulgación: un puntero cuya divulgación se niega no origina ningún intercambio, como fija la [sección 2.2](volume-1-actors.html#record-locator-service). En todos los casos, comprueba antes el token del solicitante con ITI-102.
 
 ##### Semántica del mensaje
 
@@ -81,7 +81,7 @@ El Record Locator Service se autentica en el token endpoint como cliente confide
 
 La petición no incluye la organización, el propósito de uso ni el contexto de paciente. Estos datos se propagan automáticamente desde el token del solicitante al token mediado, como fija la [sección 2.2](volume-1-actors.html#authorization-server).
 
-El `resource` sale del directorio porque el directorio es el único origen de los endpoints que usa la infraestructura central, como fija la [sección 2.2](volume-1-actors.html#directorio-de-la-comunidad). El Authorization Server restringe a ese destino la audiencia del token, como recomienda RFC 8707 ([RFC 8707, §2](https://www.rfc-editor.org/rfc/rfc8707.html#section-2)). La petición no lleva `audience`. RFC 8693 lo trataría como otro destino, y el token emitido sería válido en todos los destinos indicados ([RFC 8693, §2.1](https://www.rfc-editor.org/rfc/rfc8693.html#section-2.1) y [§2.1.1](https://www.rfc-editor.org/rfc/rfc8693.html#section-2.1.1))[^rfc8707-resource].
+El `resource` sale del directorio porque el directorio es el único origen de los endpoints que usa la infraestructura central, como fija la [sección 2.2](volume-1-actors.html#directorio-de-la-comunidad). El Authorization Server restringe la audiencia del token a los Resource Servers que asocia a ese `resource`, y a ese único custodio cuando nombra a uno, como recomienda RFC 8707 ([RFC 8707, §2](https://www.rfc-editor.org/rfc/rfc8707.html#section-2)). La petición no lleva `audience`. RFC 8693 lo trataría como otro destino, y el token emitido sería válido en todos los destinos indicados ([RFC 8693, §2.1](https://www.rfc-editor.org/rfc/rfc8693.html#section-2.1) y [§2.1.1](https://www.rfc-editor.org/rfc/rfc8693.html#section-2.1.1))[^rfc8707-resource].
 
 RFC 8693 distingue la delegación de la suplantación: en la delegación, quien actúa conserva su identidad y representa a otro. Aquí, `subject_token` representa al solicitante y `actor_token` al Record Locator Service ([RFC 8693, §1.1](https://www.rfc-editor.org/rfc/rfc8693.html#section-1.1)). El claim `act` del token mediado procede del `actor_token` e identifica al actor de la delegación ([RFC 8693, §4.1](https://www.rfc-editor.org/rfc/rfc8693.html#section-4.1))[^rfc8693-delegation]. El destino **SHOULD** comprobar ese claim, como recomienda la [sección 2.6](volume-1-security.html#validacion-en-el-custodio).
 
@@ -92,7 +92,7 @@ Además de validar cada token que recibe, como exige RFC 8693 ([RFC 8693, §2.1]
 1. Que el `subject_token` y el `actor_token` son access tokens vigentes que emitió él.
 2. Que la audiencia del `subject_token` incluye al Record Locator Service, de modo que no se intercambie un token pensado para otro destino.
 3. Que el `subject_token` no lleva `act`, es decir, que no es un token mediado. Un token mediado no se vuelve a intercambiar.
-4. Que el `actor_token` identifica al Record Locator Service y coincide con el cliente autenticado.
+4. Que el `actor_token` identifica al Record Locator Service, coincide con el cliente autenticado y tiene como audiencia al Authorization Server.
 5. Que hay un solo `resource`, registrado como destino y dentro de la delegación registrada para el Record Locator Service.
 6. Que el scope es una sola transacción, contenida en el del `subject_token` y en la delegación registrada.
 
@@ -108,9 +108,9 @@ Después emite el token mediado conforme a la [sección 2.2](volume-1-actors.htm
 | La petición no lleva exactamente un `resource`, o lleva `audience` | `invalid_target` | Un solo `resource` deja la audiencia en manos del Authorization Server, y `audience` añadiría destinos que él no controla, como explica la [sección 2.6](volume-1-security.html#modelo-de-confianza) |
 | El cliente autenticado no es el Record Locator Service | `unauthorized_client` | Solo el Record Locator Service puede pedir un token a nombre de otro, como fija la [sección 2.2](volume-1-actors.html#authorization-server) |
 | La autenticación del cliente falla | `invalid_client`, con el código HTTP 401 | Lo fija RFC 6749 para el token endpoint ([RFC 6749, §5.2](https://www.rfc-editor.org/rfc/rfc6749.html#section-5.2))[^rfc8693-error] |
-| Un token es inválido o ha expirado, el `subject_token` no tiene al Record Locator Service en su audiencia o ya lleva `act` | `invalid_request` | RFC 8693 prevé ese código para un `subject_token` o un `actor_token` que no es válido o que la política no acepta ([RFC 8693, §2.2.2](https://www.rfc-editor.org/rfc/rfc8693.html#section-2.2.2))[^rfc8693-error] |
+| Un token es inválido o ha expirado, el `subject_token` no tiene al Record Locator Service en su audiencia o ya lleva `act`, o el `actor_token` no tiene al Authorization Server en su audiencia | `invalid_request` | RFC 8693 prevé ese código para un `subject_token` o un `actor_token` que no es válido o que la política no acepta ([RFC 8693, §2.2.2](https://www.rfc-editor.org/rfc/rfc8693.html#section-2.2.2))[^rfc8693-error] |
 | El `resource` no es un destino registrado o queda fuera de la delegación | `invalid_target` | RFC 8707 prevé ese código para un destino que el Authorization Server no acepta ([RFC 8707, §2](https://www.rfc-editor.org/rfc/rfc8707.html#section-2))[^rfc8707-resource] |
-| El scope está vacío, pide más de una transacción o excede el del solicitante o el de la delegación | `invalid_scope` | El token mediado vale para un solo tipo de transacción y su autoridad nunca crece, como fija la [sección 2.2](volume-1-actors.html#authorization-server) |
+| El scope está vacío, pide más de una transacción, pide un valor que no es una transacción, como `launch/patient`, o excede el del solicitante o el de la delegación | `invalid_scope` | El token mediado vale para un solo tipo de transacción y su autoridad nunca crece, como fija la [sección 2.2](volume-1-actors.html#authorization-server) |
 {: .table .table-bordered}
 
 #### Respuesta de intercambio {#respuesta-de-intercambio}
@@ -132,7 +132,7 @@ El Authorization Server responde a un intercambio concedido con el código HTTP 
 | `issued_token_type` | `urn:ietf:params:oauth:token-type:access_token`, porque es un access token que el Record Locator Service no necesita leer |
 | `token_type` | `Bearer`, porque el Record Locator Service lo presenta con ITI-72 |
 | `expires_in` | La vida del token en segundos, que no supera los dos minutos ni la vida restante del token del solicitante o del token de actor, como fija la [sección 2.2](volume-1-actors.html#authorization-server) |
-| `scope` | Puede omitirse, porque el alcance concedido es siempre el pedido, como fija la [sección 2.2](volume-1-actors.html#authorization-server) |
+| `scope` | Puede omitirse, porque el scope concedido es siempre el pedido, como fija la [sección 2.2](volume-1-actors.html#authorization-server) |
 | `refresh_token` | El Authorization Server **SHALL NOT** incluirlo. El token mediado no se renueva, y cada transacción pide el suyo |
 {: .table .table-bordered}
 
@@ -221,6 +221,8 @@ El token mediado de la respuesta se decodifica así. Su `aud` es solo el endpoin
 }
 ```
 
+Si el token del solicitante tiene contexto de paciente, el token mediado lo lleva en el claim `patient`, con el mismo valor que la respuesta de token de [HIX-2](volume-2-hix-2.html#respuesta-de-token).
+
 Si la petición llevara dos `resource`, el Authorization Server la rechazaría con el código HTTP 400 y el error `invalid_target`.
 
 ```http
@@ -239,7 +241,7 @@ La [sección 2.6](volume-1-security.html) fija cómo el destino [valida](volume-
 
 1. Un Record Locator Service comprometido solo puede intercambiar los tokens de solicitantes que recibe, mientras están vigentes y dentro de su scope.
 2. Un token mediado robado vale ante el destino que nombra su `resource`, nunca ante dos custodios, para un solo tipo de transacción y durante dos minutos como máximo. El Record Locator Service **SHALL** usar cada token mediado solo en la transacción para la que lo pidió, y el destino **MAY** rechazar un `jti` que ya vio.
-3. La respuesta de error **SHALL NOT** revelar en `error_description` qué destinos existen ni el contenido de un token.
+3. El Authorization Server **SHALL NOT** revelar en `error_description` qué destinos existen ni el contenido de un token.
 4. La vida máxima de dos minutos solo significa lo mismo en cada extremo si los relojes coinciden, y por eso cada actor es Time Client de CT, como fija la [sección 2.4](volume-1-groupings.html#lo-que-casi-todos-agrupan).
 
 #### Consideraciones de auditoría {#consideraciones-de-auditoria}

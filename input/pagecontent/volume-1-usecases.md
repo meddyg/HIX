@@ -29,7 +29,7 @@ Lo que un miembro declara vincula. Nunca crea una persona, nunca fusiona dos y n
 
 Un laboratorio termina un resultado y lo publica en la comunidad. Envía los metadatos y conserva el documento. Desde ese momento el resultado es localizable por cualquier miembro autorizado, sin que el laboratorio deba anticipar quién lo buscará ni conocer a nadie más que a la comunidad. Lo publica con el [propósito de uso](appendix-glossary.html#proposito-de-uso) de la atención, `TREAT`.
 
-El laboratorio nombra al paciente con el identificador nacional de la persona y con el identificador local que él mismo declaró, se nombra a sí mismo como [custodio](appendix-glossary.html#custodio), indica dónde está el documento con una ruta relativa a su propio endpoint y etiqueta su confidencialidad. La comunidad comprueba que el laboratorio publica solo por sí mismo y solo sobre pacientes que él mismo declaró, resuelve la identidad maestra y registra el [puntero](appendix-glossary.html#puntero). Si rechaza la publicación, dice por qué. Conviene que el laboratorio no dé por publicado un documento hasta recibir la confirmación.
+El laboratorio nombra al paciente con el identificador nacional de la persona y con el MRN que él mismo declaró, se nombra a sí mismo como [custodio](appendix-glossary.html#custodio), indica dónde está el documento con una ruta relativa a su propio endpoint y etiqueta su confidencialidad. La comunidad comprueba que el laboratorio publica solo por sí mismo y solo sobre pacientes que él mismo declaró, resuelve la identidad maestra y registra el [puntero](appendix-glossary.html#puntero). Si rechaza la publicación, dice por qué. Conviene que el laboratorio no dé por publicado un documento hasta recibir la confirmación.
 
 #### Flujo del proceso
 
@@ -86,7 +86,7 @@ Este caso es el que permite a HIX servir a la persona lo que es suyo, y no solo 
 {: #figura-2-5-4}
 
 1. La [aplicación del paciente](appendix-glossary.html#aplicacion-del-paciente) inicia [HIX-2](volume-2-hix-2.html). El Authorization Server autentica a la persona, obtiene su autorización para la aplicación, resuelve su identidad verificada a la identidad maestra mediante ITI-83 y emite el token con ese contexto de paciente y el propósito de uso que corresponde a quien actúa.
-2. La aplicación localiza y recupera mediante ITI-67 e ITI-68 a través del Record Locator Service, que confina cada operación al paciente del contexto.
+2. La aplicación localiza y recupera mediante ITI-66, ITI-67 e ITI-68 a través del Record Locator Service, que confina cada operación al paciente del contexto.
 
 ### Casos previstos
 
@@ -100,7 +100,7 @@ Los siguientes casos forman parte de la arquitectura y se especificarán en vers
 
 
 *[PMIR]: Patient Master Identity Registry, perfil IHE que gestiona la identidad maestra del paciente
-*[PIXm]: Patient Identifier Cross-referencing for mobile, perfil IHE que enlaza los identificadores locales de un paciente con su identidad maestra
+*[PIXm]: Patient Identifier Cross-referencing for mobile, perfil IHE que enlaza los MRN de un paciente con su identidad maestra
 *[PDQm]: Patient Demographics Query for Mobile, perfil IHE de búsqueda de pacientes por datos demográficos
 *[MHD]: Mobile access to Health Documents, perfil IHE para publicar, localizar y recuperar documentos sobre FHIR
 *[MHDS]: Mobile Health Document Sharing, perfil IHE que compone MHD, PMIR, mCSD, IUA y ATNA en una comunidad de intercambio de documentos
@@ -109,3 +109,4 @@ Los siguientes casos forman parte de la arquitectura y se especificarán en vers
 *[ATNA]: Audit Trail and Node Authentication, perfil IHE de auditoría y seguridad de los nodos
 *[BALP]: Basic Audit Log Patterns, perfil IHE con los patrones de AuditEvent de FHIR
 *[CT]: Consistent Time, perfil IHE que sincroniza los relojes de los sistemas
+*[MRN]: Medical Record Number, el identificador que un miembro asigna a un paciente en su propio dominio

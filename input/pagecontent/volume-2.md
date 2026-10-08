@@ -30,7 +30,7 @@ El Resource Server **SHALL** rechazar la petición que no cumpla estas reglas.
 
 1. Lleva un token conforme a ITI-72 cuya audiencia incluye a ese Resource Server, según la [sección 2.2](volume-1-actors.html#descripcion-de-actores-y-requisitos).
 2. El scope del token incluye el identificador de la transacción IHE, por ejemplo `ITI-67`. Esto también se aplica al token de una aplicación del paciente, según la [sección 2.6](volume-1-security.html#modelo-de-confianza).
-3. El Resource Server toma del token los datos del solicitante: su organización, su propósito de uso y, si corresponde, el contexto de paciente. No los toma de la petición, como establece la [sección 2.2](volume-1-actors.html#record-locator-service). El Authorization Server fija la organización desde su propio registro y solo emite propósitos de uso que su registro admite, según sus [requisitos](volume-1-actors.html#authorization-server).
+3. El Resource Server toma del token la organización, el propósito de uso y, si corresponde, el contexto de paciente del solicitante. No los toma de la petición, como establece la [sección 2.2](volume-1-actors.html#record-locator-service). El Authorization Server fija la organización desde su propio registro y solo emite propósitos de uso que su registro admite, según sus [requisitos](volume-1-actors.html#authorization-server).
 
 #### Respuestas de error FHIR {#respuestas-de-error-fhir}
 
@@ -58,7 +58,7 @@ La [Tabla 3-1](volume-2.html#tabla-3-1) reúne las veinte transacciones de HIX, 
 | [Introspect Token \[ITI-102\]](volume-2-authorization.html#iti-102) | IUA | Record Locator Service, Document Registry y Master Patient Index, y el custodio cuando la comunidad admite la introspección | Authorization Server |
 | [Mediated Token Exchange \[HIX-1\]](volume-2-hix-1.html) | HIX | Record Locator Service | Authorization Server |
 | [Patient Application Launch \[HIX-2\]](volume-2-hix-2.html) | HIX | Aplicación del paciente | Authorization Server |
-| [Incorporate Access Token \[ITI-72\]](volume-2.html#peticiones-a-un-resource-server) | IUA | Todo Authorization Client, es decir, los miembros, la aplicación del paciente, la fuente autoritativa de identidad y el Record Locator Service | Todo Resource Server, es decir, el Record Locator Service, el custodio, el Document Registry y el Master Patient Index |
+| [Incorporate Access Token \[ITI-72\]](volume-2.html#peticiones-a-un-resource-server) | IUA | Todo Authorization Client, es decir, los miembros, la aplicación del paciente, la fuente autoritativa de identidad, el Record Locator Service y el Authorization Server en su consulta ITI-83 | Todo Resource Server, es decir, el Record Locator Service, el custodio, el Document Registry y el Master Patient Index |
 | **Identidad del paciente** | | | |
 | [Mobile Patient Identity Feed \[ITI-93\]](volume-2-identity.html#iti-93) | PMIR | Fuente autoritativa de identidad, y el Master Patient Index hacia el Document Registry | Master Patient Index y Document Registry |
 | [Patient Identity Feed FHIR \[ITI-104\]](volume-2-identity.html#iti-104) | PIXm | Custodio | Master Patient Index |
@@ -81,11 +81,9 @@ La [Tabla 3-1](volume-2.html#tabla-3-1) reúne las veinte transacciones de HIX, 
 | [Authenticate Node \[ITI-19\]](https://profiles.ihe.net/ITI/TF/Volume2/ITI-19.html#3.19) | ATNA | Todo actor salvo la aplicación del paciente, al abrir una conexión | El actor con el que se conecta |
 {: .table .table-bordered}
 
-El scope de cada transacción es su identificador, como fija la regla 2 para las [peticiones a un Resource Server](volume-2.html#peticiones-a-un-resource-server). [HIX-2](volume-2-hix-2.html) es la única excepción, y detalla su scope en su página. Pide además `openid`, `fhirUser`, `launch/patient` y, para renovar el token, `offline_access`.
+El scope de cada transacción es su identificador, como fija la regla 2 para las [peticiones a un Resource Server](volume-2.html#peticiones-a-un-resource-server). [HIX-2](volume-2-hix-2.html) pide además `openid`, `fhirUser`, `launch/patient` y, para renovar el token, `offline_access`.
 
-ITI-71, HIX-1, ITI-72, ITI-102, ITI-103, ITI-20, ITI-1 e ITI-19 no tienen scope propio. ITI-71 y HIX-1 son las que piden los scopes, ITI-72 la que los transporta, y las demás forman parte de la infraestructura de seguridad de la comunidad. En HIX-1, el Record Locator Service pide el scope de la transacción que va a realizar ante el destino.
-
-> **TODO.** Falta definir cómo se audita la aplicación del paciente. Ya opera casi como un miembro, pero puede no tener backend propio y hacer todo su flujo en el navegador, y por eso la [sección 2.4](volume-1-groupings.html#lo-que-casi-todos-agrupan) la deja por ahora fuera de ATNA y de CT. Hay que probar si ese flujo tiene limitantes y, si no las tiene, auditarla como a un miembro más.
+ITI-71, HIX-1, HIX-2, ITI-72, ITI-102, ITI-103, ITI-20, ITI-1 e ITI-19 no tienen scope propio. ITI-71, HIX-1 y HIX-2 son las que piden los scopes, ITI-72 la que los transporta, y las demás forman parte de la infraestructura de seguridad de la comunidad. En HIX-1, el Record Locator Service pide el scope de la transacción que va a realizar ante el destino.
 
 ### Auditoría {#auditoria}
 
@@ -121,7 +119,6 @@ El Record Locator Service registra la solicitud que recibe y cada recuperación 
 
 ITI-103, ITI-1 e ITI-19 no tienen fila, porque su especificación no define un evento propio. Los eventos generales de seguridad, como un fallo de autenticación de un nodo, son los de la tabla de ITI-20 que todo Secure Node o Secure Application debe poder registrar ([ITI TF-2, §3.20.4.1.1.1](https://profiles.ihe.net/ITI/TF/Volume2/ITI-20.html#3.20.4.1.1.1))[^iti20-triggers].
 
-
 ### Referencias
 
 Las citas reproducen el texto publicado por su fuente. Los recortes se marcan con "[...]" y la negrita es de esta guía.
@@ -139,7 +136,7 @@ Las citas reproducen el texto publicado por su fuente. Los recortes se marcan co
 [^iti20-triggers]: [ITI TF-2, §3.20.4.1.1.1 DICOM and IHE Audit Event messages](https://profiles.ihe.net/ITI/TF/Volume2/ITI-20.html#3.20.4.1.1.1): "An actor in any IHE profile, when grouped with a Secure Node or Secure Application, **shall be able to report the relevant events defined in Table 3.20.4.1.1.1-1** (previously Table 3.20.6-1). This table of auditable events is not exhaustive. **Additional reportable events are often identified for specific events in other IHE profiles**, and are documented in that profile or transaction." La tabla incluye "Node-Authentication-failure", "A secure node authentication failure has occurred during TLS negotiation, e.g., invalid certificate."
 
 *[PMIR]: Patient Master Identity Registry, perfil IHE que gestiona la identidad maestra del paciente
-*[PIXm]: Patient Identifier Cross-referencing for mobile, perfil IHE que enlaza los identificadores locales de un paciente con su identidad maestra
+*[PIXm]: Patient Identifier Cross-referencing for mobile, perfil IHE que enlaza los MRN de un paciente con su identidad maestra
 *[PDQm]: Patient Demographics Query for Mobile, perfil IHE de búsqueda de pacientes por datos demográficos
 *[MHD]: Mobile access to Health Documents, perfil IHE para publicar, localizar y recuperar documentos sobre FHIR
 *[mCSD]: Mobile Care Services Discovery, perfil IHE de directorio de organizaciones, servicios y endpoints

@@ -38,7 +38,7 @@ La organización y el propósito de uso los fija el Authorization Server desde s
 
 #### Respuesta y rechazos
 
-La respuesta es la definida en [IUA](https://profiles.ihe.net/ITI/IUA/index.html#371422-message-semantics). El token incluye siempre las [extensiones de IUA](https://profiles.ihe.net/ITI/IUA/index.html#3714221-json-web-token-option) `subject_organization_id` y `purpose_of_use`, con los valores que el Authorization Server obtiene de su registro, como establece la [sección 2.2](volume-1-actors.html#authorization-server). El token de una persona lleva `purpose_of_use` y el contexto de paciente, como fija [HIX-2](volume-2-hix-2.html), y el token de actor del Record Locator Service no lleva ninguna de las dos, como fija [HIX-1](volume-2-hix-1.html).
+La respuesta es la definida en [IUA](https://profiles.ihe.net/ITI/IUA/index.html#371422-message-semantics). El token de un miembro incluye siempre las [extensiones de IUA](https://profiles.ihe.net/ITI/IUA/index.html#3714221-json-web-token-option) `subject_organization_id` y `purpose_of_use`, con los valores que el Authorization Server obtiene de su registro, como establece la [sección 2.2](volume-1-actors.html#authorization-server). El token de una persona lleva `purpose_of_use` y el contexto de paciente, y `subject_organization_id` solo si la aplicación tiene una organización registrada, como fija [HIX-2](volume-2-hix-2.html), y el token de actor del Record Locator Service no lleva ninguna de las dos.
 
 Además de las validaciones que define IUA, el Authorization Server **SHALL** rechazar la petición en los casos de la [Tabla 3.1-1](volume-2-authorization.html#tabla-3-1-1). Responde con la [respuesta de error de OAuth 2.0](https://www.rfc-editor.org/rfc/rfc6749.html#section-5.2) y el código de error que indica la tabla, definido en [RFC 8707](https://www.rfc-editor.org/rfc/rfc8707.html#section-2) o en RFC 6749.
 
@@ -103,9 +103,9 @@ Content-Type: application/json
   "sub": "<lab_client_id>",
   "client_id": "<lab_client_id>",
   "aud": [
-    "<RLS_audience>",
-    "<DR_audience>",
-    "<MPI_audience>"
+    "<rls_audience>",
+    "<registry_audience>",
+    "<mpi_audience>"
   ],
   "jti": "<jti>",
   "iat": 1790204262,
@@ -114,7 +114,7 @@ Content-Type: application/json
   "token_type": "Bearer",
   "extensions": {
     "ihe_iua": {
-      "subject_organization_id": "<identificador-de-la-organización>",
+      "subject_organization_id": "<organization_id>",
       "purpose_of_use": [
         {
           "system": "http://terminology.hl7.org/CodeSystem/v3-ActReason",
