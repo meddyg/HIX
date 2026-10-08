@@ -23,7 +23,7 @@ MPI -> MPI : crea o actualiza\nla identidad maestra
 MPI --> SRC : 200
 
 == Identidad local de un miembro ==
-K -> MPI : [ITI-104] Patient Identity Feed\n(Patient local + identificador nacional)
+K -> MPI : [ITI-104] Patient Identity Feed FHIR\n(Patient local + identificador nacional)
 MPI -> MPI : dominio = organización del token\nvincula la identidad local\ncon la identidad maestra
 MPI --> K : 200, o rechazo por defecto si la persona\nno tiene identidad maestra
 

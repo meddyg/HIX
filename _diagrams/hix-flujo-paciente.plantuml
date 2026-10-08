@@ -21,7 +21,7 @@ participant "Fuente autoritativa\n(p. ej. EDUS)" as SRC
 participant "Master Patient\nIndex" as PMIR
 participant "Record Locator\nService" as RLS
 
-== Enrolamiento (una vez) ==
+== Enrolamiento (una vez, según la política de la comunidad) ==
 P -> AS : crea su cuenta
 AS -> SRC : verificación de identidad
 SRC --> AS : identidad verificada
