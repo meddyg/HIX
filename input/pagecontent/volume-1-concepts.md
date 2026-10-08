@@ -47,7 +47,7 @@ La identidad maestra es un recurso `Patient` en un dominio reservado a la identi
 La [Figura 2.1-1](volume-1-concepts.html#figura-2-1-1) muestra cómo se construye.
 
 - La **fuente autoritativa de identidad** es quien crea la identidad maestra. Lo hace con el feed **[PMIR](https://profiles.ihe.net/ITI/PMIR/index.html)** ([ITI-93](https://profiles.ihe.net/ITI/PMIR/ITI-93.html)), una vez que comprobó quién es la persona. Nadie más puede crear una identidad maestra. HIX no designa cuál es esa fuente. La propuesta para Costa Rica es que sea el EDUS, como indica la [introducción del volumen](volume-1.html).
-- Cada **miembro que publica** declara los pacientes de su dominio con el feed **[PIXm](https://profiles.ihe.net/ITI/PIXm/index.html)** ([ITI-104](https://profiles.ihe.net/ITI/PIXm/ITI-104.html)). Envía su identificador local junto con un identificador de la persona que la fuente autoritativa reconoce, y el registro de identidad maestra enlaza ese identificador local con la identidad maestra que ya existe para esa persona. Si la persona todavía no tiene identidad maestra, la declaración se rechaza por defecto, como explica la [sección 2.2](volume-1-actors.html#regla-de-identidad). *Un miembro **vincula**, nunca crea.*
+- Cada **miembro que publica** declara los pacientes de su dominio con el feed **[PIXm](https://profiles.ihe.net/ITI/PIXm/index.html)** ([ITI-104](https://profiles.ihe.net/ITI/PIXm/ITI-104.html)). Envía su identificador local junto con un identificador de la persona que la fuente autoritativa reconoce, y el Master Patient Index enlaza ese identificador local con la identidad maestra que ya existe para esa persona. Si la persona todavía no tiene identidad maestra, la declaración se rechaza por defecto, como explica la [sección 2.2](volume-1-actors.html#regla-de-identidad). *Un miembro **vincula**, nunca crea.*
 
 Tres consultas responden quién es un paciente, y todas buscan solo entre identidades maestras. La [Tabla 2.1-1](volume-1-concepts.html#tabla-2-1-1) las compara. La tercera da a cada resultado un grado de coincidencia, como exige PDQm ([PDQm, §2:3.119.4.2.2.4](https://profiles.ihe.net/ITI/PDQm/ITI-119.html#231194224-quality-of-match)), y los ordena de más a menos probable, como describen los casos de ITI-119[^pdqm-match].
 
@@ -92,13 +92,13 @@ HIX usa OAuth 2.0 ([RFC 6749](https://www.rfc-editor.org/rfc/rfc6749)) según lo
 
 Un miembro obtiene un token para hablar con los componentes centrales que la comunidad define, y solo con ellos. Ese token no sirve ante ningún custodio, y el miembro nunca recibe uno que sirva. El mediador comprueba cada token que recibe preguntando al Authorization Server si sigue siendo válido. Esa consulta es la introspección de [RFC 7662](https://www.rfc-editor.org/rfc/rfc7662), que IUA recoge como la transacción Introspect Token ([ITI-102](https://profiles.ihe.net/ITI/IUA/index.html#3102-introspect-token-iti-102)).
 
-Cuando una operación exige llegar a un custodio, el mediador no reutiliza el [token del solicitante](appendix-glossary.html#token-del-solicitante). Lo **intercambia** por otro, siguiendo OAuth 2.0 Token Exchange ([RFC 8693](https://www.rfc-editor.org/rfc/rfc8693)) con un resource indicator ([RFC 8707](https://www.rfc-editor.org/rfc/rfc8707)). Presenta al Authorization Server el token del solicitante y pide a cambio uno nuevo, hecho a la medida de esa llamada. Vale para un solo destino y un solo tipo de transacción, dura como mucho dos minutos y dice dentro quién pidió y quién actúa en su nombre. La [Tabla 2.6-1](volume-1-security.html#tabla-2-6-1) detalla lo que lleva.
+Cuando una operación exige llegar a un custodio, el mediador no reutiliza el [token del solicitante](appendix-glossary.html#token-del-solicitante). Lo **intercambia** por otro, siguiendo OAuth 2.0 Token Exchange ([RFC 8693](https://www.rfc-editor.org/rfc/rfc8693)) con un resource indicator ([RFC 8707](https://www.rfc-editor.org/rfc/rfc8707)). Presenta al Authorization Server el token del solicitante y pide a cambio uno nuevo, hecho a la medida de esa llamada. Vale para ese solo custodio y un solo tipo de transacción, dura como mucho dos minutos y dice dentro quién pidió y quién actúa en su nombre. La [Tabla 2.6-1](volume-1-security.html#tabla-2-6-1) detalla lo que lleva.
 
 El custodio valida ese token por su cuenta, con las claves públicas del Authorization Server, sin tener que preguntarle. Así sabe quién pregunta, en nombre de quién actúa la comunidad y para qué.
 
-Lo mismo vale hacia los componentes centrales. El mediador no tiene acceso propio al Document Registry ni al registro de identidad maestra. Actúa ante ellos con tokens mediados de la misma forma, a nombre del miembro que lo pidió. Un puntero queda registrado a nombre de su custodio, no del mediador. El mediador es el primer punto de aplicación de la política de la comunidad, no un participante con autoridad propia.
+Lo mismo vale hacia los componentes centrales. El mediador no tiene acceso propio al Document Registry ni al Master Patient Index. Actúa ante ellos con tokens mediados de la misma forma, a nombre del miembro que lo pidió. Un puntero queda registrado a nombre de su custodio, no del mediador. El mediador es el primer punto de aplicación de la política de la comunidad, no un participante con autoridad propia.
 
-La [Figura 2.1-2](volume-1-concepts.html#figura-2-1-2) resume el recorrido de los tokens. Un solo token entra por la izquierda, el del miembro, y de él derivan tantos tokens de un solo destino como custodios y componentes centrales haga falta alcanzar.
+La [Figura 2.1-2](volume-1-concepts.html#figura-2-1-2) resume el recorrido de los tokens. Un solo token entra por la izquierda, el del miembro, y de él derivan tantos tokens mediados como custodios y componentes centrales haga falta alcanzar.
 
 ![Delegación de tokens en HIX](hix-delegacion.svg)
 
@@ -107,7 +107,7 @@ La [Figura 2.1-2](volume-1-concepts.html#figura-2-1-2) resume el recorrido de lo
 
 Tres reglas hacen que el mínimo privilegio sea estructural, en lugar de depender de la buena conducta de cada parte.
 
-- **Un token, el destino mínimo.** Cada token vale solo ante quien tiene que recibirlo. El mediado vale ante un único destino, porque uno que valiera en dos custodios permitiría a uno de ellos usarlo contra el otro.
+- **Un token, el destino mínimo.** Cada token vale solo ante quien tiene que recibirlo. El mediado nunca vale ante dos custodios, porque entonces uno de ellos podría usarlo contra el otro.
 - **Solo el mediador puede intercambiar.** Ningún otro participante puede pedir un token a nombre de un tercero, y los custodios no aceptan tokens llegados por otro camino.
 - **La autoridad nunca crece.** El token mediado solo permite lo que el miembro ya podía, lo que la comunidad delega al mediador y lo que el custodio ofrece. Poder localizar un documento nunca da poder para recuperarlo.
 

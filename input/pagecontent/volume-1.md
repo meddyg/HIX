@@ -24,7 +24,7 @@ La [Figura 2-1](volume-1.html#figura-2-1) muestra la infraestructura central de 
 - El **Record Locator Service** es el mediador de la comunidad. Localiza y recupera documentos en nombre de los miembros y aplica la decisión de divulgación.
 - El **Authorization Server** es el único emisor de tokens de la comunidad. Emite el token con el que un miembro llega al mediador y lo intercambia por otro, acotado a un destino, cada vez que el mediador tiene que alcanzar a un custodio y, según el despliegue, a otro Resource Server central.
 - El **Document Registry** conserva los punteros a los documentos publicados, cada uno con la identidad maestra del paciente como sujeto.
-- Los **Shared HIE Services** de la figura completan la infraestructura. El directorio de la comunidad describe a los miembros y sus endpoints, el registro de identidad maestra mantiene una identidad por persona y el Audit Record Repository concentra los eventos de los componentes centrales.
+- Los **Shared HIE Services** de la figura completan la infraestructura. El directorio de la comunidad describe a los miembros y sus endpoints, el Master Patient Index mantiene una identidad por persona y el Audit Record Repository concentra los eventos de los componentes centrales.
 - La **fuente autoritativa de identidad** es externa a la comunidad y la única que puede crear identidades maestras. HIX no la designa. La propuesta para Costa Rica es que sea el EDUS, el expediente digital único de la CCSS, que ya tiene resuelta la identificación de las personas.
 
 Dicho en seis afirmaciones.

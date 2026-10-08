@@ -10,7 +10,7 @@ Las opciones definen capacidades que un actor puede añadir a las que se le exig
 | Document Registry | Opción de Almacenamiento Central |
 | | Opción de Consentimiento |
 | | Opción de Canal de Interconexión |
-| Registro de identidad maestra | Opción de Canal de Interconexión |
+| Master Patient Index | Opción de Canal de Interconexión |
 | Authorization Server | Opción de Canal de Interconexión |
 | Sistema que publica y custodia documentos | Opción de Almacenamiento Central |
 | | Opción de Canal de Interconexión |
@@ -52,13 +52,13 @@ En qué punto se aplica, en el Record Locator Service o en el Document Registry,
 
 Permite a un [consumidor](appendix-glossary.html#consumidor) localizar a un paciente por sus datos demográficos cuando no dispone de un identificador conocido por la comunidad. Corresponde a la [Patient Search Option](https://profiles.ihe.net/ITI/PDQm/volume-1.html#13821-patient-search-option) de PDQm.
 
-El consumidor que declara esta opción **SHALL** presentar al menos un criterio que nombre o describa a la persona en cada consulta [ITI-78](https://profiles.ihe.net/ITI/PDQm/ITI-78.html). Qué parámetros cuentan como criterio lo fija la [sección 3.4](volume-2-identity.html#iti-78). Es una búsqueda determinista. Cada criterio filtra, y ningún resultado lleva grado de coincidencia. Las reglas que el registro de identidad maestra aplica a su respuesta, como devolver solo identidades maestras y limitarlas según la política de la comunidad, las fija la [sección 2.2](volume-1-actors.html#registro-de-identidad-maestra).
+El consumidor que declara esta opción **SHALL** presentar al menos un criterio que nombre o describa a la persona en cada consulta [ITI-78](https://profiles.ihe.net/ITI/PDQm/ITI-78.html). Qué parámetros cuentan como criterio lo fija la [sección 3.4](volume-2-identity.html#iti-78). Es una búsqueda determinista. Cada criterio filtra, y ningún resultado lleva grado de coincidencia. Las reglas que el Master Patient Index aplica a su respuesta, como devolver solo identidades maestras y limitarlas según la política de la comunidad, las fija la [sección 2.2](volume-1-actors.html#master-patient-index).
 
 ### Opción de Coincidencia Demográfica {#opcion-de-coincidencia-demografica}
 
-Permite a un [consumidor](appendix-glossary.html#consumidor) encontrar a un paciente a partir de datos demográficos incompletos o inexactos, con la coincidencia probabilística del registro de identidad maestra. Corresponde a la [Match Operation Option](https://profiles.ihe.net/ITI/PDQm/volume-1.html#13822-match-operation-option) de PDQm.
+Permite a un [consumidor](appendix-glossary.html#consumidor) encontrar a un paciente a partir de datos demográficos incompletos o inexactos, con la coincidencia probabilística del Master Patient Index. Corresponde a la [Match Operation Option](https://profiles.ihe.net/ITI/PDQm/volume-1.html#13822-match-operation-option) de PDQm.
 
-El consumidor que declara esta opción **SHALL** presentar en cada [ITI-119](https://profiles.ihe.net/ITI/PDQm/ITI-119.html) los datos del paciente que busca. Un resultado de esta búsqueda es un candidato, no una identidad confirmada. Las reglas que el registro de identidad maestra aplica a su respuesta, como devolver solo identidades maestras e indicar el grado de coincidencia de cada una, las fija la [sección 2.2](volume-1-actors.html#registro-de-identidad-maestra).
+El consumidor que declara esta opción **SHALL** presentar en cada [ITI-119](https://profiles.ihe.net/ITI/PDQm/ITI-119.html) los datos del paciente que busca. Un resultado de esta búsqueda es un candidato, no una identidad confirmada. Las reglas que el Master Patient Index aplica a su respuesta, como devolver solo identidades maestras e indicar el grado de coincidencia de cada una, las fija la [sección 2.2](volume-1-actors.html#master-patient-index).
 
 ### Referencias
 

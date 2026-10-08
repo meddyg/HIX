@@ -14,8 +14,8 @@ Este glosario reúne, en una línea cada uno, los actores y términos que usa es
 **Directorio de la comunidad.** Publica las organizaciones participantes, su pertenencia a la comunidad y los endpoints en los que responden. Es el Directory de mCSD.
 {: #directorio-de-la-comunidad}
 
-**Registro de identidad maestra.** Conserva una identidad maestra por persona y sus enlaces con las identidades locales. Agrupa al Patient Identity Registry de PMIR, al Patient Identifier Cross-reference Manager de PIXm y al Patient Demographics Supplier de PDQm.
-{: #registro-de-identidad-maestra}
+**Master Patient Index (MPI).** Conserva una identidad maestra por persona y sus enlaces con las identidades locales. Agrupa al Patient Identity Registry de PMIR, al Patient Identifier Cross-reference Manager de PIXm y al Patient Demographics Supplier de PDQm. Es el componente que OpenHIE llama [Client Registry](https://guides.ohie.org/arch-spec/openhie-component-specifications-1/client-registry).
+{: #master-patient-index}
 
 **[Audit Record Repository](https://profiles.ihe.net/ITI/TF/Volume1/ch-9.html).** El actor de ATNA que recibe los eventos de auditoría de los actores centrales.
 {: #audit-record-repository}
@@ -90,7 +90,7 @@ Este glosario reúne, en una línea cada uno, los actores y términos que usa es
 **Miembro.** Organización participante de la comunidad. Figura en el directorio y el Authorization Server reconoce a sus sistemas.
 {: #miembro}
 
-**Infraestructura central.** Los actores que opera la comunidad, es decir, el Record Locator Service, el Document Registry, el Authorization Server, el directorio, el registro de identidad maestra y el Audit Record Repository.
+**Infraestructura central.** Los actores que opera la comunidad, es decir, el Record Locator Service, el Document Registry, el Authorization Server, el directorio, el Master Patient Index y el Audit Record Repository.
 {: #infraestructura-central}
 
 **Mediador.** Otro nombre del Record Locator Service, por la función que cumple entre los miembros y los custodios.
@@ -132,7 +132,7 @@ Este glosario reúne, en una línea cada uno, los actores y términos que usa es
 **Token del solicitante.** El token que un miembro obtiene con ITI-71, o la aplicación del paciente con [HIX-2](volume-2-hix-2.html). El de un miembro está destinado a los Resource Servers centrales que define la comunidad, y el de la aplicación solo al Record Locator Service. Lleva el sujeto, la organización, el propósito de uso, el alcance y, en el caso de la aplicación del paciente, el contexto de paciente.
 {: #token-del-solicitante}
 
-**Token mediado.** El token que el mediador obtiene con [HIX-1](volume-2-hix-1.html) para un único destino y un solo tipo de transacción, con el solicitante original como sujeto y el mediador como actor. Se emite para el custodio y para cada Resource Server central que la comunidad despliegue como un sistema distinto.
+**Token mediado.** El token que el mediador obtiene con [HIX-1](volume-2-hix-1.html) para el destino que nombra su `resource`, nunca para dos custodios, y un solo tipo de transacción, con el solicitante original como sujeto y el mediador como actor. Se emite para el custodio y para cada Resource Server central que la comunidad despliegue como un sistema distinto.
 {: #token-mediado}
 
 **PEP.** Punto de aplicación de política. El lugar donde se comprueba que una petición cumple las reglas de la comunidad. En HIX, el primero es el mediador.
@@ -152,3 +152,4 @@ Este glosario reúne, en una línea cada uno, los actores y términos que usa es
 *[BALP]: Basic Audit Log Patterns, perfil IHE con los patrones de AuditEvent de FHIR
 *[CT]: Consistent Time, perfil IHE que sincroniza los relojes de los sistemas
 *[PCF]: Privacy Consent on FHIR, perfil IHE de consentimiento del paciente
+*[MPI]: Master Patient Index, el actor de HIX que conserva las identidades maestras de los pacientes
