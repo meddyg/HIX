@@ -19,7 +19,6 @@ word by word. The banner turns the marks off to go back to writing.
 import http.server
 import json
 import re
-import socketserver
 import subprocess
 import sys
 from pathlib import Path
@@ -49,14 +48,16 @@ setInterval(async () => {
 </script>
 """
 
-# Read before the page paints, so a reader who muted the marks never sees them
-# flash, and a reader reviewing the branch never renders HEAD first.
+# Read before the page paints, so a reader who muted the marks or hid the page
+# list never sees them flash, and a reader reviewing the branch never renders
+# HEAD first.
 SETUP_JS = """
 <script>
 try {
   const m = localStorage.getItem('marks');
   document.documentElement.className =
     'marks-' + (['off', 'bars', 'words'].includes(m) ? m : 'words');
+  if (localStorage.getItem('side') === 'off') document.documentElement.dataset.side = 'off';
   if (!location.search.includes('base=') && localStorage.getItem('base') === 'main')
     location.replace(location.pathname + '?base=main');
 } catch (e) {}
@@ -74,11 +75,19 @@ const wear = m => {
 };
 wear(mode());
 document.querySelectorAll('#modes input').forEach(i => { i.onchange = () => wear(i.value); });
-// d cycles them, so the control is never worth reaching for
+// the page list comes and goes, and stays as it was left across reloads
+const hidden = () => root.dataset.side === 'off';
+const side = off => {
+  if (off) root.dataset.side = 'off'; else delete root.dataset.side;
+  try { localStorage.setItem('side', off ? 'off' : 'on'); } catch (e) {}
+};
+document.getElementById('toggle').onclick = () => side(!hidden());
+// d cycles the marks and s hides the list, so neither control is worth reaching for
 addEventListener('keydown', e => {
-  if (e.key !== 'd' || e.metaKey || e.ctrlKey || e.altKey) return;
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
   if (/^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName)) return;
-  wear(MODES[(MODES.indexOf(mode()) + 1) % MODES.length]);
+  if (e.key === 'd') wear(MODES[(MODES.indexOf(mode()) + 1) % MODES.length]);
+  if (e.key === 's') side(!hidden());
 });
 const pick = document.getElementById('base');
 pick.onchange = () => {
@@ -105,7 +114,8 @@ def render(name, title, prefix, pages, numbers, base, touched):
         src, count = pagediff.mark(clean(was), src)
     offset = ",".join(prefix.split("."))
     body = subprocess.run(
-        ["pandoc", "--from=gfm", "--to=html", "--no-highlight",
+        # attributes, so a heading's `{#id}` names its anchor as it does on the site
+        ["pandoc", "--from=gfm+attributes", "--to=html", "--no-highlight",
          "--number-sections", f"--number-offset={offset}"],
         input=src, capture_output=True, text=True, check=True).stdout
     # every table in this specification is a grid table on the site
@@ -137,6 +147,15 @@ def render(name, title, prefix, pages, numbers, base, touched):
   #side li a {{ display: block; padding: 3px 6px; border-radius: 3px; }}
   #side li.active a {{ background: #0e3a4f; color: #fff; }}
   #main {{ flex: 1; min-width: 0; background: #fff; padding: 0 8px 60px; }}
+  /* reading: the list goes and the page takes its width */
+  [data-side="off"] #side {{ display: none; }}
+  /* sits in the gutter left of the list, so it is there with or without it */
+  #toggle {{ position: fixed; top: 12px; left: 0; width: 18px; padding: 6px 0;
+             font-size: 12px; line-height: 1; color: #0e3a4f; cursor: pointer;
+             background: #f7f7f7; border: 1px solid #ccc; border-left: 0;
+             border-radius: 0 3px 3px 0; }}
+  #toggle::before {{ content: "‹"; }}
+  [data-side="off"] #toggle::before {{ content: "›"; }}
   #banner {{ background: #fff3cd; border: 1px solid #e0c97f; padding: 6px 10px;
              font-size: 12px; margin-bottom: 14px; }}
   h1, h2, h3, h4 {{ color: #0e3a4f; }}
@@ -171,6 +190,7 @@ def render(name, title, prefix, pages, numbers, base, touched):
   .marks-off ins {{ background: none; border-bottom: 0; }}
   .marks-off #side li.chg > a::after {{ content: none; }}
 </style>{SETUP_JS}</head><body>
+<button id="toggle" type="button" title="page list (s)" aria-label="page list"></button>
 <div id="wrap">
   <nav id="side">
     <div id="switch">changes <span id="tally">{tally}</span>
@@ -202,6 +222,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         path, _, query = self.path.partition("?")
         if path == "/__version":
             return self.send_text(fingerprint())
+        
+        print(f"GET {self.path}")
         if path.startswith("/assets/") or path == "/fhir.css":
             target = ASSETS / path.lstrip("/")
             if not target.exists():
@@ -249,8 +271,19 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         pass
 
 
+class Server(http.server.ThreadingHTTPServer):
+    # a browser holds idle connections open; one thread each keeps them from
+    # stalling the page that is actually being asked for
+    allow_reuse_address = True
+    daemon_threads = True
+
+    def handle_error(self, request, client_address):
+        # a client that hung up, or spoke TLS to a plain HTTP port, is not news
+        if not isinstance(sys.exc_info()[1], (BrokenPipeError, ConnectionResetError)):
+            super().handle_error(request, client_address)
+
+
 if __name__ == "__main__":
-    socketserver.TCPServer.allow_reuse_address = True
-    with socketserver.TCPServer(("127.0.0.1", PORT), Handler) as httpd:
+    with Server(("127.0.0.1", PORT), Handler) as httpd:
         print(f"Preview on http://localhost:{PORT}  (Ctrl-C to stop)")
         httpd.serve_forever()

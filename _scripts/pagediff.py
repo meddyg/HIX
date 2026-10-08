@@ -21,6 +21,7 @@ LEADIN = re.compile(r"^[ \t]*(?:>[ \t]*)*(?:[-*+][ \t]+|\d+[.)][ \t]+|#{1,6}[ \t
 # `| --- | :--: |`, the row that makes a table a table
 RULER = re.compile(r"^[ \t]*\|?[\s:|-]+\|?[ \t]*$")
 HEADING = re.compile(r"^#{1,6}[ \t]+(.*)$", re.M)
+FENCE = re.compile(r"^[ \t]*(?:```|~~~)", re.M)
 NOTE = re.compile(r"^\[\^[^\]\n]+\]:")
 NOTEREF = re.compile(r"\[\^[^\]\n]+\]")
 # a <del> that lands in front of a line's marker takes the line's meaning with it
@@ -28,7 +29,7 @@ ORPHAN = re.compile(r"(?m)^((?:<del>.*?</del>[ \t]*)+)((?:[-*+]|\d+[.)]|#{1,6}|>
 # Anything a mark would ruin by landing in the middle of it counts as one word:
 # a link cut in two stops being a link.
 WHOLE = "|".join((
-    r"\[[^\]\n]*\]\([^)\n]*\)",   # a link, text and target together
+    r"\[[^[\]\n]*\]\([^)\n]*\)",  # a link, text and target together
     r"\[\^[^\]\n]*\]",            # a footnote reference
     r"`[^`\n]*`",                 # code
     r"\*\*[^*\n]+\*\*",           # bold
@@ -74,14 +75,25 @@ def source(name, base):
 
 
 def blocks(text):
-    """The text as [block, gap, block, gap, ...]; "".join puts it back exactly."""
-    return re.split(r"(\n[ \t]*\n)", text)
+    """The text as [block, gap, block, gap, ...]; "".join puts it back exactly.
+    A fenced code block stays one block across its blank lines: a mark that
+    opens inside the fence and closes outside it takes the page apart."""
+    parts = re.split(r"(\n[ \t]*\n)", text)
+    out = [parts[0]]
+    for k in range(1, len(parts), 2):
+        if len(FENCE.findall(out[-1])) % 2:
+            out[-1] += parts[k] + parts[k + 1]
+        else:
+            out += [parts[k], parts[k + 1]]
+    return out
 
 
 def kind(block):
     head = block.lstrip()
     if NOTE.match(head):
         return "note"
+    if FENCE.match(head):
+        return "code"
     return {"#": "heading", "|": "table"}.get(head[:1], "text")
 
 
@@ -133,6 +145,9 @@ def mark(old, new):
             i = pairs.get(j - j1)
             if i is None:
                 out[j] = box("d-new", after)
+            elif kind(after) == "code":
+                # inside a fence a mark is only more code, so the bar says it all
+                out[j] = box("d-chg", after)
             elif kind(after) == "table":
                 out[j] = box("d-chg", rows(was[i1 + i], after))
             else:
