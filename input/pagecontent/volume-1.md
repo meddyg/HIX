@@ -28,6 +28,7 @@ La [Figura 2-1](volume-1.html#figura-2-1) muestra la infraestructura central de 
 - La **fuente autoritativa de identidad** es externa a la comunidad y la única que puede crear identidades maestras. HIX no la designa. La propuesta para Costa Rica es que sea el EDUS, el expediente digital único de la CCSS, que ya tiene resuelta la identificación de las personas.
 
 Dicho en seis afirmaciones.
+{: #seis-afirmaciones}
 
 1. La comunidad es **la única contraparte** de sus miembros. **Ningún miembro interactúa con otro.**
 2. El **índice es central y el contenido es del custodio**. Un documento se queda donde se produjo, y la comunidad sabe que existe, de quién es y quién lo conserva.
