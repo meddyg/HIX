@@ -11,7 +11,7 @@ Este glosario reúne, en una línea cada uno, los actores y términos que usa es
 **[Authorization Server](https://profiles.ihe.net/ITI/IUA/index.html).** El Authorization Server de IUA. Emite, comprueba e intercambia los tokens que circulan por la comunidad.
 {: #authorization-server}
 
-**Directorio de la comunidad.** Publica las organizaciones participantes, su pertenencia a la comunidad y los endpoints en los que responden. Es el Directory de mCSD.
+**Directorio de la comunidad.** Publica las organizaciones participantes, su pertenencia a la comunidad y los endpoints en los que responden. Es el Directory de mCSD y Resource Server de IUA.
 {: #directorio-de-la-comunidad}
 
 **Master Patient Index (MPI).** Conserva una identidad maestra por persona y sus enlaces con las identidades locales. Agrupa al Patient Identity Registry de PMIR, al Patient Identifier Cross-reference Manager de PIXm y al Patient Demographics Supplier de PDQm. Es el componente que OpenHIE llama [Client Registry](https://guides.ohie.org/arch-spec/openhie-component-specifications-1/client-registry).
@@ -135,7 +135,7 @@ Este glosario reúne, en una línea cada uno, los actores y términos que usa es
 **Token del solicitante.** El token que un miembro obtiene con ITI-71, o la aplicación del paciente con [HIX-2](volume-2-hix-2.html). El de un miembro está destinado a los Resource Servers centrales que define la comunidad, y el de la aplicación solo al Record Locator Service. Lleva el sujeto, el propósito de uso y el scope. El de un miembro lleva además su organización, y el de la aplicación del paciente el contexto de paciente y la organización solo si la aplicación tiene una registrada.
 {: #token-del-solicitante}
 
-**Token mediado.** El token que el mediador obtiene con [HIX-1](volume-2-hix-1.html) para el destino que nombra su `resource`, nunca para dos custodios, y un solo tipo de transacción, con el solicitante original como sujeto y el mediador como actor. Se emite para el custodio y para cada Resource Server central que la comunidad despliegue como un sistema distinto.
+**Token mediado.** El token que el mediador obtiene con [HIX-1](volume-2-hix-1.html) para el destino que nombra su `resource`, nunca para dos custodios, y un solo tipo de transacción, con el solicitante original como sujeto y el mediador como actor. Se emite para el custodio y, salvo que la comunidad autorice un token propio conforme a la [sección 2.2](volume-1-actors.html#record-locator-service), para cada Resource Server central que la comunidad despliegue como un sistema distinto.
 {: #token-mediado}
 
 **PEP.** Punto de aplicación de política. El lugar donde se comprueba que una petición cumple las reglas de la comunidad. En HIX, el primero es el mediador.

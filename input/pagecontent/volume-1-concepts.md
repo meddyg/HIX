@@ -56,7 +56,7 @@ Tres consultas responden quién es un paciente, y todas buscan solo entre identi
 
 | Consulta | Transacción | Qué recibe | Qué devuelve | Cuándo se usa |
 | --- | --- | --- | --- | --- |
-| Por identificador | [ITI-83](https://profiles.ihe.net/ITI/PIXm/ITI-83.html) de PIXm | Un MRN o un identificador que la fuente autoritativa reconoce | La identidad maestra enlazada a él | Es la vía normal. La usan también el Record Locator Service al localizar, el Document Registry al indexar y el Authorization Server al fijar el contexto de paciente |
+| Por identificador | [ITI-83](https://profiles.ihe.net/ITI/PIXm/ITI-83.html) de PIXm | Un MRN o un identificador que la fuente autoritativa reconoce | La identidad maestra enlazada a él | Es la vía normal. La usan también el Document Registry, al indexar y al resolver el identificador de una consulta, y el Authorization Server al fijar el contexto de paciente |
 | Por datos demográficos | [ITI-78](https://profiles.ihe.net/ITI/PDQm/ITI-78.html) de PDQm | Criterios como el nombre o la fecha de nacimiento | Las identidades maestras que coinciden con ellos | Cuando no hay un identificador fiable |
 | Por coincidencia probabilística | [ITI-119](https://profiles.ihe.net/ITI/PDQm/ITI-119.html) de PDQm | Los datos de un candidato | Las identidades maestras que más se le parecen, de más a menos probable | Cuando los datos están incompletos o pueden traer errores, como un apellido mal escrito |
 {: .table .table-bordered}
@@ -96,9 +96,9 @@ Cuando una operación exige llegar a un custodio, el mediador no reutiliza el [t
 
 El custodio valida ese token por su cuenta, con las claves públicas del Authorization Server, sin tener que preguntarle. Así sabe quién pregunta, en nombre de quién actúa la comunidad y para qué.
 
-Lo mismo vale hacia los componentes centrales. El mediador no tiene acceso propio al Document Registry ni al Master Patient Index. Cuando la comunidad los despliega como sistemas distintos, actúa ante ellos con tokens mediados de la misma forma, a nombre del miembro que lo pidió. Cuando forman un mismo sistema, la llamada es interna, como fija la [sección 2.2](volume-1-actors.html#record-locator-service). El mediador es el primer punto de aplicación de la política de la comunidad, no un participante con autoridad propia.
+Ante los actores centrales desplegados como sistemas distintos, el mediador actúa con tokens mediados, que es lo que esta guía recomienda, o con un token propio si la comunidad lo autoriza, como fija la [sección 2.2](volume-1-actors.html#record-locator-service). Solo ITI-90 escapa al scope del solicitante, y por eso HIX-1 lo admite por la delegación registrada. Cada llamada atiende una operación autorizada de un solicitante. Cuando los componentes forman un mismo sistema, la llamada es interna. El mediador es el primer punto de aplicación de la política de la comunidad, no un participante con autoridad propia.
 
-La [Figura 2.1-2](volume-1-concepts.html#figura-2-1-2) resume el recorrido de los tokens. Un solo token entra por la izquierda, el del miembro, y de él derivan tantos tokens mediados como custodios y componentes centrales desplegados como sistemas distintos haga falta alcanzar.
+La [Figura 2.1-2](volume-1-concepts.html#figura-2-1-2) resume el recorrido de los tokens. Un solo token entra por la izquierda, el del miembro, y de él derivan los tokens mediados para alcanzar custodios y componentes centrales desplegados como sistemas distintos. Hacia los componentes centrales, la comunidad puede autorizar en su lugar un token propio del mediador.
 
 ![Delegación de tokens en HIX](hix-delegacion.svg)
 
@@ -109,7 +109,7 @@ Tres reglas hacen que el mínimo privilegio sea estructural, en lugar de depende
 
 - **Un token, el destino mínimo.** Cada token vale solo ante quien tiene que recibirlo. El mediado nunca vale ante dos custodios, porque entonces uno de ellos podría usarlo contra el otro.
 - **Solo el mediador puede intercambiar.** Ningún otro participante puede pedir un token a nombre de un tercero, y los custodios no aceptan tokens llegados por otro camino.
-- **La autoridad nunca crece.** El token mediado solo permite lo que el miembro ya podía, lo que la comunidad delega al mediador y lo que el custodio ofrece. Poder localizar un documento nunca da poder para recuperarlo.
+- **La autoridad documental nunca crece.** Para localizar y recuperar documentos, el token mediado solo permite lo que el solicitante ya podía y lo que la comunidad delega al mediador ante el destino. Solo ITI-90, que ningún solicitante tiene en su scope, se autoriza por la delegación registrada. Poder localizar un documento nunca da poder para recuperarlo.
 
 Un token dice quién pide, qué puede pedir, ante quién y hasta cuándo. El token de un miembro **no nombra a ningún paciente**. Solo lo hace el de una persona que entra a su propio expediente con [SMART App Launch](https://hl7.org/fhir/smart-app-launch/scopes-and-launch-context.html), y ahí el contexto de paciente sirve para confinar el token a ese expediente. La cuenta con la que esa persona entra no es un identificador de paciente. El Authorization Server resuelve el contexto de paciente contra la identidad maestra con la consulta por identificador. En ambos casos, **tener un token da derecho a preguntar, no a ver**. Qué documentos se entregan lo decide la infraestructura central, puntero por puntero. Esa separación es la idea más importante de este volumen.
 

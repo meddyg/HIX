@@ -1,6 +1,6 @@
 <mxfile host="Electron">
   <diagram name="Page-1" id="haIErAYyZzhC_3GJmi8l">
-    <mxGraphModel dx="1384" dy="385" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1628" dy="561" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -28,19 +28,13 @@
           <mxGeometry height="35" width="221.37212000000002" x="-52.070000000000014" y="662.2" as="geometry" />
         </mxCell>
         <mxCell id="dTDzeDYaJRsSXWdyEx1V-1" parent="1" style="rounded=1;dashed=1;fillColor=#d5e8d4;strokeColor=#82b366;gradientColor=none;whiteSpace=wrap;" value="" vertex="1">
-          <mxGeometry height="327.5" width="250" x="-520" y="377.37" as="geometry" />
+          <mxGeometry height="302.33" width="250" x="-520" y="377.37" as="geometry" />
         </mxCell>
         <mxCell id="dTDzeDYaJRsSXWdyEx1V-2" parent="1" style="text;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontSize=18;fontStyle=1;whiteSpace=wrap;" value="Record Locator Service (Mediador)" vertex="1">
           <mxGeometry height="30" width="244.70440000000002" x="-517.3522" y="397.37" as="geometry" />
         </mxCell>
         <mxCell id="dTDzeDYaJRsSXWdyEx1V-3" parent="1" style="rounded=0;dashed=1;align=left;spacingLeft=5;fillColor=none;fontStyle=0;whiteSpace=wrap;" value="MHD Document Consumer" vertex="1">
           <mxGeometry height="35" width="221.37212000000002" x="-505.68606" y="482.37" as="geometry" />
-        </mxCell>
-        <mxCell id="Yq0K9axBfchtnTWSFkUT-5" edge="1" parent="1" source="vMQHB0_Igo_f58y3sHRi-159" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=0.385;exitY=0.983;exitDx=0;exitDy=0;exitPerimeter=0;" target="vMQHB0_Igo_f58y3sHRi-173">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="vMQHB0_Igo_f58y3sHRi-159" parent="1" style="rounded=0;dashed=1;align=left;spacingLeft=5;fillColor=none;fontStyle=0;whiteSpace=wrap;" value="PIXm Consumer" vertex="1">
-          <mxGeometry height="35" width="221.37212000000002" x="-504.99606" y="657.37" as="geometry" />
         </mxCell>
         <mxCell id="vMQHB0_Igo_f58y3sHRi-160" parent="1" style="rounded=0;dashed=1;align=left;spacingLeft=5;fillColor=none;fontStyle=0;perimeterSpacing=0;glass=0;whiteSpace=wrap;" value="IUA Authorization Client" vertex="1">
           <mxGeometry height="35" width="221.37212000000002" x="-505.68606" y="447.37" as="geometry" />
@@ -94,9 +88,6 @@
         </mxCell>
         <mxCell id="sCFVfDJlLWI1BCCQhJNP-5" parent="1" style="rounded=0;dashed=1;align=left;spacingLeft=5;fillColor=none;whiteSpace=wrap;" value="mCSD Query Client" vertex="1">
           <mxGeometry height="35" width="221.37212000000002" x="284.30999999999995" y="545" as="geometry" />
-        </mxCell>
-        <mxCell id="vMQHB0_Igo_f58y3sHRi-180" parent="1" style="text;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;whiteSpace=wrap;" value="[ITI-83] Mobile Patient Identifier Cross-reference Query" vertex="1">
-          <mxGeometry height="30" width="286.28" x="-420" y="723.77" as="geometry" />
         </mxCell>
         <mxCell id="vMQHB0_Igo_f58y3sHRi-184" edge="1" parent="1" source="dTDzeDYaJRsSXWdyEx1V-3" style="rounded=0;orthogonalLoop=1;jettySize=auto;entryX=0.003;entryY=0.623;entryDx=0;entryDy=0;entryPerimeter=0;" target="sCFVfDJlLWI1BCCQhJNP-2" value="">
           <mxGeometry relative="1" as="geometry">

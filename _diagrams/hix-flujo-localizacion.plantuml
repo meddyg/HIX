@@ -26,11 +26,11 @@ AS --> C : token (audiencia: Resource Servers centrales)
 C -> RLS : [ITI-67] Find Document References\n(patient) [ITI-72]
 RLS -> AS : [ITI-102] Introspect Token
 AS --> RLS : activo, organización, propósito
-RLS -> PMIR : [ITI-83] identidad maestra
-PMIR --> RLS : identidad maestra
 RLS -> AS : [HIX-1] intercambio\n(resource = Document Registry)
 AS --> RLS : JWT (aud = registro, sub = consumidor,\nact = RLS, vida ≤ 120 s)
 RLS -> REG : [ITI-67] [ITI-72]
+REG -> PMIR : [ITI-83] identidad maestra
+PMIR --> REG : identidad maestra
 REG --> RLS : punteros
 RLS -> RLS : decisión de divulgación por puntero\nURL de contenido → RLS
 RLS --> C : Bundle de punteros divulgados

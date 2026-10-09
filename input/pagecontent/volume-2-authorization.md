@@ -10,7 +10,7 @@ Cada sección detalla estas restricciones y los rechazos que traen consigo. La [
 
 #### Alcance en HIX
 
-Con ITI-71 y el grant Client Credentials obtienen sus tokens los miembros, la fuente autoritativa de identidad, el Record Locator Service, para su token de actor de [HIX-1](volume-2-hix-1.html), y el Authorization Server, para su propia consulta ITI-83. La aplicación del paciente obtiene el suyo con [HIX-2](volume-2-hix-2.html), y el token mediado sale de [HIX-1](volume-2-hix-1.html).
+Con ITI-71 y el grant Client Credentials obtienen sus tokens los miembros, la fuente autoritativa de identidad, el Record Locator Service, para su token de actor de [HIX-1](volume-2-hix-1.html) y, si la comunidad lo autoriza, para un token propio hacia los actores centrales, y el Authorization Server, para su propia consulta ITI-83. La aplicación del paciente obtiene el suyo con [HIX-2](volume-2-hix-2.html), y el token mediado sale de [HIX-1](volume-2-hix-1.html).
 
 #### Petición
 

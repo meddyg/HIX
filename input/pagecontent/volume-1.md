@@ -32,7 +32,7 @@ Dicho en seis afirmaciones.
 1. La comunidad es **la única contraparte** de sus miembros. **Ningún miembro interactúa con otro.**
 2. El **índice es central y el contenido es del custodio**. Un documento se queda donde se produjo, y la comunidad sabe que existe, de quién es y quién lo conserva.
 3. La **divulgación se decide una vez por cada consulta**, en la infraestructura central, sobre los metadatos del índice y antes de mover contenido alguno. Localizar y recuperar son dos consultas.
-4. Cada recuperación alcanza al custodio con una **credencial derivada de la petición viva del solicitante**, el [token mediado](appendix-glossary.html#token-mediado), que vale para ese único custodio, dura dos minutos como máximo y el custodio verifica por sí mismo. Ningún participante tiene credenciales permanentes hacia otro, ni siquiera el mediador.
+4. Cada recuperación alcanza al custodio con una **credencial derivada de la petición viva del solicitante**, el [token mediado](appendix-glossary.html#token-mediado), que vale para ese único custodio, dura dos minutos como máximo y el custodio verifica por sí mismo. Ningún participante tiene una credencial que valga ante un custodio, ni siquiera el mediador.
 5. La **identidad maestra del paciente está anclada en la identidad que verifica la fuente autoritativa**. Los miembros declaran sus identidades locales, la comunidad las vincula y ningún miembro crea una persona.
 6. El **transporte hacia cada custodio se declara en el directorio**, no en los punteros ni en la API. Una red de intercambio como [X-Road](https://x-road.global/) puede llevar ese tramo sin que cambie un puntero, un token ni una transacción.
 
