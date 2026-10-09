@@ -54,11 +54,11 @@ La [Tabla 3-1](volume-2.html#tabla-3-1) reúne las veinte transacciones de HIX, 
 | Transacción | Perfil | Inicia | Responde |
 | --- | --- | --- | --- |
 | **Tokens y autorización** | | | |
-| [Get Access Token \[ITI-71\]](volume-2-authorization.html#iti-71) | IUA | Custodio, consumidor, fuente autoritativa de identidad, Record Locator Service, para su token de actor y, si la comunidad lo autoriza, para un token propio hacia los actores centrales, y el propio Authorization Server para su consulta ITI-83 | Authorization Server |
+| [Get Access Token \[ITI-71\]](volume-2-authorization.html#iti-71) | IUA | Custodio, consumidor, fuente autoritativa de identidad, Record Locator Service, para su token de actor y, si la comunidad lo autoriza, para un token propio hacia los actores centrales, el Document Registry, para sus consultas ITI-83 e ITI-90, y el propio Authorization Server para su consulta ITI-83 | Authorization Server |
 | [Introspect Token \[ITI-102\]](volume-2-authorization.html#iti-102) | IUA | Record Locator Service, Document Registry, Master Patient Index y directorio de la comunidad, y el custodio cuando la comunidad admite la introspección | Authorization Server |
 | [Mediated Token Exchange \[HIX-1\]](volume-2-hix-1.html) | HIX | Record Locator Service | Authorization Server |
 | [Patient Application Launch \[HIX-2\]](volume-2-hix-2.html) | HIX | Aplicación del paciente | Authorization Server |
-| [Incorporate Access Token \[ITI-72\]](volume-2.html#peticiones-a-un-resource-server) | IUA | Todo Authorization Client, es decir, los miembros, la aplicación del paciente, la fuente autoritativa de identidad, el Record Locator Service y el Authorization Server en su consulta ITI-83 | Todo Resource Server, es decir, el Record Locator Service, el custodio, el Document Registry, el Master Patient Index y el directorio de la comunidad |
+| [Incorporate Access Token \[ITI-72\]](volume-2.html#peticiones-a-un-resource-server) | IUA | Todo Authorization Client, es decir, los miembros, la aplicación del paciente, la fuente autoritativa de identidad, el Record Locator Service, el Document Registry en sus consultas ITI-83 e ITI-90 y el Authorization Server en su consulta ITI-83 | Todo Resource Server, es decir, el Record Locator Service, el custodio, el Document Registry, el Master Patient Index y el directorio de la comunidad |
 | **Identidad del paciente** | | | |
 | [Mobile Patient Identity Feed \[ITI-93\]](volume-2-identity.html#iti-93) | PMIR | Fuente autoritativa de identidad, y el Master Patient Index hacia el Document Registry | Master Patient Index y Document Registry |
 | [Patient Identity Feed FHIR \[ITI-104\]](volume-2-identity.html#iti-104) | PIXm | Custodio | Master Patient Index |

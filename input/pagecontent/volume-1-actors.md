@@ -194,7 +194,7 @@ El Document Registry **SHALL** conservar en el `subject` de los punteros, los Su
 
 ##### Publicación y validación
 
-El Document Registry **SHALL** registrar cada puntero a nombre de la organización que declara el token y **SHALL** rechazar la publicación cuyo custodio no coincida con ella. **SHALL** validar mediante [ITI-90](https://profiles.ihe.net/ITI/mCSD/ITI-90.html) que esa organización es un miembro activo de la comunidad.
+El Document Registry **SHALL** registrar cada puntero a nombre de la organización que declara el token y **SHALL** rechazar la publicación cuyo custodio no coincida con ella. **SHALL** validar mediante [ITI-90](https://profiles.ihe.net/ITI/mCSD/ITI-90.html) que esa organización es un miembro activo de la comunidad. Esa consulta, y las que hace con ITI-83, las autentica con un token propio que obtiene con [ITI-71](volume-2-authorization.html#iti-71) y el grant Client Credentials, con el destino como `resource` y solo esa transacción como scope.
 
 El Document Registry **SHALL** validar mediante [ITI-83](https://profiles.ihe.net/ITI/PIXm/ITI-83.html) el `subject` de cada puntero, del SubmissionSet y de cada carpeta, y **SHALL** rechazar la publicación si alguno no corresponde a una identidad maestra activa o si no corresponden todos a la misma persona[^pixm-deprecated][^mhds-subject]. Si la comunidad autoriza la traducción al publicar, **MAY** aceptar otro identificador en `subject`, como el MRN del custodio, mediante una referencia lógica como admite MHD[^mhd-patient]. Cuando lo acepta, **SHALL** resolverlo con ITI-83 y escribir la identidad maestra al indexar. Si no ofrece esa traducción, el custodio debe enviar la identidad maestra.
 
@@ -226,7 +226,7 @@ El Authorization Server **SHALL** fijar la organización del solicitante desde s
 
 El directorio publica las organizaciones participantes, su pertenencia a la comunidad y los endpoints en los que responden. Es el [Directory](appendix-glossary.html#directory) de mCSD de la comunidad y la única fuente de la que la infraestructura central aprende a quién dirigir una recuperación.
 
-El directorio **SHALL** responder [ITI-90](https://profiles.ihe.net/ITI/mCSD/ITI-90.html) y **SHALL** ser el único origen de los endpoints que usa la infraestructura central. **SHALL** identificar a cada organización con el mismo identificador que el Authorization Server incluye en sus tokens. Es Resource Server de IUA y **SHALL** comprobar el token de cada consulta del Record Locator Service como fija la [Tabla 2.4-1](volume-1-groupings.html#tabla-2-4-1). La consulta del Document Registry se autentica como fija la [sección 2.6](volume-1-security.html#modelo-de-confianza). Los miembros no consultan el directorio. Su contenido se mantiene administrativamente, al incorporar un miembro.
+El directorio **SHALL** responder [ITI-90](https://profiles.ihe.net/ITI/mCSD/ITI-90.html) y **SHALL** ser el único origen de los endpoints que usa la infraestructura central. **SHALL** identificar a cada organización con el mismo identificador que el Authorization Server incluye en sus tokens. Es Resource Server de IUA y **SHALL** comprobar el token de cada consulta del Record Locator Service y del Document Registry como fija la [Tabla 2.4-1](volume-1-groupings.html#tabla-2-4-1). Los miembros no consultan el directorio. Su contenido se mantiene administrativamente, al incorporar un miembro.
 
 #### Master Patient Index {#master-patient-index}
 
