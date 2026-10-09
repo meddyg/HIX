@@ -174,7 +174,7 @@ El Record Locator Service **SHALL** obtener mediante [HIX-1](volume-2-hix-1.html
 
 Cuando el Record Locator Service y un actor central forman un mismo sistema, como admite MHDS para toda la infraestructura central ([MHDS Vol. 1, §1:50.6.2.4](https://profiles.ihe.net/ITI/MHDS/volume-1.html#150624-central-infrastructure-as-a-single-system))[^mhds-single], la llamada entre ellos es interna y no requiere intercambio.
 
-El Record Locator Service **SHALL NOT** conservar copias de los documentos que transitan por él ni registrar su contenido. No tiene acceso propio al Document Registry, al Master Patient Index ni a ningún custodio. Cuando el custodio no responde, **SHALL** indicar que el custodio no está disponible, de forma que esa recuperación no se confunda con un documento inexistente.
+El Record Locator Service **SHALL NOT** conservar copias de los documentos que transitan por él ni registrar su contenido. No tiene acceso propio a ningún custodio ni al contenido, no llama al Master Patient Index, y hacia los demás actores centrales solo tiene el acceso que fija el [apartado de llamadas a los actores centrales](volume-1-actors.html#record-locator-service). Cuando el custodio no responde, **SHALL** indicar que el custodio no está disponible, de forma que esa recuperación no se confunda con un documento inexistente.
 
 ##### Llamadas a los actores centrales
 

@@ -16,8 +16,8 @@ IUA exige a todo Resource Server declarar con qué opción comprueba el token ([
 | Actor | Opciones de IUA | Cómo comprueba el token |
 | --- | --- | --- |
 | Record Locator Service | Token Introspection | Pregunta al Authorization Server con [ITI-102](https://profiles.ihe.net/ITI/IUA/index.html#3102-introspect-token-iti-102) |
-| Master Patient Index | Token Introspection, JWT Token, Authorization Server Metadata | El token de un solicitante que lo llama directamente, y el token propio del Document Registry o del Authorization Server, preferiblemente con ITI-102. El token mediado, por sí mismo |
-| Document Registry | Token Introspection, JWT Token, Authorization Server Metadata | El token de un solicitante que lo llama directamente, preferiblemente con ITI-102. El token mediado, por sí mismo |
+| Master Patient Index | Token Introspection, JWT Token, Authorization Server Metadata | El token del miembro que le declara o consulta identidades, y el token propio del Document Registry o del Authorization Server, preferiblemente con ITI-102 |
+| Document Registry | Token Introspection, JWT Token, Authorization Server Metadata | El token del miembro que publica y el token propio del Record Locator Service, preferiblemente con ITI-102. El token mediado, por sí mismo |
 | Directorio de la comunidad | Token Introspection, JWT Token, Authorization Server Metadata | El token propio del Record Locator Service o del Document Registry, preferiblemente con ITI-102. El token mediado, por sí mismo |
 | Custodio | JWT Token, Authorization Server Metadata. Token Introspection, si la comunidad la admite | Por sí mismo, con las claves que el Authorization Server publica, como fija la [sección 2.6](volume-1-security.html#validacion-en-el-custodio) |
 | Authorization Server | JWT Token, Authorization Server Metadata, Token Introspection | Emite los tokens, publica sus endpoints y sus claves con ITI-103 y responde ITI-102 |
