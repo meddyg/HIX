@@ -1,0 +1,24 @@
+@startuml hix-2-hix-1
+skinparam shadowing false
+skinparam defaultFontName Verdana
+skinparam defaultFontSize 11
+skinparam sequenceMessageAlign center
+skinparam ParticipantPadding 8
+skinparam sequence {
+  ArrowColor #333333
+  LifeLineBorderColor #999999
+  ParticipantBorderColor #555555
+  ParticipantBackgroundColor white
+  GroupBorderColor #999999
+}
+
+participant "Record Locator\nService" as RLS
+participant "Authorization\nServer" as AS
+
+opt sin token de actor vigente
+  RLS -> AS : [ITI-71] Get Access Token\n(client_credentials, token propio del RLS)
+  AS --> RLS : token de actor (aud = Authorization Server)
+end
+RLS -> AS : [HIX-1] Mediated Token Exchange\n(subject_token, actor_token, resource, scope)
+AS --> RLS : JWT (aud = destino, sub = solicitante,\nact = RLS, vida ≤ 120 s)
+@enduml

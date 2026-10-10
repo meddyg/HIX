@@ -18,10 +18,10 @@ actor "Persona" as P
 participant "Aplicación\ndel paciente" as APP
 participant "Authorization\nServer" as AS
 participant "Fuente autoritativa\n(p. ej. EDUS)" as SRC
-participant "Registro de\nidentidad maestra" as PMIR
+participant "Master Patient\nIndex" as PMIR
 participant "Record Locator\nService" as RLS
 
-== Enrolamiento (una vez) ==
+== Enrolamiento (una vez, según la política de la comunidad) ==
 P -> AS : crea su cuenta
 AS -> SRC : verificación de identidad
 SRC --> AS : identidad verificada

@@ -16,3 +16,6 @@ _diagrams/.$*
 
 # the publisher writes this to the root on every build
 Requirements-fromNarrative.json
+
+# editor settings
+.vscode/

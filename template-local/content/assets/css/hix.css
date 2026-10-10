@@ -15,12 +15,24 @@
 }
 
 /*
- * The one layout override. project.css floats `p > img` left, and Markdown
+ * A layout override. project.css floats `p > img` left, and Markdown
  * renders a figure as exactly that, so the caption and the next paragraph wrap
  * in the sliver of space beside the diagram.
  */
 p > img {
   float: none;
+}
+
+/*
+ * Bootstrap sets blockquote text at 12.5px and weight 300, smaller and lighter
+ * than the body. The guide uses blockquotes for its notes, which are meant to
+ * be read, so they take the body's size and weight back. The grey rule on the
+ * left still sets them apart.
+ */
+blockquote p {
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
 }
 
 /*

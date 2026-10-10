@@ -1,0 +1,33 @@
+@startuml hix-2-hix-2
+skinparam shadowing false
+skinparam defaultFontName Verdana
+skinparam defaultFontSize 11
+skinparam sequenceMessageAlign center
+skinparam ParticipantPadding 8
+skinparam sequence {
+  ArrowColor #333333
+  LifeLineBorderColor #999999
+  ParticipantBorderColor #555555
+  ParticipantBackgroundColor white
+  ActorBorderColor #555555
+  ActorBackgroundColor white
+  GroupBorderColor #999999
+}
+
+actor "Persona" as P
+participant "Aplicación\ndel paciente" as APP
+participant "Authorization\nServer" as AS
+participant "Master Patient\nIndex" as PMIR
+
+APP -> AS : [HIX-2] Petición de autorización\n(response_type = code, resource = RLS,\nlaunch/patient, PKCE S256)
+AS <-> P : autenticación y consentimiento
+AS -> PMIR : [ITI-83] identidad verificada
+PMIR --> AS : identidad maestra
+AS --> APP : redirección (code, state)
+APP -> AS : [HIX-2] Petición de token\n(authorization_code, code_verifier)
+AS --> APP : token (aud = RLS), id_token,\nrefresh_token (con offline_access), patient
+opt renovación, fuera de ITI-71 (token vencido y refresh token vigente)
+  APP -> AS : [HIX-2] Petición de token (refresh_token)
+  AS --> APP : token nuevo, mismo patient, sin ITI-83
+end
+@enduml

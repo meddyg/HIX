@@ -13,27 +13,21 @@ skinparam sequence {
 }
 
 participant "Fuente autoritativa\n(p. ej. EDUS)" as SRC
-participant "Registro de\nidentidad maestra" as PMIR
-participant "Record Locator\nService" as RLS
+participant "Master Patient\nIndex" as MPI
 participant "Custodio" as K
 participant "Consumidor" as C
 
 == Identidad maestra ==
-SRC -> PMIR : [ITI-93] Mobile Patient Identity Feed\n(identidad verificada)
-PMIR -> PMIR : crea o actualiza\nla identidad maestra
-PMIR --> SRC : 200
+SRC -> MPI : [ITI-93] Mobile Patient Identity Feed\n(identidad verificada)
+MPI -> MPI : crea o actualiza\nla identidad maestra
+MPI --> SRC : 200
 
 == Identidad local de un miembro ==
-K -> RLS : [ITI-104] Patient Identity Feed\n(Patient local + identificador comunitario)
-RLS -> RLS : dominio = organización del token
-RLS -> PMIR : [ITI-104] (delegado)
-PMIR -> PMIR : vincula la identidad local\ncon la identidad maestra
-PMIR --> RLS : 200, o 422 si la persona\nno existe en la comunidad
-RLS --> K : resultado
+K -> MPI : [ITI-104] Patient Identity Feed FHIR\n(Patient local + identificador nacional)
+MPI -> MPI : dominio = organización del token\nvincula la identidad local\ncon la identidad maestra
+MPI --> K : 200, o rechazo por defecto si la persona\nno tiene identidad maestra
 
 == Resolución ==
-C -> RLS : [ITI-83] Cross-reference Query\n(identificador local o comunitario)
-RLS -> PMIR : [ITI-83] (delegado)
-PMIR --> RLS : identificadores de la persona
-RLS --> C : identificadores permitidos\npor la política
+C -> MPI : [ITI-83] Cross-reference Query\n(identificador local o nacional)
+MPI --> C : solo la identidad maestra
 @enduml

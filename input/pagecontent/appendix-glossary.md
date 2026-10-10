@@ -11,16 +11,16 @@ Este glosario reúne, en una línea cada uno, los actores y términos que usa es
 **[Authorization Server](https://profiles.ihe.net/ITI/IUA/index.html).** El Authorization Server de IUA. Emite, comprueba e intercambia los tokens que circulan por la comunidad.
 {: #authorization-server}
 
-**Directorio de la comunidad.** Publica las organizaciones participantes, su pertenencia a la comunidad y los endpoints en los que responden. Es el Directory de mCSD.
+**Directorio de la comunidad.** Publica las organizaciones participantes, su pertenencia a la comunidad y los endpoints en los que responden. Es el Directory de mCSD y Resource Server de IUA.
 {: #directorio-de-la-comunidad}
 
-**Registro de identidad maestra.** Conserva una identidad maestra por persona y sus enlaces con las identidades locales. Agrupa al Patient Identity Registry de PMIR, al Patient Identifier Cross-reference Manager de PIXm y al Patient Demographics Supplier de PDQm.
-{: #registro-de-identidad-maestra}
+**Master Patient Index (MPI).** Conserva una identidad maestra por persona y sus enlaces con las identidades locales. Agrupa al Patient Identity Registry de PMIR, al Patient Identifier Cross-reference Manager de PIXm y al Patient Demographics Supplier de PDQm. Es el componente que OpenHIE llama [Client Registry](https://guides.ohie.org/arch-spec/openhie-component-specifications-1/client-registry).
+{: #master-patient-index}
 
 **[Audit Record Repository](https://profiles.ihe.net/ITI/TF/Volume1/ch-9.html).** El actor de ATNA que recibe los eventos de auditoría de los actores centrales.
 {: #audit-record-repository}
 
-**Fuente autoritativa de identidad.** Sistema externo a la comunidad que verifica la identidad de las personas y crea las identidades maestras. Es el Patient Identity Source de PMIR. HIX propone que sea el EDUS.
+**Fuente autoritativa de identidad.** Sistema externo a la comunidad que verifica la identidad de las personas y crea las identidades maestras. Es el Patient Identity Source de PMIR. HIX no la designa. La propuesta para Costa Rica es que sea el EDUS.
 {: #fuente-autoritativa-de-identidad}
 
 **Custodio.** El sistema que publica y custodia documentos. Miembro que produce documentos, los conserva, declara las identidades locales de sus pacientes y publica los punteros.
@@ -29,7 +29,7 @@ Este glosario reúne, en una línea cada uno, los actores y términos que usa es
 **Consumidor.** El sistema que consume documentos. Miembro que localiza y recupera documentos de un paciente a través del Record Locator Service.
 {: #consumidor}
 
-**Aplicación del paciente.** Aplicación con la que una persona, o quien ella autoriza, accede a su propio expediente con el contexto de paciente que fija el Authorization Server.
+**Aplicación del paciente.** Aplicación con la que una persona accede a su propio expediente con el contexto de paciente que fija el Authorization Server.
 {: #aplicacion-del-paciente}
 
 ### Actores IHE que HIX agrupa
@@ -87,10 +87,31 @@ Este glosario reúne, en una línea cada uno, los actores y términos que usa es
 
 ### Términos de esta guía
 
-**Identidad maestra.** La identidad verificada de una persona, única en la comunidad, creada por la fuente autoritativa de identidad. Lleva el identificador nacional y los enlaces a las identidades locales.
+**Miembro.** Organización participante de la comunidad. Figura en el directorio y el Authorization Server reconoce a sus sistemas.
+{: #miembro}
+
+**Infraestructura central.** Los actores que opera la comunidad, es decir, el Record Locator Service, el Document Registry, el Authorization Server, el directorio, el Master Patient Index y el Audit Record Repository.
+{: #infraestructura-central}
+
+**Mediador.** Otro nombre del Record Locator Service, por la función que cumple entre los miembros y los custodios.
+{: #mediador}
+
+**Contexto de paciente.** El paciente al que queda confinado un token emitido con [HIX-2](volume-2-hix-2.html), es decir, la identidad maestra de la persona que lanzó la aplicación.
+{: #contexto-de-paciente}
+
+**Access token.** La credencial que un cliente presenta ante un Resource Server para pedir acceso, según OAuth 2.0.
+{: #access-token}
+
+**Audience.** El Resource Server, o los Resource Servers, ante los que vale un token, en el claim `aud`.
+{: #audience}
+
+**Identidad maestra.** La identidad verificada de una persona, única en la comunidad, creada por la fuente autoritativa de identidad. Lleva un identificador de la persona que la fuente autoritativa reconoce, como la cédula, y los enlaces a las identidades locales.
 {: #identidad-maestra}
 
-**Identidad local.** El paciente tal como lo conoce un miembro, con el identificador de su propio dominio. Cada miembro la declara y la enlaza con la identidad maestra.
+**MRN.** Medical Record Number, el identificador que un miembro asigna a un paciente en su propio dominio, como su número de expediente. Solo tiene sentido dentro de ese dominio, y el Master Patient Index lo enlaza con la identidad maestra.
+{: #mrn}
+
+**Identidad local.** El paciente tal como lo conoce un miembro, con su MRN. Cada miembro la declara y la enlaza con la identidad maestra.
 {: #identidad-local}
 
 **Puntero.** El `DocumentReference` que describe un documento sin contenerlo. Sobre él se toma toda decisión de la comunidad antes de mover contenido.
@@ -105,17 +126,20 @@ Este glosario reúne, en una línea cada uno, los actores y términos que usa es
 **Propósito de uso.** Código del conjunto PurposeOfUse de HL7 que dice para qué se accede. Viaja en el token y lo evalúa la decisión de divulgación.
 {: #proposito-de-uso}
 
-**Scope.** El alcance de un token en OAuth 2.0. Fija qué transacciones puede pedir su portador.
+**Scope.** Lo que autoriza un token en OAuth 2.0. Fija qué transacciones puede pedir su portador.
 {: #scope}
 
 **[OpenID Provider](https://openid.net/specs/openid-connect-core-1_0.html#Terminology).** Authorization Server de OAuth 2.0 que además autentica a la persona y acredita esa autenticación con un `id_token`, según OpenID Connect. En HIX lo es el Authorization Server de la comunidad.
 {: #openid-provider}
 
-**Token del solicitante.** El token que un miembro obtiene con ITI-71, o la aplicación del paciente con [HIX-2](volume-1-actors.html#hix-2), destinado al Record Locator Service. Lleva el sujeto, la organización, el propósito de uso, el alcance y, en el caso de la aplicación del paciente, el contexto de paciente.
+**Token del solicitante.** El token que un miembro obtiene con ITI-71, o la aplicación del paciente con [HIX-2](volume-2-hix-2.html). El de un miembro está destinado a los Resource Servers centrales que define la comunidad, y el de la aplicación solo al Record Locator Service. Lleva el sujeto, el propósito de uso y el scope. El de un miembro lleva además su organización, y el de la aplicación del paciente el contexto de paciente y la organización solo si la aplicación tiene una registrada.
 {: #token-del-solicitante}
 
-**Token intercambiado.** El token que el mediador obtiene con [HIX-1](volume-1-actors.html#hix-1) para un único destino y una sola transacción, con el solicitante original como sujeto y el mediador como actor.
-{: #token-intercambiado}
+**Token mediado.** El token que el mediador obtiene con [HIX-1](volume-2-hix-1.html) para el destino que nombra su `resource`, nunca para dos custodios, y un solo tipo de transacción, con el solicitante original como sujeto y el mediador como actor. Se emite para el custodio y, salvo que la comunidad autorice un token propio conforme a la [sección 2.2](volume-1-actors.html#record-locator-service), para cada Resource Server central que la comunidad despliegue como un sistema distinto.
+{: #token-mediado}
+
+**Token de actor.** El token propio que el Record Locator Service obtiene con ITI-71 y el grant Client Credentials, con el Authorization Server como audiencia y sin scope, y presenta como `actor_token` en [HIX-1](volume-2-hix-1.html). Solo vale ante el Authorization Server y no lleva extensiones de IUA.
+{: #token-de-actor}
 
 **PEP.** Punto de aplicación de política. El lugar donde se comprueba que una petición cumple las reglas de la comunidad. En HIX, el primero es el mediador.
 {: #pep}
@@ -124,7 +148,7 @@ Este glosario reúne, en una línea cada uno, los actores y términos que usa es
 {: #pdp}
 
 *[PMIR]: Patient Master Identity Registry, perfil IHE que gestiona la identidad maestra del paciente
-*[PIXm]: Patient Identifier Cross-referencing for mobile, perfil IHE que enlaza los identificadores locales de un paciente con su identidad maestra
+*[PIXm]: Patient Identifier Cross-referencing for mobile, perfil IHE que enlaza los MRN de un paciente con su identidad maestra
 *[PDQm]: Patient Demographics Query for Mobile, perfil IHE de búsqueda de pacientes por datos demográficos
 *[MHD]: Mobile access to Health Documents, perfil IHE para publicar, localizar y recuperar documentos sobre FHIR
 *[MHDS]: Mobile Health Document Sharing, perfil IHE que compone MHD, PMIR, mCSD, IUA y ATNA en una comunidad de intercambio de documentos
@@ -134,3 +158,5 @@ Este glosario reúne, en una línea cada uno, los actores y términos que usa es
 *[BALP]: Basic Audit Log Patterns, perfil IHE con los patrones de AuditEvent de FHIR
 *[CT]: Consistent Time, perfil IHE que sincroniza los relojes de los sistemas
 *[PCF]: Privacy Consent on FHIR, perfil IHE de consentimiento del paciente
+*[MPI]: Master Patient Index, el actor de HIX que conserva las identidades maestras de los pacientes
+*[MRN]: Medical Record Number, el identificador que un miembro asigna a un paciente en su propio dominio
