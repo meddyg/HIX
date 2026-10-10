@@ -1,7 +1,6 @@
 Esta sección explica las decisiones que dan forma a esta comunidad. Cada una se presenta con lo que decide y por qué lo decide, y la [Tabla 2.1-2](volume-1-concepts.html#tabla-2-1-2) resume lo que cuestan. Son decisiones de arquitectura, no de implementación. Una comunidad puede desplegarlas de muchas maneras sin que cambie nada de lo que aquí se describe. La última subsección explica la relación de HIX con MHDS.
 
-### Comunidad y límite de confianza
-{: #limite-de-confianza}
+### Comunidad y límite de confianza {#limite-de-confianza}
 
 Una comunidad HIX es un conjunto de organizaciones que acuerdan compartir documentos clínicos bajo una política común y a través de una infraestructura común. La pertenencia es explícita. Una organización es miembro cuando figura en el directorio de la comunidad y el Authorization Server reconoce a sus sistemas.
 
@@ -156,8 +155,7 @@ IHE deja la gobernanza fuera de su alcance. Declara que no define políticas de 
 | Apuesta por la operación del centro | La garantía de la comunidad vale lo que valga la operación de su infraestructura central. Un centro bien operado supera a una federación operada a medias, y un centro mal operado es peor que esa federación | Quién certifica miembros, quién responde al paciente y quién financia el centro se fija en la gobernanza de la comunidad, antes de construirla. Es su riesgo principal a largo plazo |
 {: .table .table-bordered}
 
-### Relación con MHDS
-{: #relacion-con-mhds}
+### Relación con MHDS {#relacion-con-mhds}
 
 HIX sigue la forma de comunidad que describe [MHDS](https://profiles.ihe.net/ITI/MHDS/volume-1.html), con una infraestructura central de servicios compartidos y miembros que publican y consumen a través de ella, y toma de él buena parte de su vocabulario. No declara conformidad con MHDS. Sigue los perfiles que MHDS compone, que son los que se mantienen, se prueban y se distribuyen como paquetes versionados. Como la mayoría solo se publica sobre FHIR R4, HIX sigue sus modelos, transacciones y vocabulario sobre FHIR R5 sin declarar conformidad con sus artefactos R4, mientras IHE no publique ediciones R5.
 

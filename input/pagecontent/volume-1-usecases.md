@@ -98,7 +98,6 @@ Los siguientes casos forman parte de la arquitectura y se especificarán en vers
 - **Acceso con anulación de la política.** Un profesional accede a documentos que la política ordinaria no le permitiría, declarando el propósito de uso `BTG`. Cómo se admite lo fija cada comunidad, como indica la [Tabla 2.2-3](volume-1-actors.html#tabla-2-2-3). HIX ya exige que quede registrado en la auditoría, como fija la [sección 2.6](volume-1-security.html#acceso-de-emergencia).
 - **Identidad del personal sanitario.** El Authorization Server federa hacia el proveedor de identidad de cada institución en lugar de alojar cuentas de profesionales.
 
-
 *[PMIR]: Patient Master Identity Registry, perfil IHE que gestiona la identidad maestra del paciente
 *[PIXm]: Patient Identifier Cross-referencing for mobile, perfil IHE que enlaza los MRN de un paciente con su identidad maestra
 *[PDQm]: Patient Demographics Query for Mobile, perfil IHE de búsqueda de pacientes por datos demográficos

@@ -161,7 +161,7 @@ Lo que busca HIX es minimizar la superficie de ataque aplicando least privilege 
 
 Para las llamadas del Record Locator Service a los actores centrales desplegados como sistemas distintos, las dos formas de autorización de la [sección 2.2](volume-1-actors.html#record-locator-service) tienen costos distintos. HIX-1 no deja al mediador ninguna credencial que valga sin una petición viva y lleva al destino el sujeto original, pero añade un intercambio por llamada. El token propio ahorra ese intercambio y es más simple de operar, pero es una credencial permanente con la que un mediador comprometido alcanza sin solicitante lo que ese token permite, como consultar el directorio o localizar punteros, aunque nunca un documento; el destino solo ve al mediador como sujeto. La comunidad asume estos costos al elegir cómo autoriza las llamadas.
 
-**Si un componente se ve comprometido**
+#### Si un componente se ve comprometido
 
 - **Record Locator Service.** No tiene acceso arbitrario a documentos ni custodios. Solo ve el tráfico que transita por él y los tokens de los solicitantes, y solo alcanza lo que esos tokens permiten mientras están vigentes.
 - **Authorization Server.** Puede emitir cualquier token, porque es la raíz de confianza. Nada dentro de HIX lo acota, y proteger sus claves es la primera responsabilidad de la comunidad.
@@ -170,7 +170,7 @@ Para las llamadas del Record Locator Service a los actores centrales desplegados
 - **Credenciales robadas del Record Locator Service.** Con ellas no se alcanza ningún documento ni custodio, porque cada intercambio exige además el token de un solicitante. Por eso el Record Locator Service no puede hacer casi nada sin un miembro que interactúe con él. Si la comunidad le da un token propio hacia actores centrales, con esas credenciales se alcanza lo que ese token permite, como consultar el directorio o localizar punteros, nunca un documento, acotado por la auditoría y por los límites de tasa que fije la comunidad. Cuando el despliegue reúne en un mismo sistema al Record Locator Service y a otros actores centrales, comprometer ese sistema compromete todo lo que reúne, y esa es la contrapartida que acepta quien elige ese despliegue. Deshabilitar el cliente revoca sus tokens vigentes.
 - **Un token mediado robado.** Vale ante el destino que nombra su `resource`, nunca ante dos custodios, para un solo tipo de transacción y durante dos minutos como máximo. El custodio **MAY** rechazar un `jti` que ya vio.
 
-**Límites que acota la política de la comunidad**
+#### Límites que acota la política de la comunidad
 
 - **Revocación.** Quien valida el token por sí mismo mediante JWKs no ve una revocación hasta que el token expira.
 - **Enumeración.** La búsqueda por datos demográficos permite enumerar pacientes dentro de lo que la política revela.
