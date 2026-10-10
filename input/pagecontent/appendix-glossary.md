@@ -138,6 +138,9 @@ Este glosario reúne, en una línea cada uno, los actores y términos que usa es
 **Token mediado.** El token que el mediador obtiene con [HIX-1](volume-2-hix-1.html) para el destino que nombra su `resource`, nunca para dos custodios, y un solo tipo de transacción, con el solicitante original como sujeto y el mediador como actor. Se emite para el custodio y, salvo que la comunidad autorice un token propio conforme a la [sección 2.2](volume-1-actors.html#record-locator-service), para cada Resource Server central que la comunidad despliegue como un sistema distinto.
 {: #token-mediado}
 
+**Token de actor.** El token propio que el Record Locator Service obtiene con ITI-71 y el grant Client Credentials, con el Authorization Server como audiencia y sin scope, y presenta como `actor_token` en [HIX-1](volume-2-hix-1.html). Solo vale ante el Authorization Server y no lleva extensiones de IUA.
+{: #token-de-actor}
+
 **PEP.** Punto de aplicación de política. El lugar donde se comprueba que una petición cumple las reglas de la comunidad. En HIX, el primero es el mediador.
 {: #pep}
 

@@ -31,7 +31,7 @@ El límite de confianza pasa entre cada miembro y la infraestructura central, co
 | --- | --- | --- |
 | Quién lo obtiene | El miembro con ITI-71, o la aplicación del paciente con [HIX-2](volume-2-hix-2.html) | El Record Locator Service con [HIX-1](volume-2-hix-1.html) |
 | Audiencia | Los Resource Servers centrales que define la comunidad, o solo el Record Locator Service si lo obtiene la aplicación del paciente | Un único custodio, o los actores centrales que el Authorization Server asocia al `resource` del intercambio |
-| Vida | La que fije el Authorization Server | Dos minutos como máximo, y nunca más que la vida restante del token del solicitante ni la del token de actor |
+| Vida | La que fije el Authorization Server | Dos minutos como máximo, y nunca más que la vida restante del token del solicitante |
 | Cómo se valida | El Record Locator Service, por introspección con ITI-102 una vez por operación. Otro Resource Server central, preferiblemente también por introspección, o por sí mismo con la JWT Token Option | En el destino, con las claves que publica el Authorization Server ([JWKs](https://www.rfc-editor.org/info/rfc7517/)), sin necesidad de introspección |
 | Sujeto | El sistema del miembro, o la persona que lanzó la aplicación | El mismo |
 | Extensiones de IUA | Del miembro, la organización y el propósito de uso. De la aplicación del paciente, el propósito de uso, y la organización si la aplicación tiene una registrada | Las mismas |
@@ -60,20 +60,18 @@ De la tabla se siguen cuatro reglas. De cada una conviene decir qué fija HIX, d
 
 #### Validación en el custodio {#validacion-en-el-custodio}
 
-El custodio recibe el token mediado y lo valida como RFC 9068 pide a todo Resource Server que recibe un access token en forma de JWT ([RFC 9068, §4](https://www.rfc-editor.org/rfc/rfc9068.html#section-4))[^rfc9068-validate], más las comprobaciones que HIX añade sobre la delegación. El custodio **SHALL** comprobar, como mínimo, lo siguiente.
+El custodio recibe el token mediado y lo valida como RFC 9068 pide a todo Resource Server que recibe un access token en forma de JWT ([RFC 9068, §4](https://www.rfc-editor.org/rfc/rfc9068.html#section-4))[^rfc9068-validate]. Eso cubre la firma con las claves que publica el Authorization Server, el rechazo de un `alg` con valor `none`, que el emisor sea exactamente el Authorization Server de la comunidad, que el tipo de token sea `at+jwt`, que la audiencia lo contenga y que el token no haya expirado. HIX añade las comprobaciones siguientes, que el custodio **SHALL** hacer además.
 
-1. La firma, con las claves que publica el Authorization Server, y que el algoritmo es uno de los que la comunidad admite.
-2. Que el emisor es exactamente el Authorization Server de la comunidad.
-3. Que el tipo de token es el de un access token.
-4. Que la audiencia es exactamente él.
-5. Que el token no ha expirado y que su momento de emisión es coherente con su vida máxima.
-6. Que lleva un sujeto y un identificador de token.
-7. Que el cliente al que se emitió es el Record Locator Service.
-8. Que el scope cubre la transacción que recibe.
+1. Que el algoritmo de firma es uno de los que la comunidad admite.
+2. Que la audiencia es exactamente él, y no solo que lo contenga, porque un token mediado para un custodio nunca nombra a otro.
+3. Que el momento de emisión es coherente con la vida máxima de dos minutos.
+4. Que lleva un sujeto y un identificador de token.
+5. Que el cliente al que se emitió es el Record Locator Service.
+6. Que el scope cubre la transacción que recibe.
 
 El custodio **SHOULD** comprobar además que el actor declarado en el claim `act` es el Record Locator Service.
 
-Las comprobaciones que más pesan son la audiencia, el cliente y el actor. La audiencia sola no basta, porque un token emitido directamente a otro cliente para esa misma audiencia la pasaría. El cliente y el actor son lo que vuelve estructural que solo el Record Locator Service pueda alcanzar a un custodio en nombre de alguien, porque el claim `act` es la forma en que OAuth 2.0 Token Exchange declara que hubo delegación y quién actúa ([RFC 8693, §4.1](https://www.rfc-editor.org/rfc/rfc8693.html#section-4.1))[^rfc8693-act].
+Las comprobaciones que más pesan son la audiencia y el cliente. La audiencia sola no basta, porque un token emitido directamente a otro cliente para esa misma audiencia la pasaría. El cliente es lo que vuelve estructural que solo el Record Locator Service pueda alcanzar a un custodio en nombre de alguien, porque el Authorization Server no emite por otro camino un token con esa audiencia. El claim `act` lo confirma, porque es la forma en que OAuth 2.0 Token Exchange declara que hubo delegación y quién actúa ([RFC 8693, §4.1](https://www.rfc-editor.org/rfc/rfc8693.html#section-4.1))[^rfc8693-act].
 
 El custodio **SHALL** validar el token mediado con las claves que publica el Authorization Server, y esa validación basta para aceptarlo. HIX no exige introspección en el custodio. El custodio **MAY** comprobarlo además por introspección, con la [Token Introspection Option](https://profiles.ihe.net/ITI/IUA/index.html#3424-token-introspection-option) de IUA y [ITI-102](https://profiles.ihe.net/ITI/IUA/index.html#3102-introspect-token-iti-102), si la comunidad lo admite. Entonces cada recuperación depende del Authorization Server en el momento de atenderla, y esa dependencia se asume a sabiendas.
 
@@ -139,7 +137,7 @@ La política de la comunidad determina qué solicitante alcanza qué documentos.
 | `V`, muy restringido | Cualquiera salvo el custodio | Denegado, salvo acceso de emergencia |
 {: .table .table-bordered}
 
-Cada comunidad define su equivalente y lo aplica en el punto donde toma la decisión de divulgación. La política falla cerrada. Un puntero sin etiqueta se rechaza al publicar, como fija la [sección 2.2](volume-1-actors.html), y el actor que aplica la decisión de divulgación **SHALL** tratar una etiqueta que la política no reconoce como la más restrictiva. FHIR pide a toda guía de implementación decir qué hacer con una etiqueta que no se reconoce, sin prescribir la respuesta ([FHIR R5, Security Labels](https://hl7.org/fhir/R5/security-labels.html))[^fhir-seclabels].
+Cada comunidad define su equivalente y lo aplica en el punto donde toma la decisión de divulgación. La política falla cerrada. Un puntero sin etiqueta se rechaza al publicar, como fija la [sección 2.2](volume-1-actors.html), y el Record Locator Service **SHALL** garantizar que una etiqueta que la política no reconoce se trate como la más restrictiva, también cuando la decisión se evalúa en el Document Registry. FHIR pide a toda guía de implementación decir qué hacer con una etiqueta que no se reconoce, sin prescribir la respuesta ([FHIR R5, Security Labels](https://hl7.org/fhir/R5/security-labels.html))[^fhir-seclabels].
 
 #### Consentimiento del paciente
 
@@ -153,7 +151,7 @@ Las transacciones de identidad también divulgan. ITI-83 revela que un identific
 
 MHDS pide reconocer los modos de emergencia desde el diseño, y advierte que anular una restricción del paciente por peligro inminente no es romper la política sino una condición explícita dentro de ella ([MHDS Vol. 1, §1:50.5.1](https://profiles.ihe.net/ITI/MHDS/volume-1.html#15051-policies-and-risk-management))[^mhds-emergency]. HIX distingue dos casos con los propósitos de uso de la [Tabla 2.2-3](volume-1-actors.html#tabla-2-2-3). Con `ETREAT`, un profesional autorizado atiende una urgencia y la política de la comunidad decide qué le permite frente a `TREAT`. Con `BTG`, accede quien no está autorizado para ese acceso, con anulación de la política, que es lo que HL7 define para ese código[^btg].
 
-HIX no define cuándo procede ninguno de los dos ni cómo los pide el solicitante, porque IUA no define ningún mecanismo para ello. El Authorization Server **SHALL** emitirlos como propósito de uso solo cuando su registro los admita para ese cliente, y el actor que aplica la decisión de divulgación **SHALL** registrar en la auditoría el propósito de emergencia con el que divulgó.
+HIX no define cuándo procede ninguno de los dos ni cómo los pide el solicitante, porque IUA no define ningún mecanismo para ello. El Authorization Server **SHALL** emitirlos como propósito de uso solo cuando su registro los admita para ese cliente, y el Record Locator Service **SHALL** registrar en la auditoría el propósito de emergencia con el que divulgó.
 
 ### Riesgos residuales {#riesgos-residuales}
 
@@ -216,7 +214,7 @@ Las citas reproducen el texto publicado por su fuente. Los recortes se marcan co
 [^rfc8693-act]: [RFC 8693, §4.1 "act" (Actor) Claim](https://www.rfc-editor.org/rfc/rfc8693.html#section-4.1): "The act (actor) claim provides a means within a JWT to express that **delegation has occurred and identify the acting party to whom authority has been delegated**."
 [^rfc7662-active]: [RFC 7662, §2.2 Introspection Response](https://www.rfc-editor.org/rfc/rfc7662.html#section-2.2): "active. REQUIRED. **Boolean indicator of whether or not the presented token is currently active.** [...] a "true" value return for the "active" property will generally indicate that a given token has been issued by this authorization server, **has not been revoked by the resource owner**, and is within its given time window of validity".
 [^btg]: [v3-ActReason, BTG](https://terminology.hl7.org/CodeSystem-v3-ActReason.html#v3-ActReason-BTG): "break the glass. **To perform policy override operations on information for provision of immediately needed health care for an emergent condition** affecting potential harm, death or patient safety **by end users who are not provisioned for this purpose of use**. Includes override of organizational provisioning policies and may include override of subject of care consent directive restricting access." [ETREAT](https://terminology.hl7.org/CodeSystem-v3-ActReason.html#v3-ActReason-ETREAT): "Emergency Treatment. To perform one or more operations on information for provision of **immediately needed health care for an emergent condition**."
-[^balp-jti]: [BALP, §3:5.7.5.4 oAuth mapping to AuditEvent](https://profiles.ihe.net/ITI/BALP/content.html#35754-oauth-mapping-to-auditevent): "oAuth field \| Comprehensive AuditEvent \| Minimal AuditEvent [...] **jti (JWT ID) \| agent[user].policy \| agent[user].policy**" (énfasis añadido)
+[^balp-jti]: [BALP, §3:5.7.5.4 oAuth mapping to AuditEvent](https://profiles.ihe.net/ITI/BALP/content.html#35754-oauth-mapping-to-auditevent): "oAuth field \| Comprehensive AuditEvent \| Minimal AuditEvent [...] **jti (JWT ID) \| agent[user].policy \| agent[user].policy**"
 [^balp-token]: [BALP, §3:5.7.5 OAuth Security Token](https://profiles.ihe.net/ITI/BALP/content.html#3575-oauth-security-token): "There is still a need to include some evidence in the AuditEvent to tie this audit log entry with a specific token, but **the whole token should not be recorded for security reasons**."
 [^iua-sub]: [IUA, §3.71.4.2.2.1 JSON Web Token Option](https://profiles.ihe.net/ITI/IUA/index.html#3714221-json-web-token-option): "sub (required): **If known, unique identifier of the user; the client_id otherwise** [JWT, Section 4.1]. client_id (required): identifier of the client for which the token is issued." Y en §3.71.4.2.2.1.1 JWT IUA extension: "The Authorization Server and Resource Server shall support the following extensions to the JWT access token: **subject_name** (optional): The user's name as String. **subject_organization_id** (optional): Unique identifier of the user's organization. [...] **subject_role** (optional): Coded values indicating the user's roles. [...] **purpose_of_use** (optional): Purpose of use for the request. [...] The above claims shall be wrapped in an "extensions" object with key 'ihe_iua'".
 
