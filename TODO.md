@@ -19,7 +19,7 @@ La estructura completa de la guía ya está en `sushi-config.yaml`, comentada ha
 4. **Tres apéndices**, la justificación del diseño, las referencias y el historial de cambios, desde la línea 115.
 5. **La página de descargas**, una página, en la línea 121.
 
-Nota: las dependencias en el archivo de sushi están comentadas para evitar problemas con el CI de despliegue durante la escritura de estas páginas. En el release formal se descomentaran y se hará la integration completa a la guía.
+Nota: las dependencias del archivo de sushi ya están activas. Queda la integración completa de sus artefactos en la guía para el release formal.
 
 ## Capacidades aplazadas a una versión posterior
 

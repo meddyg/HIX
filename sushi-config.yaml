@@ -26,25 +26,25 @@ publisher:
   name: Meddyg
   url: https://meddyg.com
 
-# dependencies:
-#   ihe.iti.mhd:
-#     version: 5.0.0
-#     reason: "Publicación, localización y recuperación de documentos (FHIR R5)"
-#   ihe.iti.pmir:
-#     version: 1.6.0
-#     reason: "Identidad maestra del paciente (FHIR R4)"
-#   ihe.iti.pixm:
-#     version: 3.1.0
-#     reason: "Declaración de identidades locales y resolución a la identidad maestra (FHIR R4)"
-#   ihe.iti.pdqm:
-#     version: 3.2.0
-#     reason: "Búsqueda de pacientes por datos demográficos (FHIR R4)"
-#   ihe.iti.mcsd:
-#     version: 4.0.0
-#     reason: "Directorio de organizaciones, servicios y endpoints (FHIR R4)"
-#   ihe.iti.balp:
-#     version: 1.1.4
-#     reason: "Patrones de los eventos de auditoría (FHIR R4)"
+dependencies:
+  ihe.iti.mhd:
+    version: 5.0.0
+    reason: "Publicación, localización y recuperación de documentos (FHIR R5)"
+  ihe.iti.pmir:
+    version: 1.6.0
+    reason: "Identidad maestra del paciente (FHIR R4)"
+  ihe.iti.pixm:
+    version: 3.1.0
+    reason: "Declaración de identidades locales y resolución a la identidad maestra (FHIR R4)"
+  ihe.iti.pdqm:
+    version: 3.2.0
+    reason: "Búsqueda de pacientes por datos demográficos (FHIR R4)"
+  ihe.iti.mcsd:
+    version: 4.0.0
+    reason: "Directorio de organizaciones, servicios y endpoints (FHIR R4)"
+  ihe.iti.balp:
+    version: 1.1.4
+    reason: "Patrones de los eventos de auditoría (FHIR R4)"
 
 # Page order drives the automatic section numbering shown in the rendered site.
 pages:
